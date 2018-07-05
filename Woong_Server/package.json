@@ -4,19 +4,27 @@
   "private": true,
   "scripts": {
     "start:dev": "NODE_ENV=development NODE_PATH=src nodemon app.js",
+    "start": "node ./bin/www",
     "start:pm2": "yarn status && pm2 start pm2/woong.server.dev.json && pm2 logs woong.server.dev",
     "start:prod": "yarn _sync && pm2 status && yarn status && pm2 start pm2/woong.server.prod.json && pm2 logs mocam.prod.prod",
     "_sync": "git status && git pull",
     "status": "pm2 status"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.3",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^6.0.0",
-    "express": "~4.16.0",
+    "express": "^4.16.3",
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
-    "nvm": "0.0.4"
+    "nvm": "0.0.4",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0"
   }
 }
