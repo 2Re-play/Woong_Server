@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-const config = require('./config/dbConfig')
+const config = require('../config/dbConfig')
 
 let DBpool = ''
 const __getPool = () => {
