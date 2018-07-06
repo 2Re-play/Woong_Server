@@ -9,7 +9,15 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerJSDoc = require('swagger-jsdoc')
 
 // const options = require('./swagger/swaggerSpec.js')
+<<<<<<< HEAD
 const index = require('./src/routes/index')
+=======
+<<<<<<< .merge_file_EKM7mv
+const index = require('./src/routes') // 재현수정
+=======
+const index = require('./src/routes/index.js') // 재현수정
+>>>>>>> .merge_file_JjX5cW
+>>>>>>> 5aece8ac7db12717a1acbaef2e462dd597fac14c
 
 const swaggerDefinition = {
   info: { // API informations (required)

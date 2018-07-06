@@ -1,6 +1,6 @@
 const express = require('express')
-const food_type = require('routes/food_type')
-const account = require('routes/account')
+const food_type = require('./routes/food_type')
+const account = require('./routes/account')
 
 
 const router = express.Router()

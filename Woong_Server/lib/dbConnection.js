@@ -1,10 +1,10 @@
-const mysql = require('mysql')
-const config = require('../config/dbConfig')
+const mysql = require('promise-mysql')
+const { dbConfig } = require('confingAll')
 
 let DBpool = ''
 const __getPool = () => {
   if (!DBpool) {
-    DBpool = mysql.createPool(config)
+    DBpool = mysql.createPool(dbConfig)
     return DBpool
   }
   return DBpool
