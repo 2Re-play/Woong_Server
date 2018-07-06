@@ -26,6 +26,7 @@ module.exports = {
         'no-restricted-properties': 'off',
         'no-console': 'off',
         'max-len': 'off',
+        'linebreak-style': 0,
     },
     'parserOptions': {
         'ecmaVersion': 2017,
