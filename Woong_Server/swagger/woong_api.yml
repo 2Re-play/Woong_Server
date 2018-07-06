@@ -1022,8 +1022,8 @@ paths:
             required:
               - userName
             properties:
-              user_name:
-                type: string
+              user_idx:
+                type: integer
                 example: 김감자
               rate_speed:
                 type: integer
