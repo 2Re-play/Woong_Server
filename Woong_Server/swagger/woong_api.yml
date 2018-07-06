@@ -56,10 +56,6 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-        404:
-          description: status code 404
-          schema:
-            $ref: '#/definitions/404_error'
         500:
           description: status code 500
           schema:
@@ -93,10 +89,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-        404:
-          description: status code 404
-          schema:
-            $ref: '#/definitions/404_error'
+
         500:
           description: status code 500
           schema:
@@ -141,10 +134,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-        404:
-          description: status code 404
-          schema:
-            $ref: '#/definitions/404_error'
+
         500:
           description: status code 500
           schema:
@@ -184,10 +174,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-        404:
-          description: status code 404
-          schema:
-            $ref: '#/definitions/404_error'
+
         500:
           description: status code 500
           schema:
@@ -226,10 +213,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-        404:
-          description: status code 404
-          schema:
-            $ref: '#/definitions/404_error'
+
         500:
           description: status code 500
           schema:
@@ -268,17 +252,13 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-        404:
-          description: status code 404
-          schema:
-            $ref: '#/definitions/404_error'
+
         500:
           description: status code 500
           schema:
             $ref: '#/definitions/500_error'              
 #재현
 # 내 주변 마켓 리스트
-paths:
   /market/distance:
     get:
       summary: 내 주변 마켓 리스트 (Jay)
@@ -1091,13 +1071,6 @@ definitions:
       message:
         type: string
         example: Internal Server Error
-    
-
-    type: object
-    properties:
-      message:
-        type: string
-        example: Not Found
 
 # Forbidden      
   403_error:
