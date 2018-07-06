@@ -21,6 +21,8 @@
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",
     "nvm": "0.0.4",
+    "promise-mysql": "^3.3.1",
+    "routes": "^2.1.0",
     "serve-favicon": "^2.5.0",
     "swagger-jsdoc": "^1.9.7",
     "swagger-ui-express": "^3.0.10",

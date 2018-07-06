@@ -1,5 +1,5 @@
 const express = require('express')
-const foodctrl = require('controller/foodTypeController')
+const foodctrl = require('../controller/foodTypeController')
 
 const footType = express.Router()
 
