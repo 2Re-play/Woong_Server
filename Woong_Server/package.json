@@ -19,11 +19,8 @@
     "express": "^4.16.3",
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
-<<<<<<< .merge_file_OMXbbg
     "joi": "^13.4.0",
-=======
     "moment": "^2.22.2",
->>>>>>> .merge_file_ZtF3O5
     "morgan": "~1.9.0",
     "multer": "^1.3.1",
     "multer-s3": "^2.7.0",
