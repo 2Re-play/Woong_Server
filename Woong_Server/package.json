@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "test1": "export NODE_PATH=src || SET \"NODE_PATH=src\"",
+    "test2":"export NODE_ENV=development || SET \"NODE_ENV=development\"",
+    "start:j": "SET \"NODE_PATH=src\" &&  SET \"NODE_ENV=development\" && nodemon ../bin/www",
     "start:dev": "NODE_ENV=development NODE_PATH=src nodemon ../bin/www",
     "start": "node ./bin/www",
     "start:pm2": "yarn status && pm2 start pm2/woong.server.dev.json && pm2 logs woong.server.dev",
