@@ -1,0 +1,305 @@
+swagger: "2.0"
+info:
+  title: 웅감
+  version: "1.0"
+  description: "project woong's server API"
+
+host: localhost:3000
+basePath: /api/v1.0
+schemes:
+  - http
+  - https
+paths:
+  # 카테고리별 식품 리스트
+  /food_type/{feed_type_dix}:
+    get:
+      summary: select Item associate category
+      description: 판매자 마켓의 앨범 가져오기
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - food_type
+      parameters:
+        - in: path
+          name: feed_type_dix
+          type: integer
+          required: true
+          description: select item for food_type
+      responses:
+        200:
+          description: status code 200
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+                description: 성공 메시지
+              album:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    image_date:
+                      type: string
+                      example: 2018년 6월 24일
+                      description: 이미지를 올린 날짜
+                    image_content:
+                      type: string
+                      example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
+                      description: 이미지 url
+                    image_title:
+                      type: string
+                      example: 오늘의 감자 사진
+                      description: 이미지 제목
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        404:
+          description: status code 404
+          schema:
+            $ref: '#/definitions/404_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+  # 상품 검색 
+  /food/search:
+    get:
+      summary: 판매자 마켓 후기 리스트 (Claire)
+      description: 판매자 마켓의 후기 가져오기
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - food
+      parameters:
+        - in : query
+          name : options
+          type : string
+          required : true
+          description: 상품검색에 대한 검색어 입력
+      responses:
+        200:
+          description: status code 200
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+                description: 성공 메시지
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        404:
+          description: status code 404
+          schema:
+            $ref: '#/definitions/404_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+  
+  # 해당상품의 판매마켓리스트 가져오기
+  /food_type/{food_type_idx}/food/{food_idx}/market:
+    get:
+      summary: 이 주의 농부 (Claire)
+      description: 이 주의 농부 
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - food_type
+      parameters:
+        - in: path
+          name: food_type_idx
+          type: integer
+          required: true
+          description: 마켓을 구분하는 마켓 고유의 인덱스
+        - in: path
+          name: food_idx
+          type: integer
+          required: true
+          description: 마켓을 구분하는 마켓 고유의 인덱스
+        - in : query
+          name : options
+          type : string
+          required : true
+          description: 상품검색에 대한 판매 마켓 리스트
+      responses:
+        200:
+          description: status code 200
+          schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: success
+                  description: 성공 메시지
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        404:
+          description: status code 404
+          schema:
+            $ref: '#/definitions/404_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+  
+  # 상품 찜하기 등록
+  /favorite/{food_idx}:
+    post:
+      summary: 즐겨찾기 리스트 (Claire)
+      description: 사용자가 즐겨찾기에 추가한 마켓의 리스트 
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - favorite
+      parameters:
+        - in: path
+          name: food_idx
+          type: integer
+          required: true
+          description: 마켓을 구분하는 마켓 고유의 인덱스
+        - in: header
+          name: user_token
+          type: string
+          required: true
+          description: 유저의 토큰
+      responses:
+        200:
+          description: status code 200
+          schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: success
+                  description: 성공 메시지
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        404:
+          description: status code 404
+          schema:
+            $ref: '#/definitions/404_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'              
+            
+#  상품 찜하기 해제
+    delete:
+      summary: 즐겨찾기 리스트 (Claire)
+      description: 사용자가 즐겨찾기에 추가한 마켓의 리스트 
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - favorite
+      parameters:
+        - in: path
+          name: food_idx
+          type: integer
+          required: true
+          description: 마켓을 구분하는 마켓 고유의 인덱스
+        - in: header
+          name: user_token
+          type: string
+          required: true
+          description: 유저의 토큰
+      responses:
+        200:
+          description: status code 200
+          schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: success
+                  description: 성공 메시지
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        404:
+          description: status code 404
+          schema:
+            $ref: '#/definitions/404_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error' 
+  # 찜하기 리스트
+  /favorite:
+    get:
+      summary: 찜하기 리스트
+      description: 사용자가 즐겨찾기에 추가한 마켓의 리스트 
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - favorite
+      parameters:
+        - in: path
+          name: food_idx
+          type: integer
+          required: true
+          description: 마켓을 구분하는 마켓 고유의 인덱스
+        - in: header
+          name: user_token
+          type: string
+          required: true
+          description: 유저의 토큰
+      responses:
+        200:
+          description: status code 200
+          schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: success
+                  description: 성공 메시지
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        404:
+          description: status code 404
+          schema:
+            $ref: '#/definitions/404_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'              
+  
+# response 공통 값      
+definitions:
+
+# Internal Server Error
+  500_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Internal Server Error
+    
+# Not Found
+  404_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Not Found
+
+# Forbidden      
+  403_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Forbidden
