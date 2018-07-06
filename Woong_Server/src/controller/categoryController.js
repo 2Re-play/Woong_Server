@@ -1,7 +1,7 @@
 const Joi = require('joi')
 const categoryModel = require('models/categoryModel')
 
-const dbConnection = require('../../lib/dbConnection')
+const dbConnection = require('lib/dbConnection')
 
 const getSubCategoryListController = async (req, res) => {
   const { main_id } = req.params

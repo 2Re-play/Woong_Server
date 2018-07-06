@@ -1,5 +1,5 @@
+const dbConnection = require('lib/dbConnection')
 const bookmarkData = require('../models/bookmarkModel')
-const dbConnection = require('../lib/dbConnection')
 
 exports.getBookmark = async (req, res) => {
   const connection = await dbConnection()
