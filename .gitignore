@@ -61,4 +61,6 @@ typings/
 .next
 
 # /configuration
-./config/
+config/
+/config
+./config
