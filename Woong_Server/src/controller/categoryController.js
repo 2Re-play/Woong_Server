@@ -27,7 +27,19 @@ const getSubCategoryListController = async (req, res) => {
   connection.release()
 }
 
+const getItemListController = async (req, res) => {
+  const { main_id, sub_id } = req.params
 
+  let validation = Joi.validate(main_id, Joi.number().required())
+  validation = Joi.validate(sub_id, Joi.number().required())
+
+  if (validation.error) {
+    throw new Error(validation.error)
+  }
+
+  
+}
 module.exports = {
   getSubCategoryListController,
+  getItemListController,
 }
