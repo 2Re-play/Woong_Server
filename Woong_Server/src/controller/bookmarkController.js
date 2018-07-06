@@ -1,7 +1,7 @@
 const dbConnection = require('lib/dbConnection')
 const bookmarkData = require('../models/bookmarkModel')
 
-// 북마크 리스트 가져오기 
+// 1. 북마크 리스트  
 exports.getBookmark = async (req, res) => {
   const connection = await dbConnection()
   let bookmarkResult
@@ -23,7 +23,7 @@ exports.getBookmark = async (req, res) => {
   }
 }
 
-// 북마크 추가
+// 2. 북마크 추가
 exports.addBookmark = async (req, res) => {
   const connection = await dbConnection()
   const { user_token } = req.headers
@@ -49,7 +49,7 @@ exports.addBookmark = async (req, res) => {
 
 }
 
-// 북마크 제거
+// 3. 북마크 제거
 exports.deleteBookmark = async (req,res) => {
   const connection = await dbConnection()
   const { market_id } = req.params

@@ -1,3 +1,4 @@
+// 1. 북마크 리스트
 exports.getBookmark = (connection) => {
   return new Promise((resolve, reject) => {
     const Query = 'SELECT * FROM MARKET_BOOKMARK'
@@ -8,6 +9,7 @@ exports.getBookmark = (connection) => {
   })
 }
 
+// 2. 북마크 등록
 exports.addBookmark = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = 'INSERT INTO WP_MARKET_BOOKMARK(market_id,user_id) VALUES (?,?)'
@@ -18,6 +20,7 @@ exports.addBookmark = (connection, data) => {
   })
 }
 
+// 3. 북마크 제거
 exports.deleteBookmark = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = 'DELETE FROM WP_MARKET_BOOKMARK WHERE market_id=?'
