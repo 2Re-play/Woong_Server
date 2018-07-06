@@ -1,7 +1,7 @@
-const dbConnection = require('lib/dbConnection')
-const modelcart = require('../models/modelcart')
+const cartmodel = require('../models/cartModel')
+const dbConnection = require('../lib/dbConnection')
 
-const InsertCart = async (req, res) => {
+exports.InsertCart = async (req, res) => {
   const connection = await dbConnection()
   const { user_token } = req.headers
   const { item_idx } = req.params
@@ -10,24 +10,17 @@ const InsertCart = async (req, res) => {
     item_idx,
     user_token,
   }
-
-  modelcart.postcart(connection, data, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: 'Internal Server error',
-      })
-      connection.release()
-    } else {
-      res.status(200).send({
-        message: 'Successfully Insert Cart data',
-      })
-      connection.release()
-    }
-  })
- 
-
-}
-
-module.exports = {
-  InsertCart,
+  try {
+    cartmodel.postcart(connection, data)
+    res.status(200).send({
+      message: 'successfully Insert cart data',
+    })
+  } catch (e) {
+    console.log(e)
+    res.status(500).send({
+      message: 'Internal Server error',
+    })
+  } finally {
+    connection.release()
+  }
 }
