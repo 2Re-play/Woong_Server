@@ -5,5 +5,6 @@ const bookmark = express.Router()
 
 bookmark.get('/', bookmarkCtrl.getBookmark)
 bookmark.post('/:market_id', bookmarkCtrl.addBookmark)
+bookmark.delete('/:market_id', bookmarkCtrl.deleteBookmark)
 
 module.exports = bookmark
