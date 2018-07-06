@@ -699,7 +699,7 @@ paths:
           schema:
             $ref: "#/definitions/500_error"  
   /chat/room:
-    post:
+    get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
       produces: [application/json]
@@ -725,7 +725,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
-  /chat/message/{chatting_room_idx}:
+  /chat/message/{chatting_room_id}:
     get:
       summary: chatting list(alex)
       description: sender = me ->자신, 그 외 -> 상대방
@@ -741,7 +741,7 @@ paths:
           required: true
           
         - in: path
-          name: chatting_room_idx
+          name: chatting_room_id
           type: integer
           required: true
       responses:
@@ -772,7 +772,7 @@ paths:
           required: true
           
         - in: path
-          name: chatting_room_idx
+          name: chatting_room_id
           type: integer
           required: true
       responses:
