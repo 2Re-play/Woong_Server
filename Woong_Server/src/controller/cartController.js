@@ -1,5 +1,5 @@
+const dbConnection = require('lib/dbConnection')
 const modelcart = require('../models/modelcart')
-const dbConnection = require('../../lib/dbConnection')
 
 const InsertCart = async (req, res) => {
   const connection = await dbConnection()
@@ -10,7 +10,7 @@ const InsertCart = async (req, res) => {
     item_idx,
     user_token,
   }
-  console.log('1')
+
   modelcart.postcart(connection, data, (err) => {
     if (err) {
       res.status(500).send({
@@ -18,7 +18,6 @@ const InsertCart = async (req, res) => {
       })
       connection.release()
     } else {
-      console.log('2')
       res.status(200).send({
         message: 'Successfully Insert Cart data',
       })

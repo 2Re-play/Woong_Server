@@ -1,5 +1,5 @@
+const dbConnection = require('lib/dbConnection')
 const weeklyFarmerData = require('../models/weeklyFarmerModel')
-const dbConnection = require('../lib/dbConnection')
 
 exports.getWeeklyFarmer = async (req, res) => {
   const connection = await dbConnection()
