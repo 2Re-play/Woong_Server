@@ -8,10 +8,12 @@ exports.getBookmark = (connection) => {
   })
 }
 
-exports.addBookmark = (connection, market_idx, user_idx) => {
+exports.addBookmark = (connection, data) => {
   return new Promise((resolve, reject) => {
-    let market_bookmark_idx
-    const Query = 'INSERT INTO MARKET_BOOKMARK(market_bookmark_idx,market_idx,user_idx) VALUES (?,?)'
-    connection.query((Query, [market_bookmark_idx, market_idx, user_idx]))
+    const Query = 'INSERT INTO WP_MARKET_BOOKMARK(market_id,user_id) VALUES (?,?)'
+    connection.query(Query, [data.market_id, data.user_token], (err) => {
+      err && reject(err)
+      resolve({})
+    })
   })
 }
