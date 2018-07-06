@@ -1,9 +1,9 @@
 const express = require('express')
-const food_type = require('./food_type')
+const cart = require('./cart')
 
 const router = express.Router()
 
 /* GET home page. */
-router.use('/food_type', food_type)
+router.use('/cart', cart)
 
 module.exports = router
