@@ -10,18 +10,18 @@ schemes:
   - http
   - https
 paths:
-  # 카테고리별 식품 리스트
-  /food_type/{feed_type_dix}:
+# 카테고리별 식품 리스트
+  category/main/{category_id}:
     get:
       summary: select Item associate category
-      description: 판매자 마켓의 앨범 가져오기
+      description: 카테고리별로 식품 리스트를 가져옵니다.
       consumes:
         - application/x-www-form-urlencoded
       tags:
-        - food_type
+        - category
       parameters:
         - in: path
-          name: feed_type_dix
+          name: category_id
           type: integer
           required: true
           description: select item for food_type
@@ -29,29 +29,15 @@ paths:
         200:
           description: status code 200
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: success
-                description: 성공 메시지
-              album:
-                type: array
-                items:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: success
+                data:
                   type: object
-                  properties:
-                    image_date:
-                      type: string
-                      example: 2018년 6월 24일
-                      description: 이미지를 올린 날짜
-                    image_content:
-                      type: string
-                      example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
-                      description: 이미지 url
-                    image_title:
-                      type: string
-                      example: 오늘의 감자 사진
-                      description: 이미지 제목
+                    schema:
+                      $ref: '#/definitions/sub_list'
         403:
           description: status code 403
           schema:
@@ -64,11 +50,61 @@ paths:
           description: status code 500
           schema:
             $ref: '#/definitions/500_error'
-  # 상품 검색 
+# 해당상품의 판매마켓리스트 가져오기
+  category/main/{main_id}/sub/{sub_id}:
+    get:
+      summary: 마켓별 상품 리스트
+      description: 상품 리스트
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - category
+      parameters:
+        - in: path
+          name: main_id
+          type: integer
+          required: true
+          description: 마켓을 구분하는 마켓 고유의 인덱스
+        - in: path
+          name: sub_id
+          type: integer
+          required: true
+          description: 마켓을 구분하는 마켓 고유의 인덱스
+        - in : query
+          name : options
+          type : string
+          required : true
+          description: 상품검색에 대한 판매 마켓 리스트
+      responses:
+        200:
+          description: status code 200
+          schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: success
+                data:
+                  type: object
+                  scheme:
+                    $ref: '#/definitions/item_info'
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        404:
+          description: status code 404
+          schema:
+            $ref: '#/definitions/404_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+# 상품 검색 
   /food/search:
     get:
-      summary: 판매자 마켓 후기 리스트 (Claire)
-      description: 판매자 마켓의 후기 가져오기
+      summary: 상품 검색하기
+      description: 판매자들이 등록한 상품 검색
       consumes:
         - application/x-www-form-urlencoded
       tags:
@@ -89,6 +125,11 @@ paths:
                 type: string
                 example: success
                 description: 성공 메시지
+              data:
+                type: object
+                properties:
+                  sheme:
+                    $ref: '#/definitions/item_info'
         403:
           description: status code 403
           schema:
@@ -101,70 +142,21 @@ paths:
           description: status code 500
           schema:
             $ref: '#/definitions/500_error'
-  
-  # 해당상품의 판매마켓리스트 가져오기
-  /food_type/{food_type_idx}/food/{food_idx}/market:
-    get:
-      summary: 이 주의 농부 (Claire)
-      description: 이 주의 농부 
-      consumes:
-        - application/x-www-form-urlencoded
-      tags:
-        - food_type
-      parameters:
-        - in: path
-          name: food_type_idx
-          type: integer
-          required: true
-          description: 마켓을 구분하는 마켓 고유의 인덱스
-        - in: path
-          name: food_idx
-          type: integer
-          required: true
-          description: 마켓을 구분하는 마켓 고유의 인덱스
-        - in : query
-          name : options
-          type : string
-          required : true
-          description: 상품검색에 대한 판매 마켓 리스트
-      responses:
-        200:
-          description: status code 200
-          schema:
-              type: object
-              properties:
-                message:
-                  type: string
-                  example: success
-                  description: 성공 메시지
-        403:
-          description: status code 403
-          schema:
-            $ref: '#/definitions/403_error'
-        404:
-          description: status code 404
-          schema:
-            $ref: '#/definitions/404_error'
-        500:
-          description: status code 500
-          schema:
-            $ref: '#/definitions/500_error'
-  
-  # 상품 찜하기 등록
-  /favorite/{food_idx}:
+# 상품 찜하기 등록
+  /favorite/{item_id}:
     post:
-      summary: 즐겨찾기 리스트 (Claire)
-      description: 사용자가 즐겨찾기에 추가한 마켓의 리스트 
+      summary: 상품 찜하기
+      description: 사용자가 관심있는 상품 찜하기
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - favorite
       parameters:
         - in: path
-          name: food_idx
+          name: item_id
           type: integer
           required: true
-          description: 마켓을 구분하는 마켓 고유의 인덱스
+          description: 상품의 아이디
         - in: header
           name: user_token
           type: string
@@ -192,21 +184,20 @@ paths:
           description: status code 500
           schema:
             $ref: '#/definitions/500_error'              
-            
-#  상품 찜하기 해제
+# 상품 찜하기 해제
     delete:
-      summary: 즐겨찾기 리스트 (Claire)
-      description: 사용자가 즐겨찾기에 추가한 마켓의 리스트 
+      summary: 찜한 상품 해제
+      description: 사용자가 등록한 찜한 상품 해제
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - favorite
       parameters:
         - in: path
-          name: food_idx
+          name: item_id
           type: integer
           required: true
-          description: 마켓을 구분하는 마켓 고유의 인덱스
+          description: 상품의 아이디
         - in: header
           name: user_token
           type: string
@@ -234,21 +225,16 @@ paths:
           description: status code 500
           schema:
             $ref: '#/definitions/500_error' 
-  # 찜하기 리스트
+# 찜하기 리스트
   /favorite:
     get:
       summary: 찜하기 리스트
-      description: 사용자가 즐겨찾기에 추가한 마켓의 리스트 
+      description: 내가 찜한 상품의 리스트
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - favorite
       parameters:
-        - in: path
-          name: food_idx
-          type: integer
-          required: true
-          description: 마켓을 구분하는 마켓 고유의 인덱스
         - in: header
           name: user_token
           type: string
@@ -264,6 +250,10 @@ paths:
                   type: string
                   example: success
                   description: 성공 메시지
+                data:
+                  type: object
+                  scheme:
+                    $ref: '#/definitions/item_info'
         403:
           description: status code 403
           schema:
@@ -276,7 +266,7 @@ paths:
           description: status code 500
           schema:
             $ref: '#/definitions/500_error'              
-  
+
 # response 공통 값      
 definitions:
 
@@ -303,3 +293,54 @@ definitions:
       message:
         type: string
         example: Forbidden
+
+# SUB_LIST
+  sub_list:
+    type: object
+    properties:
+      sub_id:
+        type: integer
+        example: 1
+      sub_name:
+        type: string
+        example: 바나나
+      sub_image:
+        type: string
+        example: https://s3_bucket
+# ITEM_INFOMATION
+  item_info:
+    type: object
+    properties:
+      item_id:
+        type: integer
+        example: 1
+      market_id:
+        type: integer
+        example: 1
+      main_category_id:
+        type: integer
+        example: 1
+      sub_category_id:
+        type: integer
+        example: 1
+      market_name:
+        type: string
+        example: 동수네감자집
+      item_name:
+        type: string
+        example: 왕왕큰감자
+      unit:
+        type: string
+        example: 1kg
+      price:
+        type: integer
+        example: 3000
+      quick:
+        type: boolean
+        example: true
+      market_free:
+        type: boolean
+        example: ture
+      favorite_flag:
+        type: boolean
+        example: true
