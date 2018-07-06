@@ -234,10 +234,10 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_idx
+          name: user_token
           type: integer
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 token
       responses:
         200:
           description: status code 200
@@ -315,7 +315,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-  /market/:market_idx/food/{food_idx}:
+  /market/{market_idx}/food/{item_idx}:
     get:
       summary: 판매자 특정물품 정보 (Jay)
       #produces: application/json
@@ -330,7 +330,7 @@ paths:
           required: true
           description: 마켓의 인덱스
         - in: path
-          name: food_idx
+          name: item_idx
           type: integer
           required: true
           description: 물품의 인덱스          
@@ -348,7 +348,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #상품 장바구니 등록,해제
-  /cart/{food_idx}:
+  /cart/{item_idx}:
     post:
       summary: 상품 장바구니 등록 (Jay)
       #produces: application/json
@@ -359,12 +359,12 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_idx
-          type: integer
+          name: user_token
+          type: string
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 token
         - in: path
-          name: food_idx
+          name: item_idx
           type: integer
           required: true
           description: 상품의 인덱스 
@@ -389,12 +389,12 @@ paths:
         - cart
       parameters:
         - in: header
-          name: user_idx
+          name: user_token
           type: integer
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 token
         - in: path
-          name: food_idx
+          name: item_idx
           type: integer
           required: true
           description: 상품의 인덱스 
@@ -421,7 +421,7 @@ paths:
         - cart
       parameters:
         - in: header
-          name: user_idx
+          name: user_token
           type: integer
           required: true
           description: 사용자의 인덱스 
@@ -1250,14 +1250,14 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully Insert bookmark data
+        example: successfully Insert cart data
 #상품 장바구니 해제        
   ItemCart_delete:
     type: object
     properties:
       message:
         type: string
-        example: successfully Delete bookmark data
+        example: successfully Delete cart data
 #상품 장바구니 리스트 가져오기
   ItemCart_list:
     type: object

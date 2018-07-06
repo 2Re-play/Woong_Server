@@ -9,8 +9,7 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerJSDoc = require('swagger-jsdoc')
 
 // const options = require('./swagger/swaggerSpec.js')
-const index = require('./src/routes/index.js') // 재현수정
-
+const index = require('./src/routes') // 재현수정
 
 const swaggerDefinition = {
   info: { // API informations (required)
