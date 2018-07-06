@@ -1,12 +1,35 @@
 const express = require('express')
+
+const app = express()
 const path = require('path')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+const swaggerUi = require('swagger-ui-express')
+const swaggerJSDoc = require('swagger-jsdoc')
 
-const index = require('./controller/index')
+// const options = require('./swagger/swaggerSpec.js')
+const index = require('routes')
 
-const app = express()
+const swaggerDefinition = {
+  info: { // API informations (required)
+    title: 'Hello World', // Title (required)
+    version: '1.0.0', // Version (required)
+    description: 'A sample API', // Description (optional)
+  },
+  host: 'localhost:3000', // Host (optional)
+  basePath: '/', // Base path (optional)
+}
+
+const options = {
+  // Import swaggerDefinitions
+  swaggerDefinition,
+  // Path to the API docs
+  apis: ['./swagger/woong_api.yml'],
+}
+
+const swaggerSpec = swaggerJSDoc(options)
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -20,7 +43,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', index)
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found')

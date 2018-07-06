@@ -1,11 +1,9 @@
 const express = require('express')
+const food_type = require('./food_type')
 
 const router = express.Router()
 
 /* GET home page. */
-router.get('/hi', (req, res) => {
+router.use('/food_type', food_type)
 
-  // res.render('index', { title: 'Express' });
-  res.send('hi')
-})
 module.exports = router
