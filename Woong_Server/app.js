@@ -10,7 +10,7 @@ const swaggerJSDoc = require('swagger-jsdoc')
 
 // const options = require('./swagger/swaggerSpec.js')
 
-const index = require('./src/routes')
+const index = require('./src/routes/index')
 
 const swaggerDefinition = {
   info: { // API informations (required)

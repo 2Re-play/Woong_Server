@@ -252,7 +252,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #판매자 마켓 소개
-  /market/info/{market_idx}:
+  /market/info/{market_id}:
     get:
       summary: 판매자 마켓 소개 (Jay)
       #produces: application/json
@@ -262,7 +262,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 인덱스
@@ -280,7 +280,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #판매자 마켓 물품 리스트<이름순,인기순>
-  /market/{market_idx}:
+  /market/{market_id}:
     get:
       summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay)
       #produces: application/json
@@ -290,7 +290,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 인덱스
@@ -315,7 +315,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-  /market/{market_idx}/food/{item_idx}:
+  /market/{market_id}/food/{item_id}:
     get:
       summary: 판매자 특정물품 정보 (Jay)
       #produces: application/json
@@ -325,12 +325,12 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 인덱스
         - in: path
-          name: item_idx
+          name: item_id
           type: integer
           required: true
           description: 물품의 인덱스          
@@ -348,7 +348,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #상품 장바구니 등록,해제
-  /cart/{item_idx}:
+  /cart/{item_id}:
     post:
       summary: 상품 장바구니 등록 (Jay)
       #produces: application/json
@@ -364,7 +364,7 @@ paths:
           required: true
           description: 사용자의 token
         - in: path
-          name: item_idx
+          name: item_id
           type: integer
           required: true
           description: 상품의 인덱스 
@@ -394,7 +394,7 @@ paths:
           required: true
           description: 사용자의 token
         - in: path
-          name: item_idx
+          name: item_id
           type: integer
           required: true
           description: 상품의 인덱스 
@@ -1123,7 +1123,7 @@ definitions:
               type: string
               example: s3주소/1529150684832.jpeg
               description: 마켓 대표이미
-#판매자 마켓 소개              
+#판매자 마켓 소개
   Market_introduce:
     type: object
     properties:
@@ -1131,20 +1131,24 @@ definitions:
         type: string
         example: successfully get market data
       data:
-        type: array
-        minItems: 1
-        maxItems: 100
-        items:
           type: object
           properties:
             market_name:
               type: string
               example: 현듀마켓
               description: 마켓이름
-            youandi:
-              type: integer
-              example: 10
-              description: 마켓과 나와의 거리
+            market_info:
+              type: string
+              example : 안녕하세요. 현듀마켓 입니다. 등등
+              description: 마켓 소개글
+            titleimage:
+              type: string
+              example: s3주소/1529150684832.jpeg
+              description: 마켓 대표이미지
+            farmer_image:
+              type: string
+              example: s3주소/1529150684832.jpeg
+              description: 농부 프로필사진
             tag_name:
                   type: string
                   example: 유기농
@@ -1152,19 +1156,11 @@ definitions:
             bookmark_count:
                 type: integer
                 example: 70
-                description: 즐겨찾기 카운트 수
-            market_info:
-              type: string
-              example : 안녕하세요. 현듀마켓 입니다. 등등
-              description: 마켓 소개글
-            market_titleimage:
-              type: string
-              example: s3주소/1529150684832.jpeg
-              description: 마켓 대표이미지
-            market_farmer_image:
-              type: string
-              example: s3주소/1529150684832.jpeg
-              description: 농부 프로필사진
+                description: 즐겨찾기 카운트 수              
+            youandi:
+              type: integer
+              example: 10
+              description: 마켓과 나와의 거리              
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object
