@@ -211,7 +211,17 @@ paths:
         200:
           description: status code 200
           schema:
-            $ref: '#/definitions/item_info'
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+                description: 성공 메시지
+              data:
+                type: object
+                properties:
+                  sheme:
+                    $ref: '#/definitions/item_info'
         403:
           description: status code 403
           schema:
@@ -1074,6 +1084,9 @@ definitions:
       market_name:
         type: string
         example: 동수네감자집
+      item_image:
+        type: string
+        example: https://s3.bucket
       item_name:
         type: string
         example: 왕왕큰감자
