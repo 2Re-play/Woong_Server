@@ -252,7 +252,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #판매자 마켓 소개
-  /market/info/{market_idx}:
+  /market/info/{market_id}:
     get:
       summary: 판매자 마켓 소개 (Jay)
       #produces: application/json
@@ -280,7 +280,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #판매자 마켓 물품 리스트<이름순,인기순>
-  /market/{market_idx}:
+  /market/{market_id}:
     get:
       summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay)
       #produces: application/json
@@ -790,7 +790,7 @@ paths:
             $ref: "#/definitions/500_error"
 #진영
 # 판매자 마켓 앨범 (클레어)
-  /market/{market_idx}/album:
+  /market/{market_id}/album:
     get:
       summary: 판매자 마켓 앨범 (Claire)
       description: 판매자 마켓의 앨범 가져오기
@@ -800,7 +800,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓을 구분하는 마켓 고유의 인덱스
@@ -818,7 +818,7 @@ paths:
           schema:
             $ref: '#/definitions/500_error'
   # 판매자 마켓 후기 리스트 (클레어)       
-  /market/{market_idx}/review:
+  /market/{market_id}/review:
     get:
       summary: 판매자 마켓 후기 리스트 (Claire)
       description: 판매자 마켓의 후기 가져오기
@@ -828,7 +828,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓을 구분하는 마켓 고유의 인덱스
@@ -914,7 +914,7 @@ paths:
           required: true
           description: 유저의 토큰
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 고유 인덱스
@@ -945,7 +945,7 @@ paths:
           required: true
           description: 유저의 토큰
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 고유 인덱스
@@ -974,7 +974,7 @@ paths:
         - review
       parameters: 
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 고유 인덱스
@@ -1416,8 +1416,8 @@ definitions:
             chatting_sendDayTime:
               type: string
               example: "월요일, 10:40 am"
-#진영
-  market_album:
+#진영 (C)
+    market_album:
     type: object
     properties:
               message:
@@ -1429,45 +1429,54 @@ definitions:
                 items:
                   type: object
                   properties:
-                    image_date:
-                      type: string
-                      example: 2018년 6월 24일
-                      description: 이미지를 올린 날짜
-                    image_content:
-                      type: string
-                      example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
-                      description: 이미지 url
-                    image_title:
+                    album_id:
+                      type: integer
+                      example: 1
+                      description: 앨범 고유 아이디
+                    market_id:
+                      type: integer
+                      example: 3
+                      description: 마켓 고유의 아이디
+                    album_title:
                       type: string
                       example: 오늘의 감자 사진
                       description: 이미지 제목
-  market_review_list:
+                    album_url:
+                      type: string
+                      example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
+                      description: 앨범 사진의 url
+                    cr_dt: 
+                      type: string
+                      example: 2018년 7월 3일
+                      description: 만들어진 날짜
+                    cr_user:
+                      type: integer
+                      example: 1
+                      description: 만든 사람의 고유 아이디
+                      
+    market_review_list:
     type: object
     properties:
               message:
                 type: string
                 example: success
                 description: 성공 메시지
-              data:
+              rate:
                 type: object
                 properties:
-                  market_rate:
-                    type: integer
-                    example: 4
-                    description: 마켓의 총 평균 별점
-                  market_rate_speed:
+                  rate_speed:
                     type: integer
                     example: 3
                     description: 배달 속도 평균 별점
-                  market_rate_taste:
+                  rate_taste:
                     type: integer
                     example: 4
                     description: 맛 평균 별점
-                  market_rate_fresh:
+                  rate_fresh:
                     type: integer
                     example: 3
                     description: 신선도 평균 별점
-                  market_rate_kindness:
+                  rate_kindness:
                     type: integer
                     example: 4
                     description: 친절도 평균 별점
@@ -1485,10 +1494,10 @@ definitions:
                       items:
                          type: object
                          properties:
-                          user_name:
+                          user_id:
                             type: string
                             example: 김감자
-                          review_content:
+                          content:
                             type: string
                             example: JMT 존맛탱 그자체
   weekly_farmer:

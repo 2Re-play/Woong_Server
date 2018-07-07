@@ -1,7 +1,7 @@
 // 1. 북마크 리스트
 exports.getBookmark = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = 'select market_name,title_image from WP_MARKET where market_id in (select market_id from WP_MARKET_BOOKMARK where user_id=?)'
+    const Query = 'select market_id,market_name,title_image from WP_MARKET where market_id in (select market_id from WP_MARKET_BOOKMARK where user_id=?)'
     connection.query(Query, [data.user_id], (err, result) => {
       err && reject(err)
       console.log([data.user_id])

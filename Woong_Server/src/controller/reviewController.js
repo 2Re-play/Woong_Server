@@ -1,7 +1,39 @@
 const dbConnection = require('lib/dbConnection')
 const reviewData = require('../models/reviewModel')
 
+// 1. 후기 (리뷰) 쓰기
+// exports.postReview = async (req, res) => {
 
-exports.postReview = async (req, res) => {
+// }
 
+// 2. 후기 (리뷰) 가져오기
+exports.getReview = async (req, res) => {
+  const connection = await dbConnection()
+  let reviewRateResult // 마켓의 후기의 별점
+  let reviewImagesResult // 후기 이미지파일
+  let reviewContentResult // 사용자별 후기내용
+  const { market_id } = req.params
+  let data = {}
+  data = {
+    market_id,
+  }
+  try {
+    [reviewRateResult] = await reviewData.getReviewRate(connection, data) 
+    reviewImagesResult = await reviewData.getReviewImages(connection, data)
+    reviewContentResult = await reviewData.getReviewContent(connection, data)
+    
+    res.status(200).send({
+      message: 'success',
+      rate: reviewRateResult,
+      images: reviewImagesResult,
+      reviews: reviewContentResult,
+    })
+  } catch (e) {
+    console.log(e)
+    res.status(500).send({
+      message: 'Interner Server Error',
+    })
+  } finally {
+    connection.release()
+  }
 }

@@ -5,5 +5,5 @@ exports.getWeeklyFarmer = (connection) => {
       err && reject(err)
       resolve(data)
     })
-  })
+  })  
 }
