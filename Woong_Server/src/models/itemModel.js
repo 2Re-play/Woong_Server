@@ -1,22 +1,4 @@
-exports.selectSubListByMain = (connection, main_id) => {
-  return new Promise((resolve, reject) => {
-    const Query = `
-    SELECT
-      *
-    FROM
-      WP_CATEGORY_SUB
-    WHERE
-      main_id = ?
-    `
-    connection.query(Query, [main_id], (err, data) => {
-      err && reject(new Error(err))
-      resolve(data)
-    })
-  })
-}
-
-exports.selectItemByMarket = (connection, main_id, sub_id) => {
-  console.log('test', main_id, sub_id)
+exports.selectItemByKeyword = (connection, keyword) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
@@ -29,10 +11,6 @@ exports.selectItemByMarket = (connection, main_id, sub_id) => {
     INNER JOIN
       WP_ITEM_IMAGE ii ON ii.item_id = i.item_id
     INNER JOIN
-      WP_CATEGORY_MAIN cm ON i.main_id = cm.main_id
-    INNER JOIN
-      WP_CATEGORY_SUB cs ON i.sub_id = cs.sub_id
-    INNER JOIN
       WP_MARKET m ON i.market_id = m.market_id
     LEFT JOIN (
         SELECT
@@ -42,9 +20,9 @@ exports.selectItemByMarket = (connection, main_id, sub_id) => {
         WHERE wif.user_id = 1
       ) as S ON i.item_id = S.item_id
     WHERE
-      i.main_id = ? AND i.sub_id = ?
+      i.item_name like '%${keyword}%'
     `
-    connection.query(Query, [main_id, sub_id], (err, data) => {
+    connection.query(Query, (err, data) => {
       err && reject(new Error(err))
       resolve(data)
     })
