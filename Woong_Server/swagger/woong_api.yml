@@ -11,7 +11,7 @@ schemes:
   - https
 paths:
 # 카테고리별 식품 리스트
-  category/main/{main_id}:
+  /category/main/{main_id}:
     get:
       summary: 메인 카테고리에 속한 데이터
       description: 카테고리별로 식품 리스트를 가져옵니다.
@@ -39,7 +39,7 @@ paths:
           schema:
             $ref: '#/definitions/500_error'
 # 해당상품의 판매마켓리스트 가져오기
-  category/main/{main_id}/sub/{sub_id}:
+  /category/main/{main_id}/sub/{sub_id}:
     get:
       summary: 마켓별 상품 리스트
       description: 상품 리스트
@@ -59,7 +59,7 @@ paths:
           required: true
           description: 마켓을 구분하는 마켓 고유의 인덱스
         - in : query
-          name : options
+          name : keyword
           type : string
           required : false
           description: 상품검색에 대한 판매 마켓 리스트
@@ -77,17 +77,17 @@ paths:
           schema:
             $ref: '#/definitions/500_error'
 # 상품 검색 
-  /food/search:
+  /item/search:
     get:
       summary: 상품 검색하기
       description: 판매자들이 등록한 상품 검색
       consumes:
         - application/x-www-form-urlencoded
       tags:
-        - food
+        - item_food
       parameters:
         - in : query
-          name : options
+          name : keyword
           type : string
           required : true
           description: 상품검색에 대한 검색어 입력
@@ -252,7 +252,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #판매자 마켓 소개
-  /market/info/{market_idx}:
+  /market/info/{market_id}:
     get:
       summary: 판매자 마켓 소개 (Jay)
       #produces: application/json
@@ -262,7 +262,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 인덱스
@@ -280,7 +280,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #판매자 마켓 물품 리스트<이름순,인기순>
-  /market/{market_idx}:
+  /market/{market_id}:
     get:
       summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay)
       #produces: application/json
@@ -290,7 +290,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 인덱스
@@ -315,7 +315,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-  /market/{market_idx}/food/{item_idx}:
+  /market/{market_id}/food/{item_id}:
     get:
       summary: 판매자 특정물품 정보 (Jay)
       #produces: application/json
@@ -325,12 +325,12 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 인덱스
         - in: path
-          name: item_idx
+          name: item_id
           type: integer
           required: true
           description: 물품의 인덱스          
@@ -348,7 +348,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #상품 장바구니 등록,해제
-  /cart/{item_idx}:
+  /cart/{item_id}:
     post:
       summary: 상품 장바구니 등록 (Jay)
       #produces: application/json
@@ -364,7 +364,7 @@ paths:
           required: true
           description: 사용자의 token
         - in: path
-          name: item_idx
+          name: item_id
           type: integer
           required: true
           description: 상품의 인덱스 
@@ -394,7 +394,7 @@ paths:
           required: true
           description: 사용자의 token
         - in: path
-          name: item_idx
+          name: item_id
           type: integer
           required: true
           description: 상품의 인덱스 
@@ -725,7 +725,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
-  /chat/message/{chatting_room_idx}:
+  /chat/message/{chatting_room_id}:
     get:
       summary: chatting list(alex)
       description: sender = me ->자신, 그 외 -> 상대방
@@ -739,9 +739,8 @@ paths:
           name: user_token
           type: string
           required: true
-          
         - in: path
-          name: chatting_room_idx
+          name: chatting_room_id
           type: integer
           required: true
       responses:
@@ -772,7 +771,7 @@ paths:
           required: true
           
         - in: path
-          name: chatting_room_idx
+          name: chatting_room_id
           type: integer
           required: true
       responses:
@@ -790,7 +789,7 @@ paths:
             $ref: "#/definitions/500_error"
 #진영
 # 판매자 마켓 앨범 (클레어)
-  /market/{market_idx}/album:
+  /market/{market_id}/album:
     get:
       summary: 판매자 마켓 앨범 (Claire)
       description: 판매자 마켓의 앨범 가져오기
@@ -800,7 +799,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓을 구분하는 마켓 고유의 인덱스
@@ -818,7 +817,7 @@ paths:
           schema:
             $ref: '#/definitions/500_error'
   # 판매자 마켓 후기 리스트 (클레어)       
-  /market/{market_idx}/review:
+  /market/{market_id}/review:
     get:
       summary: 판매자 마켓 후기 리스트 (Claire)
       description: 판매자 마켓의 후기 가져오기
@@ -828,7 +827,7 @@ paths:
         - market
       parameters:
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓을 구분하는 마켓 고유의 인덱스
@@ -899,7 +898,7 @@ paths:
           schema:
             $ref: '#/definitions/500_error'              
   # 즐겨찾기 등록/해제 (POST/DELETE) (클레어)
-  /bookmark/{market_idx}:
+  /bookmark/{market_id}:
     post:
       summary: 즐겨찾기 등록 (Claire)
       description: 사용자가 즐겨찾기에 마켓 등록 
@@ -914,7 +913,7 @@ paths:
           required: true
           description: 유저의 토큰
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 고유 인덱스
@@ -945,7 +944,7 @@ paths:
           required: true
           description: 유저의 토큰
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 고유 인덱스
@@ -964,7 +963,7 @@ paths:
           schema:
             $ref: '#/definitions/500_error'        
   # 마켓 후기 등록 (클레어)       
-  /review/{market_idx}:
+  /review/{market_id}:
     post:
       summary: 판매자 마켓 후기 등록 (Claire)
       description: 판매자의 마켓에 후기를 등록
@@ -974,7 +973,7 @@ paths:
         - review
       parameters: 
         - in: path
-          name: market_idx
+          name: market_id
           type: integer
           required: true
           description: 마켓의 고유 인덱스
@@ -986,7 +985,7 @@ paths:
             required:
               - userName
             properties:
-              user_idx:
+              user_id:
                 type: integer
                 example: 김감자
               rate_speed:
@@ -1066,10 +1065,10 @@ definitions:
       market_id:
         type: integer
         example: 1
-      main_category_id:
+      main_id:
         type: integer
         example: 1
-      sub_category_id:
+      sub_id:
         type: integer
         example: 1
       market_name:
@@ -1078,16 +1077,16 @@ definitions:
       item_name:
         type: string
         example: 왕왕큰감자
-      unit:
+      item_unit:
         type: string
         example: 1kg
-      price:
+      item_price:
         type: integer
         example: 3000
       quick:
         type: boolean
         example: true
-      market_free:
+      delivery:
         type: boolean
         example: ture
       favorite_flag:
@@ -1191,7 +1190,7 @@ definitions:
                 type: integer
                 example: 1
                 description: 1이면 당일배송 0이면 당일배송 x
-            market_free:
+            delivery:
                 type: integer
                 example: 1
                 description: 1이면 무료배송 0이면 무료배송 x
@@ -1542,7 +1541,7 @@ definitions:
                       type: string
                       example: image_url...
                       description: 레시피 제료 3
-                    market_idx:
+                    market_id:
                       type: integer
                       example: 3
                       description: 마켓 고유 인덱스
@@ -1558,11 +1557,11 @@ definitions:
                   items:
                      type: object
                      properties:
-                      bookmark_idx:
+                      bookmark_id:
                         type: integer
                         example: 1
                         description: 북마크 고유 인덱스
-                      market_idx:
+                      market_id:
                         type: integer
                         example: 1
                         description: 마켓 고유 인덱스

@@ -37,8 +37,22 @@ const getItemListController = async (req, res) => {
     throw new Error(validation.error)
   }
 
-  
+  const connection = await dbConnection()
+  try {
+    const item_info = await categoryModel.selectItemByMarket(connection, main_id, sub_id)
+    console.log(item_info)
+    const data = {
+      item_info,
+    }
+    res.status(200)
+    res.send({ data })
+  } catch (e) {
+    res.status(500)
+    res.send(e)
+  }
+  connection.release()
 }
+
 module.exports = {
   getSubCategoryListController,
   getItemListController,
