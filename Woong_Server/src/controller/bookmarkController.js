@@ -5,9 +5,13 @@ const bookmarkData = require('../models/bookmarkModel')
 exports.getBookmark = async (req, res) => {
   const connection = await dbConnection()
   let bookmarkResult
-  const { user_token } = req.headers // 토큰
+  const { user_id } = req.headers // 토큰
+  let data = {}
+  data = {
+    user_id,
+  }
   try {
-    bookmarkResult = await bookmarkData.getBookmark(connection)
+    bookmarkResult = await bookmarkData.getBookmark(connection, data)
 
     res.status(200).send({
       message: 'success',
@@ -50,7 +54,7 @@ exports.addBookmark = async (req, res) => {
 }
 
 // 3. 북마크 제거
-exports.deleteBookmark = async (req,res) => {
+exports.deleteBookmark = async (req, res) => {
   const connection = await dbConnection()
   const { market_id } = req.params
   let data = {}
