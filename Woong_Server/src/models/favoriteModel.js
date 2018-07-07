@@ -25,7 +25,7 @@ exports.selectFavoriteByUser = (connection, user_id) => {
       wif.user_id = 1
     `
     connection.query(Query, [user_id], (err, data) => {
-      err && reject(err)
+      err && reject(new Error(err))
       resolve(data)
     })
   })
@@ -39,7 +39,7 @@ exports.insertFavoriteByUser = (connection, user_id, item_id) => {
     VALUES (?, ?, ?, ?)
     `
     connection.query(Query, [item_id, user_id, moment().format('YYYY-MM-DD hh:mm:ss'), user_id], (err, data) => {
-      err && reject(err)
+      err && reject(new Error(err))
       resolve(data)
     })
   })
@@ -54,7 +54,7 @@ exports.deleteFavoriteByUser = (connection, user_id, item_id) => {
       user_id = ? AND item_id = ?
     `
     connection.query(Query, [user_id, item_id], (err, data) => {
-      err && reject(err)
+      err && reject(new Error(err))
       resolve(data)
     })
   })
@@ -71,7 +71,7 @@ exports.selectCountByFavorite = (connection, user_id, item_id) => {
       user_id = ? AND item_id = ?
     `
     connection.query(Query, [user_id, item_id], (err, data) => {
-      err && reject(err)
+      err && reject(new Error(err))
       resolve(data)
     })
   })

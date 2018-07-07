@@ -9,7 +9,7 @@ exports.selectSubListByMain = (connection, main_id) => {
       main_id = ?
     `
     connection.query(Query, [main_id], (err, data) => {
-      err && reject(err)
+      err && reject(new Error(err))
       resolve(data)
     })
   })
@@ -43,7 +43,7 @@ exports.selectItemByMarket = (connection, main_id, sub_id) => {
       i.main_id = ? AND i.sub_id = ?
     `
     connection.query(Query, [main_id, sub_id], (err, data) => {
-      err && reject(err)
+      err && reject(new Error(err))
       resolve(data)
     })
   })

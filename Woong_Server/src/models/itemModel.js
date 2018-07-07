@@ -21,7 +21,7 @@ exports.selectItemByKeyword = (connection, keyword) => {
       i.item_name like '%${keyword}%'
     `
     connection.query(Query, (err, data) => {
-      err && reject(err)
+      err && reject(new Error(err))
       resolve(data)
     })
   })

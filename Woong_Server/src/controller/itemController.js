@@ -1,6 +1,6 @@
 const Joi = require('joi')
 const itemModel = require('models/itemModel')
-
+const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
 
 const getItemSearchController = async (req, res) => {
@@ -9,7 +9,7 @@ const getItemSearchController = async (req, res) => {
   const validation = Joi.validate(keyword, Joi.string().regex(/^[ㄱ-ㅎ|가-힣\*]+$/).required())
   
   if (validation.error) {
-    throw new Error(validation.error)
+    respondOnError(validation.error, res, 422)
   }
 
   const connection = await dbConnection()
@@ -18,12 +18,10 @@ const getItemSearchController = async (req, res) => {
     const data = {
       item_info,
     }
-    res.status(200)
-    res.send({ data })
+    respondJson('get favorite success', data, res, 200)
   } catch (e) {
     console.log(e)
-    res.status(500)
-    res.send(e)
+    respondOnError(e.message, res, 500)
   }
   connection.release()
 }

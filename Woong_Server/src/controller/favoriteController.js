@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const favoriteModel = require('models/favoriteModel')
 
+const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
 
 const postFavoriteItemContorller = async (req, res) => {
@@ -9,7 +10,7 @@ const postFavoriteItemContorller = async (req, res) => {
   const validation = Joi.validate(item_id, Joi.number().required())
   
   if (validation.error) {
-    throw new Error(validation.error)
+    respondOnError(validation.error, res, 422)
   }
 
   const connection = await dbConnection()
@@ -17,17 +18,13 @@ const postFavoriteItemContorller = async (req, res) => {
   try {
     let favorite = [];
     [favorite] = await favoriteModel.selectCountByFavorite(connection, user_id, item_id)
-    if (favorite.count === 0) await favoriteModel.insertFavoriteByUser(connection, 1, 1)
+    if (favorite.count === 0) await favoriteModel.insertFavoriteByUser(connection, user_id, item_id)
     else throw new Error('DUPLICATE ITEM FAVORITE')
-    const data = {
-      result: 'ok',
-    }
-    res.status(200)
-    res.send({ data })
+    
+    respondJson('post favorite succes', {}, res, 200)
   } catch (e) {
     console.log(e)
-    res.status(500)
-    res.send(e.message)
+    respondOnError(e.message, res, 500)
   }
   connection.release()
 }
@@ -47,16 +44,12 @@ const deleteFavoriteItemContorller = async (req, res) => {
     let favorite = [];
     [favorite] = await favoriteModel.selectCountByFavorite(connection, user_id, item_id)
     if (favorite.count > 0) await favoriteModel.deleteFavoriteByUser(connection, user_id, item_id)
+    else throw new Error('Doesn\'t Delete Anything')
     
-    const data = {
-      result: 'ok',
-    }
-    res.status(200)
-    res.send({ data })
+    respondJson('delete favorite success', {}, res, 200)
   } catch (e) {
     console.log(e)
-    res.status(500)
-    res.send(e)
+    respondOnError(e.message, res, 500)
   }
   connection.release()
 }
@@ -77,11 +70,10 @@ const getFavoriteItemContorller = async (req, res) => {
     const data = {
       favorite_info,
     }
-    res.status(200)
-    res.send({ data })
+    respondJson('get favorite success', data, res, 200)
   } catch (e) {
-    res.status(500)
-    res.send(e)
+    console.log(e)
+    respondOnError(e.message, res, 500)
   }
   connection.release()
 }
