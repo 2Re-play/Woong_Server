@@ -12,10 +12,9 @@ exports.IntroMarket = async (req, res) => {
   }
   try {
     [introMarketResult] = await marketmodel.introduce(connection, data)
-    marketmodel.introduce(connection, data)
     res.status(200).send({
       message: 'successfully get market data',
-      data: introMarketResult,
+      data: introMarketResult, // 마켓과 나랑 거리 추가하기
     })
   } catch (e) {
     console.log(e)

@@ -4,7 +4,6 @@ exports.introduce = (connection, data) => {
     connection.query(Query, data.market_id, (err, info) => {
       err && reject(err)
       resolve(info)
-      console.log(info)
     })
   })
 }

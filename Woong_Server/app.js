@@ -9,8 +9,7 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerJSDoc = require('swagger-jsdoc')
 
 // const options = require('./swagger/swaggerSpec.js')
-
-const index = require('./src/routes/index')
+const index = require('./src/routes') // 재현수정
 
 const swaggerDefinition = {
   info: { // API informations (required)
@@ -18,7 +17,7 @@ const swaggerDefinition = {
     version: '1.0.0', // Version (required)
     description: 'A sample API', // Description (optional)
   },
-  host: 'localhost:3000/', // Host (optional)
+  host: 'localhost:3000', // Host (optional)
   basePath: '/', // Base path (optional)
 }
 
