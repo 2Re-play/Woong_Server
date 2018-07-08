@@ -1,3 +1,5 @@
+// 후기(리뷰) 가져오기/등록 Controller
+
 const dbConnection = require('lib/dbConnection')
 const reviewData = require('../models/reviewModel')
 
