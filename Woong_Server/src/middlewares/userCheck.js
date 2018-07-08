@@ -1,6 +1,6 @@
 const token = require('lib/token')
 const _ = require('lodash')
-const { secretKey } = require('../confingAll')
+const { secretKey } = require('../configAll')
 
 
 module.exports = async (req, res, next) => {
