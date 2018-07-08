@@ -1,10 +1,12 @@
+const _ = require('lodash')
+
 const respondJson = (message, obj, res, status) => {
 
   res
     .status(status)
     .json({
       message,
-      data: obj,
+      data: _.isEmpty(obj) ? {} : obj,
     })
   
 }

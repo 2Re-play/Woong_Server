@@ -45,7 +45,36 @@ exports.ItemDetail = async (req, res) => {
     }
     res.status(200).send({
       message: 'successfully get food detail data',
-      data: result, // 마켓과 나랑 거리 추가하기
+      data: result, 
+    })
+  } catch (e) {
+    console.log(e)
+    res.status(500).send({
+      message: 'Internal Server error',
+    })
+  } finally {
+    connection.release()
+  }
+}
+// 판매자 마켓 물품 리스트<이름순,인기순>
+exports.Itemsorting = async (req, res) => {
+  const connection = await dbConnection()
+  const { market_id } = req.params
+  const { option } = req.query
+  let data = {}
+  let item_sort
+  data = {
+    option,
+    market_id,
+  }
+  try {
+    item_sort = await marketmodel.itemsorting(connection, data)
+    const result = {
+      item_sort,
+    }
+    res.status(200).send({
+      message: 'successfully get sorting item data',
+      data: result, 
     })
   } catch (e) {
     console.log(e)

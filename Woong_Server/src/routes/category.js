@@ -6,6 +6,6 @@ const category = express.Router()
 
 /* GET home page. */
 category.get('/main/:main_id', categoryCtrl.getSubCategoryListController)
-category.get('/main/:main/sub/:sub_id', needAuth, categoryCtrl.getItemListController)
+category.get('/main/:main_id/sub/:sub_id', categoryCtrl.getItemListController)
 
 module.exports = category
