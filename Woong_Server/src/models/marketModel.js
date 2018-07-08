@@ -7,3 +7,16 @@ exports.introduce = (connection, data) => {
     })
   })
 }
+
+exports.itemdetail = (connection, data) => {
+  return new Promise((resolve, reject) => {
+    const Query = `SELECT d.market_name,c.file_key, a.item_name, a.item_info, a.item_cook, a.item_maintain,
+    CONCAT( a.item_name,' ',a.item_unit) AS packaging, b.item_manufacture, b.item_expiration, b.item_related, b.item_producer
+    FROM WP_ITEM_DETAIL b JOIN( (WP_ITEM AS a JOIN WP_MARKET AS d USING(market_id))JOIN WP_ITEM_IMAGE AS c USING(item_id) ) USING(item_id) 
+    WHERE a.item_id = ${data.item_id} AND d.market_id = ${data.market_id};`
+    connection.query(Query, (err, info) => {
+      err && reject(err)
+      resolve(info)
+    })
+  })
+}
