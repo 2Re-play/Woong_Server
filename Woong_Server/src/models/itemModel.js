@@ -1,4 +1,4 @@
-exports.selectItemByKeyword = (connection, keyword) => {
+exports.selectItemByKeyword = (connection, { user_id }, keyword) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
@@ -17,12 +17,12 @@ exports.selectItemByKeyword = (connection, keyword) => {
           user_id, item_id
         FROM
           WP_ITEM_FAVORITE wif
-        WHERE wif.user_id = 1
+        WHERE wif.user_id = ?
       ) as S ON i.item_id = S.item_id
     WHERE
       i.item_name like '%${keyword}%'
     `
-    connection.query(Query, (err, data) => {
+    connection.query(Query, [user_id], (err, data) => {
       err && reject(new Error(err))
       resolve(data)
     })

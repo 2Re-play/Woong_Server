@@ -38,12 +38,12 @@ exports.selectItemByMarket = (connection, { main_id, sub_id }, { user_id }) => {
           user_id, item_id
         FROM
           WP_ITEM_FAVORITE wif
-        WHERE wif.user_id = 1
+        WHERE wif.user_id = ?
       ) as S ON i.item_id = S.item_id
     WHERE
       i.main_id = ? AND i.sub_id = ?
     `
-    connection.query(Query, [main_id, sub_id], (err, data) => {
+    connection.query(Query, [user_id, main_id, sub_id], (err, data) => {
       err && reject(new Error(err))
       resolve(data)
     })

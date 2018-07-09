@@ -5,7 +5,7 @@ const dbConnection = require('lib/dbConnection')
 
 const getItemSearchController = async (req, res) => {
   const { keyword } = req.query
-
+  const { user } = req
   const validation = Joi.validate(keyword, Joi.string().regex(/^[ㄱ-ㅎ|가-힣\*]+$/).required())
   
   if (validation.error) {
@@ -14,7 +14,7 @@ const getItemSearchController = async (req, res) => {
 
   const connection = await dbConnection()
   try {
-    const item_info = await itemModel.selectItemByKeyword(connection, keyword)
+    const item_info = await itemModel.selectItemByKeyword(connection, user, keyword)
     const data = {
       item_info,
     }
