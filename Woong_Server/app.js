@@ -13,7 +13,7 @@ const index = require('./src/routes') // 재현수정
 
 const swaggerDefinition = {
   info: { // API informations (required)
-    title: 'Hello World', // Title (required)
+    title: 'Woooooong\'s potato', // Title (required)
     version: '1.0.0', // Version (required)
     description: 'A sample API', // Description (optional)
   },
@@ -41,6 +41,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+console.log('asd')
 app.use('/', index)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 // catch 404 and forward to error handler

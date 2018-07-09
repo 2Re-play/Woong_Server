@@ -1,14 +1,18 @@
 const token = require('lib/token')
 const _ = require('lodash')
-const { secretKey } = require('../confingAll')
+const { secretKey } = require('../configAll')
 
 
 module.exports = async (req, res, next) => {
-  const userToken = req.headers
+  const { usertoken } = req.headers
   try {
-    req.session.user = await token.decode(userToken, secretKey)
-    return next()
+    req.user = await token.decode(usertoken, 'abc')
+    // console.log())
+    if (_.isEmpty(req.user)) {
+      throw new Error('user AuThentication Error')
+    } 
+    next()
   } catch (e) {
-    console.log(e)
+    throw new Error(e)
   }
 }

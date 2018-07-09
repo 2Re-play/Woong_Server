@@ -131,7 +131,7 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
           description: 유저의 토큰
@@ -169,7 +169,7 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_token
+          name: user_tokenuser_token
           type: string
           required: true
           description: 유저의 토큰
@@ -245,9 +245,9 @@ paths:
       # path parameter 설정하기
         - in: header
           name: user_token
-          type: integer
+          type: string
           required: true
-          description: 사용자의 token
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
@@ -305,13 +305,9 @@ paths:
           required: true
           description: 마켓의 인덱스
         - in: query
-          name: option=name
+          name: option
           type: string
-          description: 이름순 필터
-        - in: query
-          name: option=best
-          type: string
-          description: 인기순 필터
+          description: name으로 오면 이름순필터/ best는 인기순필터
       responses:
         200:
           description: status code 200
@@ -325,7 +321,7 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-  /market/{market_id}/food/{item_id}:
+  /market/{market_id}/item/{item_id}:
     get:
       summary: 판매자 특정물품 정보 (Jay)
       #produces: application/json
@@ -400,9 +396,9 @@ paths:
       parameters:
         - in: header
           name: user_token
-          type: integer
+          type: string
           required: true
-          description: 사용자의 token
+          description: 사용자의 토큰
         - in: path
           name: item_id
           type: integer
@@ -432,9 +428,9 @@ paths:
       parameters:
         - in: header
           name: user_token
-          type: integer
+          type: string
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 token
       responses:
         200:
           description: status code 200
@@ -449,13 +445,12 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #종완이형
-  /account/signin/app:
+  account/signin/app:
     post:
       summary: signin(alex)
       description: signin
-      produces: [application/json]
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
@@ -464,13 +459,13 @@ paths:
           schema:
             type: object
             required:
-              - user_id
-              - user_pw
+              - email
+              - password
             properties:
-              user_id:
+              email:
                 type: string
                 example : "dla1635@gmail.com"
-              user_pw:
+              password:
                 type: string
                 example : "1234"
       responses:
@@ -486,11 +481,10 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  /account/signin/sns:
+  account/signin/sns:
     post:
       summary: sns_signin(alex)
       description: sns_signin
-      produces: [application/json]
       consumes:
         - application/json
       tags:
@@ -519,7 +513,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  /account/signup:
+  account/signup:
     post:
       summary: signup(alex)
       description: signup
@@ -534,25 +528,25 @@ paths:
           schema:
             type: object
             required:
-              - birthday
-              - user_name
-              - user_id
-              - user_pw
-              - user_phonenumber
+              - birth
+              - name
+              - email
+              - password
+              - phone_number
             properties:
-              birthday:
+              birth:
                 type: string
                 example: "19921209"
-              user_name:
+              name:
                 type: string
                 example: "임종완"
-              user_id:
+              email:
                 type: string
                 example: "dla1635@gmail.com"
-              user_pw:
+              password:
                 type: string
                 example: "1234"
-              user_phonenumber:
+              phone_number:
                 type: string
                 example: "010-5051-4056"
       responses:
@@ -568,18 +562,17 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"          
-  /account/signout:
+  account/signout:
     put:
       summary: signout(alex)
       description: signout
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - account
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
       responses:
@@ -595,63 +588,17 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"                    
-  /account/location:
-    post:
-      summary: register location(alex)
-      description: register location
-      produces: [application/json]
-      consumes:
-        - application/json
-      tags:
-        - account
-      parameters:
-        - in: header
-          name: user_token
-          type: string
-          required: true
-        - in: body
-          name : data
-          schema:
-            type: object
-            required:
-              - user_latituede
-              - user_longitude
-            properties:
-              user_latituede:
-                type: string
-                example: "35.9078"
-              user_longitude:
-                type: string
-                example: "127.7669"
-              
-      responses:
-      # status code에 따라 응답 메시지를 설정해 줍니다.
-        200:
-        # 모델을 만들어 놓고 참조하는 방식
-          description: status code 200
-          schema:
-            $ref: "#/definitions/200_account_location_post"
-        403:
-        # 직접 모델과 예제 데이터를 만드는 방식
-          description: status code 403
-          schema:
-            $ref: "#/definitions/403_error"
-        500:
-        # 직접 모델과 예제 데이터를 만드는 방식
-          description: status code 500
-          schema:
-            $ref: "#/definitions/500_error"  
+  account/location:
     get:
       summary: get location(alex)
       description: get location
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - account
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
       responses:
@@ -670,14 +617,13 @@ paths:
     put:
       summary: change location(alex)
       description: change location
-      produces: [application/json]
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
           
@@ -686,14 +632,14 @@ paths:
           schema:
             type: object
             required:
-              - user_latituede
-              - user_longitude
+              - latitude
+              - longitude
             properties:
-              user_latituede:
-                type: string
+              latitude:
+                type: double
                 example: "35.9078"
-              user_longitude:
-                type: string
+              longitude:
+                type: double
                 example: "127.7669"
       responses:
         200:
@@ -708,18 +654,17 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
-  /chat/room:
-    post:
+  chat/room:
+    get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
       responses:
@@ -739,14 +684,13 @@ paths:
     get:
       summary: chatting list(alex)
       description: sender = me ->자신, 그 외 -> 상대방
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
         - in: path
@@ -769,14 +713,13 @@ paths:
     post:
       summary: send message(alex)
       description: send message
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
           
@@ -1107,6 +1050,7 @@ definitions:
         example: true
 
 # 재현
+# 재현
 # 내 주변 마켓 리스트        
   Near_Market:
     type: object
@@ -1115,26 +1059,29 @@ definitions:
         type: string
         example: successfully get market data
       data:
-        type: array
-        items:
-          type: object
-          properties:
-            market_name:
-              type: string
-              example: 현듀마켓
-              description: 마켓이름
-            market_address:
-              type: string
-              example: 서울시 마포구 와우산로
-              description: 마켓 실 주소
-            tag_name:
-                  type: string
-                  example: 유기농
-                  description: 마켓 태그 name          
-            market_titleimage:
-              type: string
-              example: s3주소/1529150684832.jpeg
-              description: 마켓 대표이미
+        type: object
+        properties:
+            Near_market:
+              type: array
+              items:
+                type: object
+                properties:
+                  market_name:
+                    type: string
+                    example: 현듀마켓
+                    description: 마켓이름
+                  market_address:
+                    type: string
+                    example: 서울시 마포구 와우산로
+                    description: 마켓 실 주소
+                  tag_name:
+                        type: string
+                        example: 유기농
+                        description: 마켓 태그 name          
+                  titleimage:
+                    type: string
+                    example: s3주소/1529150684832.jpeg
+                    description: 마켓 대표이미
 #판매자 마켓 소개              
   Market_introduce:
     type: object
@@ -1143,40 +1090,39 @@ definitions:
         type: string
         example: successfully get market data
       data:
-        type: array
-        minItems: 1
-        maxItems: 100
-        items:
           type: object
           properties:
-            market_name:
-              type: string
-              example: 현듀마켓
-              description: 마켓이름
-            youandi:
-              type: integer
-              example: 10
-              description: 마켓과 나와의 거리
-            tag_name:
+            market_introduce:
+              type: object
+              properties:
+                market_name:
                   type: string
-                  example: 유기농
-                  description: 마켓 태그 name
-            bookmark_count:
-                type: integer
-                example: 70
-                description: 즐겨찾기 카운트 수
-            market_info:
-              type: string
-              example : 안녕하세요. 현듀마켓 입니다. 등등
-              description: 마켓 소개글
-            market_titleimage:
-              type: string
-              example: s3주소/1529150684832.jpeg
-              description: 마켓 대표이미지
-            market_farmer_image:
-              type: string
-              example: s3주소/1529150684832.jpeg
-              description: 농부 프로필사진
+                  example: 현듀마켓
+                  description: 마켓이름
+                market_info:
+                  type: string
+                  example : 안녕하세요. 현듀마켓 입니다. 등등
+                  description: 마켓 소개글
+                titleimage:
+                  type: string
+                  example: s3주소/1529150684832.jpeg
+                  description: 마켓 대표이미지
+                farmer_image:
+                  type: string
+                  example: s3주소/1529150684832.jpeg
+                  description: 농부 프로필사진
+                tag_name:
+                      type: string
+                      example: 유기농
+                      description: 마켓 태그 name
+                bookmark_count:
+                    type: integer
+                    example: 70
+                    description: 즐겨찾기 카운트 수              
+                youandi:
+                  type: integer
+                  example: 10
+                  description: 마켓과 나와의 거리
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object
@@ -1187,26 +1133,34 @@ definitions:
       data:
         type: object
         properties:
-            market_name:
-              type: string
-              example: 현듀마켓
-            item_name:
-              type: string
-              example: 돼지감자
-            item_price:
+          item_sort:
+            type: array
+            items:
+              type: object
+              properties:
+                market_id:
                   type: integer
-                  example: 6600
-            item_unit:
-                type: string
-                example: 1kg
-            market_quick:
-                type: integer
-                example: 1
-                description: 1이면 당일배송 0이면 당일배송 x
-            delivery:
-                type: integer
-                example: 1
-                description: 1이면 무료배송 0이면 무료배송 x
+                  example: 1
+                item_id:
+                  type: integer
+                  example: 3
+                market_name:
+                  type: string
+                  example: 현듀마켓
+                item_name:
+                  type: string
+                  example: 돼지감자
+                packaging:
+                      type: string
+                      example: 1kg당 100원
+                quick:
+                  type: integer
+                  example: 0
+                  description: 1이면 당일배송 0이면 당일배송 x
+                delivery:
+                  type: integer
+                  example: 0
+                  description: 1이면 무료배송 0이면 무료배송 x
 #판매자 특정물품 정보
   Item_detail:
     type: object
@@ -1217,45 +1171,52 @@ definitions:
       data:
         type: object
         properties:
-            item_image:
-              type: string
-              example: s3주소/1529150684832.jpeg
-              description: 상품 이미지
-            item_name:
-              type: string
-              example: 돼지감자
-            item_info:
+          itemdetail :
+            type: object
+            properties:
+              market_name:
+                type: string
+                example: 현듀마켓
+                description: 해당상품의 마켓이름
+              file_key:
+                type: string
+                example: s3주소/1529150684832.jpeg
+                description: 상품 이미지
+              item_name:
+                type: string
+                example: 돼지감자
+              item_info:
+                    type: string
+                    example: 겉은 고구마처럼..등등
+                    description: 상품 소개글
+              item_cook:
                   type: string
-                  example: 겉은 고구마처럼..등등
-                  description: 상품 소개글
-            item_cook:
+                  example: 감자조림, 감자튀김
+                  description: 활용요리
+              item_maintain:
+                  type: string
+                  example: 직사광선을 피해랏!
+                  description: 상품 보관법
+              packaging:
+                  type: string
+                  example: 홍감자 1kg
+                  description: 홍감자 1kg뒤에 붙는 내외는 클라에서 해주세욤. 포장단위별 용량,수량,크기
+              item_manufacture:
                 type: string
-                example: 감자조림, 감자튀김
-                description: 활용요리
-            item_storage_method:
+                example: 2018.08.20
+                description: 제조연월일
+              item_expiration:
                 type: string
-                example: 직사광선을 피해랏!
-                description: 상품 보관법
-            packaging:
+                example: 2019.08.20
+                description: 유통기한
+              item_related:
                 type: string
-                example: 홍감자 1kg
-                description: 홍감자 1kg뒤에 붙는 내외는 클라에서 해주세욤. 포장단위별 용량,수량,크기
-            manufacture_date:
-              type: string
-              example: 2018.08.20
-              description: 제조연월일
-            expiration_date:
-              type: string
-              example: 2019.08.20
-              description: 유통기한
-            related:
-              type: string
-              example: 해당사항 없음
-              description: 관련법상 표시사항
-            producer_name:
-              type: string
-              example: 이현주
-              description: 생산자 이름
+                example: 해당사항 없음
+                description: 관련법상 표시사항
+              item_producer:
+                type: string
+                example: 이현주
+                description: 생산자 이름
 #상품 장바구니 등록
   ItemCart_Insert:
     type: object
@@ -1276,34 +1237,39 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get food detail data
+        example: successfully get cart item detail data
       data:
         type: object
         properties:
-            item_image:
-              type: string
-              example: s3주소/1529150684832.jpeg
-              description: 상품이미지
-            market_name:
-              type: string
-              example: 현듀마켓
-              description: 마켓이름
-            item_name:
+          cart_item:
+            type: array
+            items:
+              type: object
+              properties:
+                item_image:
                   type: string
-                  example: 돼지감자
-                  description: 상품이름
-            item_price:
-                type: integer
-                example: 6000
-                description: 상품가격
-            item_unit:
-               type: string
-               example: 1kg
-               description: 상품 단위
-            delivery_free:
-                type: integer
-                example: 1
-                description: 1이면 무료배송 0이면 2500원
+                  example: s3주소/1529150684832.jpeg
+                  description: 상품이미지
+                market_name:
+                  type: string
+                  example: 현듀마켓
+                  description: 마켓이름
+                item_name:
+                      type: string
+                      example: 돼지감자
+                      description: 상품이름
+                item_price:
+                    type: integer
+                    example: 6000
+                    description: 상품가격
+                item_unit:
+                  type: string
+                  example: 1kg
+                  description: 상품 단위
+                delivery_free:
+                    type: integer
+                    example: 1
+                    description: 1이면 무료배송 0이면 2500원
 #종완이형
   200_account_signin_app:
     type: object
@@ -1314,7 +1280,7 @@ definitions:
       data:
         type: object
         properties:
-          user_token:
+          token:
             type: string
             example : "asdsd@#as.d@#$kfoke;w/.!@#asd#"
   200_account_signin_sns:
@@ -1322,11 +1288,11 @@ definitions:
     properties:
       message:
         type: string
-        example: "Sucessfully SNS Login!!" 
+        example: "Sucessfully SNS Signin!!" 
       data:
         type: object
         properties:
-          user_token: 
+          token: 
             type: string
             example: "askdnwqld,m/,cmpewjfwpq"
   200_account_signup:
@@ -1376,7 +1342,10 @@ definitions:
         items:
           type: object
           properties:
-            store_name:
+            chatting_room_id:
+              type: Integer
+              example: 1
+            name:
               type: string
               example: "현주마켓"
             unread_count:
@@ -1402,10 +1371,10 @@ definitions:
             sender:
               type: string
               example: "현주마켓"
-            chatting_content:
+            content:
               type: string
               example: "신선하군요!"
-            chatting_sendDayTime:
+            send_day_time:
               type: string
               example: "월요일, 10:40 am"
   200_chat_message_post:

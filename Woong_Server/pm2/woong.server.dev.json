@@ -1,7 +1,7 @@
 {
   "apps" : [{
     "name": "woong.server.dev",
-    "script": "app.js",
+    "script": "./bin/www",
     "ignore_watch" : ["node_modules", "logs"],
     "watch_options": {
       "followSymlinks": false

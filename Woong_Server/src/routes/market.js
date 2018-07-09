@@ -1,10 +1,10 @@
 const express = require('express')
-const marketAlbumCtrl = require('../controller/marketAlbumController')
-const reviewCtrl = require('../controller/reviewController')
+const marketctrl = require('controller/marketController')
 
-const market = express.Router()
+const Market = express.Router()
 
-market.get('/:market_id/album', marketAlbumCtrl.getMarketAlbum)
-market.get('/:market_id/review', reviewCtrl.getReview)
+Market.get('/info/:market_id', marketctrl.IntroMarket)
+Market.get('/:market_id/item/:item_id', marketctrl.ItemDetail)
+Market.get('/:market_id', marketctrl.Itemsorting)
 
-module.exports = market
+module.exports = Market

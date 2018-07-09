@@ -15,7 +15,7 @@ exports.selectSubListByMain = (connection, main_id) => {
   })
 }
 
-exports.selectItemByMarket = (connection, main_id, sub_id) => {
+exports.selectItemByMarket = (connection, main_id, sub_id, user_id) => {
   console.log('test', main_id, sub_id)
   return new Promise((resolve, reject) => {
     const Query = `
