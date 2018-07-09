@@ -235,8 +235,42 @@ paths:
                     items:
                       type: object
                       properties:
-                        schema:
-                          $ref: '#/definitions/item_info'
+                        item_id:
+                          type: integer
+                          example: 1
+                        market_id:
+                          type: integer
+                          example: 1
+                        main_id:
+                          type: integer
+                          example: 1
+                        sub_id:
+                          type: integer
+                          example: 1
+                        market_name:
+                          type: string
+                          example: 동수네감자집
+                        item_image:
+                          type: string
+                          example: https://s3.bucket
+                        item_name:
+                          type: string
+                          example: 왕왕큰감자
+                        item_unit:
+                          type: string
+                          example: 1kg
+                        item_price:
+                          type: integer
+                          example: 3000
+                        quick:
+                          type: boolean
+                          example: true
+                        delivery:
+                          type: boolean
+                          example: ture
+                        favorite_flag:
+                          type: boolean
+                          example: true
         403:
           description: status code 403
           schema:
