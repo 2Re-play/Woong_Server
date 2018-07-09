@@ -9,7 +9,11 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerJSDoc = require('swagger-jsdoc')
 
 // const options = require('./swagger/swaggerSpec.js')
+<<<<<<< HEAD
 const index = require('./src/routes') // 재현수정
+=======
+const index = require('./src/routes/index.js') // 재현수정
+>>>>>>> d310f288f2eeba44e7cd4707e3f1e632cfcf25cd
 
 const swaggerDefinition = {
   info: { // API informations (required)
@@ -41,6 +45,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+console.log('asd')
 app.use('/', index)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 // catch 404 and forward to error handler

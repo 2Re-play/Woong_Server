@@ -131,7 +131,7 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
           description: 유저의 토큰
@@ -169,7 +169,7 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_token
+          name: user_tokenuser_token
           type: string
           required: true
           description: 유저의 토큰
@@ -445,13 +445,12 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #종완이형
-  /account/signin/app:
+  account/signin/app:
     post:
       summary: signin(alex)
       description: signin
-      produces: [application/json]
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
@@ -460,13 +459,13 @@ paths:
           schema:
             type: object
             required:
-              - user_id
-              - user_pw
+              - email
+              - password
             properties:
-              user_id:
+              email:
                 type: string
                 example : "dla1635@gmail.com"
-              user_pw:
+              password:
                 type: string
                 example : "1234"
       responses:
@@ -482,11 +481,10 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  /account/signin/sns:
+  account/signin/sns:
     post:
       summary: sns_signin(alex)
       description: sns_signin
-      produces: [application/json]
       consumes:
         - application/json
       tags:
@@ -515,7 +513,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  /account/signup:
+  account/signup:
     post:
       summary: signup(alex)
       description: signup
@@ -530,25 +528,25 @@ paths:
           schema:
             type: object
             required:
-              - birthday
-              - user_name
-              - user_id
-              - user_pw
-              - user_phonenumber
+              - birth
+              - name
+              - email
+              - password
+              - phone_number
             properties:
-              birthday:
+              birth:
                 type: string
                 example: "19921209"
-              user_name:
+              name:
                 type: string
                 example: "임종완"
-              user_id:
+              email:
                 type: string
                 example: "dla1635@gmail.com"
-              user_pw:
+              password:
                 type: string
                 example: "1234"
-              user_phonenumber:
+              phone_number:
                 type: string
                 example: "010-5051-4056"
       responses:
@@ -564,18 +562,17 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"          
-  /account/signout:
+  account/signout:
     put:
       summary: signout(alex)
       description: signout
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - account
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
       responses:
@@ -591,63 +588,17 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"                    
-  /account/location:
-    post:
-      summary: register location(alex)
-      description: register location
-      produces: [application/json]
-      consumes:
-        - application/json
-      tags:
-        - account
-      parameters:
-        - in: header
-          name: user_token
-          type: string
-          required: true
-        - in: body
-          name : data
-          schema:
-            type: object
-            required:
-              - user_latituede
-              - user_longitude
-            properties:
-              user_latituede:
-                type: string
-                example: "35.9078"
-              user_longitude:
-                type: string
-                example: "127.7669"
-              
-      responses:
-      # status code에 따라 응답 메시지를 설정해 줍니다.
-        200:
-        # 모델을 만들어 놓고 참조하는 방식
-          description: status code 200
-          schema:
-            $ref: "#/definitions/200_account_location_post"
-        403:
-        # 직접 모델과 예제 데이터를 만드는 방식
-          description: status code 403
-          schema:
-            $ref: "#/definitions/403_error"
-        500:
-        # 직접 모델과 예제 데이터를 만드는 방식
-          description: status code 500
-          schema:
-            $ref: "#/definitions/500_error"  
+  account/location:
     get:
       summary: get location(alex)
       description: get location
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - account
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
       responses:
@@ -666,14 +617,13 @@ paths:
     put:
       summary: change location(alex)
       description: change location
-      produces: [application/json]
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
           
@@ -682,14 +632,14 @@ paths:
           schema:
             type: object
             required:
-              - user_latituede
-              - user_longitude
+              - latitude
+              - longitude
             properties:
-              user_latituede:
-                type: string
+              latitude:
+                type: double
                 example: "35.9078"
-              user_longitude:
-                type: string
+              longitude:
+                type: double
                 example: "127.7669"
       responses:
         200:
@@ -704,18 +654,17 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
-  /chat/room:
-    post:
+  chat/room:
+    get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
       responses:
@@ -735,14 +684,13 @@ paths:
     get:
       summary: chatting list(alex)
       description: sender = me ->자신, 그 외 -> 상대방
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
         - in: path
@@ -765,14 +713,13 @@ paths:
     post:
       summary: send message(alex)
       description: send message
-      produces: [application/json]
       consumes:
         - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: user_token
+          name: token
           type: string
           required: true
           
@@ -1333,7 +1280,7 @@ definitions:
       data:
         type: object
         properties:
-          user_token:
+          token:
             type: string
             example : "asdsd@#as.d@#$kfoke;w/.!@#asd#"
   200_account_signin_sns:
@@ -1341,11 +1288,11 @@ definitions:
     properties:
       message:
         type: string
-        example: "Sucessfully SNS Login!!" 
+        example: "Sucessfully SNS Signin!!" 
       data:
         type: object
         properties:
-          user_token: 
+          token: 
             type: string
             example: "askdnwqld,m/,cmpewjfwpq"
   200_account_signup:
@@ -1395,7 +1342,10 @@ definitions:
         items:
           type: object
           properties:
-            store_name:
+            chatting_room_id:
+              type: Integer
+              example: 1
+            name:
               type: string
               example: "현주마켓"
             unread_count:
@@ -1421,10 +1371,10 @@ definitions:
             sender:
               type: string
               example: "현주마켓"
-            chatting_content:
+            content:
               type: string
               example: "신선하군요!"
-            chatting_sendDayTime:
+            send_day_time:
               type: string
               example: "월요일, 10:40 am"
   200_chat_message_post:
