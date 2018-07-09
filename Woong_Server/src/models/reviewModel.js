@@ -1,11 +1,14 @@
 const moment = require('moment')
 
+
 /** *** 후기 (리뷰) 작성하기 **** */
 
 // 1. 리뷰 글 작성
 exports.postReview = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = 'INSERT INTO WP_MARKET_REVIEW (user_id,market_id,content,date,rate_speed,rate_fresh,rate_taste,rate_kindness,cr_dt,cr_user) VALUES (?,?,?,?,?,?,?,?,?)'
+    const Query = `INSERT INTO 
+                  WP_MARKET_REVIEW (user_id,market_id,content,date,rate_speed,rate_fresh,rate_taste,rate_kindness,cr_dt,cr_user)
+                  VALUES (?,?,?,?,?,?,?,?,?)`
     connection.query(Query, [Number(data.user_id), Number(data.market_id), data.content, moment().format('YYYY-MM-DD'), Number(data.rate_speed), Number(data.rate_fresh), Number(data.rate_taste), Number(data.rate_kindness), moment().format('YYYY-MM-DD'), Number(data.user_id)], (err, result) => {
       err && reject(err)
       resolve(result)
@@ -29,7 +32,8 @@ exports.postReview = (connection, data) => {
 //       resolve(result)
 //     })
 //   }
-// }
+//   }
+
 
 
 /** *** 특정 마켓의 후기 가져오기 **** */
@@ -48,7 +52,10 @@ exports.getReviewRate = (connection, data) => {
 // 2. 리뷰의 사진들 가져오기 (리뷰에 올라가 있는 모든 사진을 가져옴)
 exports.getReviewImages = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = 'select * from WP_REVIEW_IMAGE where review_id IN (select review_id from WP_MARKET_REVIEW where market_id=?)'
+    const Query = `select * 
+                  from WP_REVIEW_IMAGE 
+                  where review_id 
+                  IN (select review_id from WP_MARKET_REVIEW where market_id=?)`
     connection.query(Query, [data.market_id], (err, result) => {
       err && reject(err)
       resolve(result)

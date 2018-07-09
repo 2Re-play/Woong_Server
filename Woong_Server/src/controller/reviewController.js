@@ -1,8 +1,8 @@
 // 후기(리뷰) 가져오기/등록 Controller
-
+const Joi = require('joi')
 const dbConnection = require('lib/dbConnection')
 const reviewData = require('../models/reviewModel')
-
+const { respondOnError } = require('lib/response')
 // 1. 후기 (리뷰) 쓰기
 // exports.postReview = async (req, res) => {
 
@@ -19,6 +19,13 @@ exports.getReview = async (req, res) => {
   data = {
     market_id,
   }
+
+  const validation = Joi.validate(market_id, Joi.number().required())
+
+  if (validation.error) {
+    respondOnError(validation.error, res, 422)
+  }
+
   try {
     [reviewRateResult] = await reviewData.getReviewRate(connection, data) 
     reviewImagesResult = await reviewData.getReviewImages(connection, data)

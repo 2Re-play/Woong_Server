@@ -1,7 +1,7 @@
 const dbConnection = require('lib/dbConnection')
 const marketData = require('../models/marketModel')
 
-// 마켓 앨범 가져오기 
+// 1. 마켓 앨범 가져오기 
 exports.getMarketAlbum = async (req, res) => {
   const connection = await dbConnection()
   let getMarketAlbumResult 

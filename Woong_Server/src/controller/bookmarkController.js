@@ -1,6 +1,6 @@
 // 북마크 리스트/등록/해제 Controller
 
-// const Joi = require('joi')
+const Joi = require('joi')
 
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
@@ -39,6 +39,12 @@ exports.addBookmark = async (req, res) => {
   }
 
   const connection = await dbConnection()
+  const validation = Joi.validate(market_id, Joi.number().required())
+
+  if (validation.error) {
+    respondOnError(validation.error, res, 422)
+  }
+
   try {
     let bookmark = [];
     [bookmark] = await bookmarkData.selectCountByBookmark(connection, data)
@@ -66,6 +72,12 @@ exports.deleteBookmark = async (req, res) => {
   data = {
     market_id,
   }
+  const validation = Joi.validate(market_id, Joi.number().required())
+
+  if (validation.error) {
+    respondOnError(validation.error, res, 422)
+  }
+
   try {
     let bookmark = [];
     [bookmark] = await bookmarkData.selectCountByBookmark(connection, data)

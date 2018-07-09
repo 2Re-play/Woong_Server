@@ -1428,7 +1428,7 @@ definitions:
             chatting_sendDayTime:
               type: string
               example: "월요일, 10:40 am"
-#진영 (C)
+#진영 (Claire)
   market_album:
     type: object
     properties:

@@ -3,7 +3,9 @@ const moment = require('moment')
 // 1. 북마크 리스트
 exports.getBookmark = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = 'select market_id,market_name,title_image from WP_MARKET where market_id in (select market_id from WP_MARKET_BOOKMARK where user_id=?)'
+    const Query = `select market_id,market_name,title_image 
+                   from WP_MARKET 
+                   where market_id in (select market_id from WP_MARKET_BOOKMARK where user_id=?)`
     connection.query(Query, [data.user_token], (err, result) => {
       err && reject(err)
       console.log([data.user_id])
@@ -17,7 +19,9 @@ exports.getBookmark = (connection, data) => {
 // 2. 북마크 등록
 exports.addBookmark = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = 'INSERT INTO WP_MARKET_BOOKMARK(market_id,user_id,cr_dt, cr_user) VALUES (?,?,?,?)'
+    const Query = `INSERT INTO 
+                  WP_MARKET_BOOKMARK(market_id,user_id,cr_dt, cr_user) 
+                  VALUES (?,?,?,?)`
     connection.query(Query, [data.market_id, data.user_token, moment().format('YYYY-MM-DD hh:mm:ss'), data.user_token], (err) => {
       err && reject(err)
       resolve({})
