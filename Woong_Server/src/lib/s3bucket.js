@@ -6,8 +6,9 @@ const moment = require('moment')
 const _ = require('lodash')
 const sharp = require('sharp')
 
-aws.config.loadFromPath('../../config/credential.json')
+aws.config.loadFromPath('./config/credentials.json')
 const s3 = new aws.S3()
+
 
 module.exports = {
   /*
@@ -22,8 +23,9 @@ module.exports = {
       MM: moment().format('MM'),
     }
     let opt = {
+      // 기본 옵션
       s3,
-      bucket: 'moducampus.staging',
+      bucket: 'uniquegamza',
       CacheControl: 'max-age = 31536000',
       acl: 'public-read-write',
       key(req, file, cb) {

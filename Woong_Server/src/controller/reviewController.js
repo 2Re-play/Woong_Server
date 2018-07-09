@@ -1,12 +1,33 @@
 // 후기(리뷰) 가져오기/등록 Controller
 const Joi = require('joi')
-const dbConnection = require('lib/dbConnection')
-const reviewData = require('../models/reviewModel')
-const { respondOnError } = require('lib/response')
-// 1. 후기 (리뷰) 쓰기
-// exports.postReview = async (req, res) => {
+const aws = require('aws-sdk')
 
-// }
+const dbConnection = require('lib/dbConnection')
+const { respondOnError } = require('lib/response')
+const reviewData = require('../models/reviewModel')
+
+aws.config.loadFromPath('./config/credentials.json')
+
+const s3 = new aws.S3()
+
+// 1. 후기 (리뷰) 쓰기
+exports.postReview = async (req, res) => {
+  console.log(req.files)
+
+  const options = {
+    Bucket: 'uniquegamza',
+    Expires: 300,
+    Key: 'review/2018/07/rk9Btl-mX.1531148609583.pdf',
+    ResponseContentDisposition: null,
+  }
+
+  s3.getSignedUrl('getObject', options, (err, result) => {
+    if (err) console.log(err)
+    console.log(result) 
+  })
+
+  res.send('asdf')
+}
 
 // 2. 후기 (리뷰) 가져오기
 exports.getReview = async (req, res) => {
