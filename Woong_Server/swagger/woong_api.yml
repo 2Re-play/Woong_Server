@@ -136,10 +136,10 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: token
+          name: user_token
           type: string
           required: true
-          description: 유저의 토큰
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
@@ -174,10 +174,10 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_tokenuser_token
+          name: user_token
           type: string
           required: true
-          description: 유저의 토큰
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
@@ -211,7 +211,7 @@ paths:
           name: user_token
           type: string
           required: true
-          description: 유저의 토큰
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
