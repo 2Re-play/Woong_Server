@@ -245,9 +245,9 @@ paths:
       # path parameter 설정하기
         - in: header
           name: user_token
-          type: integer
+          type: string
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
@@ -366,9 +366,9 @@ paths:
       # path parameter 설정하기
         - in: header
           name: user_token
-          type: integer
+          type: string
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 token
         - in: path
           name: item_id
           type: integer
@@ -395,10 +395,10 @@ paths:
         - cart
       parameters:
         - in: header
-          name: user_id
-          type: integer
+          name: user_token
+          type: string
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 토큰
         - in: path
           name: item_id
           type: integer
@@ -428,9 +428,9 @@ paths:
       parameters:
         - in: header
           name: user_token
-          type: integer
+          type: string
           required: true
-          description: 사용자의 인덱스 
+          description: 사용자의 token
       responses:
         200:
           description: status code 200
@@ -1276,14 +1276,14 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully Insert bookmark data
+        example: successfully Insert cart data
 #상품 장바구니 해제        
   ItemCart_delete:
     type: object
     properties:
       message:
         type: string
-        example: successfully Delete bookmark data
+        example: successfully Delete cart data
 #상품 장바구니 리스트 가져오기
   ItemCart_list:
     type: object
@@ -1295,32 +1295,34 @@ definitions:
         type: object
         properties:
           cart_item:
-            type: object
-            properties:
-              item_image:
-                type: string
-                example: s3주소/1529150684832.jpeg
-                description: 상품이미지
-              market_name:
-                type: string
-                example: 현듀마켓
-                description: 마켓이름
-              item_name:
-                    type: string
-                    example: 돼지감자
-                    description: 상품이름
-              item_price:
-                  type: integer
-                  example: 6000
-                  description: 상품가격
-              item_unit:
-                 type: string
-                 example: 1kg
-                 description: 상품 단위
-              delivery_free:
-                  type: integer
-                  example: 1
-                  description: 1이면 무료배송 0이면 2500원
+            type: array
+            items:
+              type: object
+              properties:
+                item_image:
+                  type: string
+                  example: s3주소/1529150684832.jpeg
+                  description: 상품이미지
+                market_name:
+                  type: string
+                  example: 현듀마켓
+                  description: 마켓이름
+                item_name:
+                      type: string
+                      example: 돼지감자
+                      description: 상품이름
+                item_price:
+                    type: integer
+                    example: 6000
+                    description: 상품가격
+                item_unit:
+                  type: string
+                  example: 1kg
+                  description: 상품 단위
+                delivery_free:
+                    type: integer
+                    example: 1
+                    description: 1이면 무료배송 0이면 2500원
 #종완이형
   200_account_signin_app:
     type: object
