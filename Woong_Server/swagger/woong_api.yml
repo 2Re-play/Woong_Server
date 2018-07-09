@@ -230,8 +230,13 @@ paths:
               data:
                 type: object
                 properties:
-                  sheme:
-                    $ref: '#/definitions/item_info'
+                  item_info:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        schema:
+                          $ref: '#/definitions/item_info'
         403:
           description: status code 403
           schema:

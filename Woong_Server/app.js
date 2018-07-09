@@ -41,7 +41,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
-console.log('asd')
+
 app.use('/', index)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 // catch 404 and forward to error handler
