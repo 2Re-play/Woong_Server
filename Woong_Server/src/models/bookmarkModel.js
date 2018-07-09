@@ -10,7 +10,6 @@ exports.getBookmark = (connection, user_id) => {
     connection.query(Query, [user_id], (err, result) => {
       err && reject(err)
       console.log(result)
-      console.log(result.length)
       resolve(result)
     })
   })
