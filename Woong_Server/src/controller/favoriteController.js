@@ -7,12 +7,11 @@ const dbConnection = require('lib/dbConnection')
 const postFavoriteItemContorller = async (req, res) => {
   const { item_id } = req.params
   const { user } = req
-  // const { userToken } = req.headers
-  const validation = Joi.validate(item_id, Joi.number().required())
+//  const validation = Joi.validate(item_id, Joi.number().required())
   
-  if (validation.error) {
-    respondOnError(validation.error, res, 422)
-  }
+//  if (validation.error) {
+//    respondOnError(validation.error, res, 422)
+//  }
 
   const connection = await dbConnection()
   try {
@@ -58,11 +57,11 @@ const getFavoriteItemContorller = async (req, res) => {
   const { user } = req
   const { main_id } = req.params
 
-  const validation = Joi.validate(main_id, Joi.number().required())
+//  const validation = Joi.validate(main_id, Joi.number().required())
   
-  if (validation.error) {
-    throw new Error(validation.error)
-  }
+//  if (validation.error) {
+//    throw new Error(validation.error)
+//  }
 
   const connection = await dbConnection()
   try {
