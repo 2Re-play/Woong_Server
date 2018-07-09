@@ -1,6 +1,6 @@
 const moment = require('moment')
 
-exports.selectFavoriteByUser = (connection, user_id) => {
+exports.selectFavoriteByUser = (connection, { user_id }) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
@@ -21,19 +21,19 @@ exports.selectFavoriteByUser = (connection, user_id) => {
           user_id, item_id
         FROM
           WP_ITEM_FAVORITE wif
-        WHERE wif.user_id = 1
+        WHERE wif.user_id = ?
       ) as S ON i.item_id = S.item_id
     WHERE
-      wif.user_id = 1
+      wif.user_id = ?
     `
-    connection.query(Query, [user_id], (err, data) => {
+    connection.query(Query, [user_id, user_id], (err, data) => {
       err && reject(new Error(err))
       resolve(data)
     })
   })
 }
 
-exports.insertFavoriteByUser = (connection, user_id, item_id) => {
+exports.insertFavoriteByUser = (connection, { user_id }, item_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     INSERT INTO
@@ -47,7 +47,7 @@ exports.insertFavoriteByUser = (connection, user_id, item_id) => {
   })
 }
 
-exports.deleteFavoriteByUser = (connection, user_id, item_id) => {
+exports.deleteFavoriteByUser = (connection, { user_id }, item_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     DELETE FROM
@@ -62,7 +62,7 @@ exports.deleteFavoriteByUser = (connection, user_id, item_id) => {
   })
 }
 
-exports.selectCountByFavorite = (connection, user_id, item_id) => {
+exports.selectCountByFavorite = (connection, { user_id }, item_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT

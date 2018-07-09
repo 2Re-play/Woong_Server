@@ -48,6 +48,11 @@ paths:
       tags:
         - category
       parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 유저정보를 위한 토큰
         - in: path
           name: main_id
           type: integer
