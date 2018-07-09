@@ -19,12 +19,8 @@ exports.decode = (token, secret) => {
   return new Promise((resolve) => {
     jwt.verify(token, secret, (err, decoded) => {
       if (err) {
-        err = {
-          name: 'TokenExpiredError',
-          message: 'jwt expired',
-        }
         console.log(err)
-        resolve({})
+        resolve(new Error('Token Expired'))
       }
       resolve(decoded)
     })
