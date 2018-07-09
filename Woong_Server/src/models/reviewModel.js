@@ -34,8 +34,6 @@ exports.postReview = (connection, data) => {
 //   }
 //   }
 
-
-
 /** *** 특정 마켓의 후기 가져오기 **** */
 
 // 1. 리뷰 별점 가져오기
