@@ -9,5 +9,6 @@ module.exports = async (req, res, next) => {
     req.session.user = await token.decode(userToken, secretKey)
     return next()
   } catch (e) {
+    console.log(e)
   }
 }
