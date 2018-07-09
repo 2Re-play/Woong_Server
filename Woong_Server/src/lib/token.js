@@ -20,7 +20,7 @@ exports.decode = (token, secret) => {
     jwt.verify(token, secret, (err, decoded) => {
       if (err) {
         console.log(err)
-        resolve(new Error('Token Expired'))
+        resolve({})
       }
       resolve(decoded)
     })
