@@ -31,7 +31,7 @@ exports.InsertCart = async (req, res) => {
   }
   try {
     cartmodel.postcart(connection, data)
-    respondJson('successfully Insert cart data', {}, res, 200) // {}
+    respondJson('successfully Insert cart data', {}, res, 200) 
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)
@@ -64,7 +64,7 @@ exports.deleteCart = async (req, res) => {
   }
   try {
     cartmodel.deletecart(connection, data)
-    respondJson('successfully delete cart data', {}, res, 200) // {}
+    respondJson('successfully delete cart data', {}, res, 200) 
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)
@@ -102,7 +102,7 @@ exports.getCart = async (req, res) => {
     const result = {
       cartlist,
     }
-    respondJson('successfully get cart data', result, res, 200) // {}
+    respondJson('successfully get cart data', result, res, 200) 
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)

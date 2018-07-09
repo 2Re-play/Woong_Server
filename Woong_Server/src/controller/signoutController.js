@@ -1,6 +1,6 @@
 const jwt = require('lib/token')
 const dbconnection = require('lib/dbconnection')
-const secretKey = require('confingAll')
+const secretKey = require('configAll')
 const signoutModel = require('models/signoutModel')
 
 const signout = async (req, res) => {
