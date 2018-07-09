@@ -1,9 +1,10 @@
 const express = require('express')
 const category = require('./category')
 const cart = require('./cart')
-const weeklyfarmer = require('./weeklyFarmer')
-const review = require('./review')
-const bookmark = require('./bookmark')
+const weeklyfarmer = require('./weeklyFarmer') // 이 주의 농부 
+const review = require('./review') // 리뷰
+const bookmark = require('./bookmark') // 즐겨찾기
+const market = require('./market')
 const item = require('./item')
 const favorite = require('./favorite')
 const market = require('./market')
