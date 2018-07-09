@@ -1,6 +1,27 @@
-const room = (req, res) => {
-  console.log('Access room')
-  res.send('ok')
+const dbConnection = require('lib/dbConnection')
+const decoding = require('lib/token')
+const secretKey = require('../confingAll')
+
+
+const room = async(req, res) => {
+  const user_token = req.headers.token
+
+  const user_data = decoding.decoding(user_token, secretKey.secretKey)
+
+  console.log(user_data)
+
+  const getRoomList = await dbConnection(connection,user_data.user_id)
+  
+  try {
+    // const room = roomModel.
+    
+  } catch (e) {
+    res.status(500)
+    res.send(e)
+  }
+  connection.release()
+  
+  
 }
 
 

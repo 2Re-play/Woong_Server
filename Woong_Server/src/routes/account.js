@@ -12,7 +12,7 @@ account.post('/signin/app', signinController.signin_app)
 account.post('/signin/sns', signinController.signin_sns)
 account.post('/signup', signupController.signup)
 account.put('/signout', signoutController.signout)
-account.post('/location', locationController.post_location)
+
 account.get('/location', locationController.get_location)
 account.put('/location', locationController.put_location)
 
