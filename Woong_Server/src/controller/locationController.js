@@ -1,4 +1,4 @@
-const dbconnection = require('lib/dbconnection')
+const dbConnection = require('lib/dbConnection')
 const jwt = require('lib/token')
 const secret = require('configAll')
 const locationModel = require('models/locationModel')
@@ -16,7 +16,7 @@ const put_location = async (req, res) => {
   console.log(secret_key)
 
 
-  const connection = await dbconnection()
+  const connection = await dbConnection()
 
   const decode_result = await jwt.decode(token, secret_key)
   const user_id = decode_result.user_id
@@ -36,7 +36,7 @@ const get_location = async (req, res) => {
   
   const token = req.headers.token
 
-  const connection = await dbconnection()
+  const connection = await dbConnection()
 
   const secret_key = secret.secretKey
   const decode_result = await jwt.decode(token, secret_key)

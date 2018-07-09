@@ -10,7 +10,7 @@ const __getPool = () => {
   return DBpool
 }
 
-module.exports = function DBConnection() {
+module.exports = function dbConnection() {
   return new Promise((resolve, reject) => {
     const pool = __getPool()
     pool.getConnection((err, connection) => {

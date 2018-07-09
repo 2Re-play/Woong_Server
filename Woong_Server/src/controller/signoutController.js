@@ -1,5 +1,5 @@
 const jwt = require('lib/token')
-const dbconnection = require('lib/dbconnection')
+const dbConnection = require('lib/dbConnection')
 const secretKey = require('configAll')
 const signoutModel = require('models/signoutModel')
 
@@ -11,7 +11,7 @@ const signout = async (req, res) => {
   console.log(token)
   console.log(secret_key)
 
-  const connection = await dbconnection()
+  const connection = await dbConnection()
   const decode_result = await jwt.decode(token, secret_key)
   const user_id = decode_result.user_id
 
