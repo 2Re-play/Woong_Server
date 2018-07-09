@@ -12,15 +12,16 @@ exports.getAlbum = (connection, data) => {
 exports.introduce = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `
-    SELECT 
-        market_name, market_info, title_image, farmer_image, tag_name,
+    SELECT DISTINCT
+        market_name, market_info, title_image_key, farmer_image_key, (SELECT GROUP_CONCAT( tag_name SEPARATOR ',') FROM WP_MARKET_TAG WHERE m.market_id =${data.market_id}) AS tag_name ,
         (SELECT count(*) FROM WP_MARKET_BOOKMARK as b WHERE b.market_id = m.market_id) as bookmark_count 
     FROM 
         WP_MARKET_TAG t 
     JOIN
         ( WP_MARKET_BOOKMARK b JOIN WP_MARKET m USING(market_id)) USING(market_id) 
     WHERE 
-        m.market_id=${data.market_id}`
+        m.market_id=${data.market_id};
+    `
     connection.query(Query, (err, info) => {
       err && reject(err)
       resolve(info)
@@ -51,31 +52,32 @@ exports.itemsorting = (connection, data) => {
     let Query
     if (data.option === 'name') {
       Query = `
-        SELECT 
-            a.market_id,b.item_id,a.market_name, b.item_name,
-            CONCAT(item_unit,'당  ',item_price) AS packaging,  a.quick, a.delivery 
-        FROM 
-            WP_MARKET a 
-        JOIN WP_ITEM b USING(market_id) 
-        WHERE
-            a.market_id = b.market_id =${data.market_id}
-        ORDER BY
-            b.item_name 
-        ASC`
+      SELECT 
+      a.market_id,b.item_id,a.market_name, b.item_name, c.file_key,
+      CONCAT(item_unit,'당  ',item_price) AS packaging,  a.quick, a.delivery 
+      FROM 
+        WP_MARKET a 
+      JOIN (WP_ITEM b JOIN WP_ITEM_IMAGE c USING(item_id) )USING(market_id) 
+      WHERE
+        a.market_id = b.market_id =1
+      ORDER BY
+        b.item_name 
+      ASC`
     } else if (data.option === 'best') {
       Query = `
       SELECT 
-        a.market_id,b.item_id,a.market_name, b.item_name,
+        a.market_id,b.item_id,a.market_name, b.item_name,c.file_key,
         CONCAT(item_unit,'당  ',item_price) AS packaging,  a.quick, a.delivery,
         (SELECT count(*) FROM WP_ITEM_FAVORITE   WHERE item_id =b.item_id) AS favorite_count 
       FROM 
         WP_MARKET a 
       JOIN 
-        WP_ITEM b USING(market_id) 
+        (WP_ITEM b JOIN WP_ITEM_IMAGE c USING(item_id))USING(market_id) 
       WHERE 
         a.market_id = b.market_id =${data.market_id} 
       ORDER BY 
-        favorite_count DESC`
+        favorite_count DESC
+      `
     }
     connection.query(Query, (err, info) => {
       err && reject(err)
