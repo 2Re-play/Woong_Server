@@ -22,7 +22,7 @@ exports.addBookmark = (connection, market_id, user_id) => {
     const Query = `INSERT INTO 
                   WP_MARKET_BOOKMARK(market_id,user_id,cr_dt, cr_user) 
                   VALUES (?,?,?,?)`
-    connection.query(Query, [market_id, user_id, moment().format('YYYY-MM-DD hh:mm:ss'), data.user_id], (err) => {
+    connection.query(Query, [market_id, user_id, moment().format('YYYY-MM-DD hh:mm:ss'), user_id], (err) => {
       err && reject(err)
       resolve({})
     })
