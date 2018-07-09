@@ -136,7 +136,7 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token 
@@ -174,7 +174,7 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token 
@@ -207,8 +207,8 @@ paths:
       tags:
         - favorite
       parameters:
-          - in: header
-          name: user_token
+        - in: header
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token 
@@ -249,7 +249,7 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token 
@@ -370,7 +370,7 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token
@@ -400,7 +400,7 @@ paths:
         - cart
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 토큰
@@ -432,7 +432,7 @@ paths:
         - cart
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token
@@ -450,7 +450,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #종완이형
-  account/signin/app:
+  /account/signin/app:
     post:
       summary: signin(alex)
       description: signin
@@ -486,7 +486,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  account/signin/sns:
+  /account/signin/sns:
     post:
       summary: sns_signin(alex)
       description: sns_signin
@@ -518,7 +518,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  account/signup:
+  /account/signup:
     post:
       summary: signup(alex)
       description: signup
@@ -567,7 +567,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"          
-  account/signout:
+  /account/signout:
     put:
       summary: signout(alex)
       description: signout
@@ -593,7 +593,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"                    
-  account/location:
+  /account/location:
     get:
       summary: get location(alex)
       description: get location
@@ -631,7 +631,6 @@ paths:
           name: token
           type: string
           required: true
-          
         - in: body
           name : data
           schema:
@@ -641,10 +640,10 @@ paths:
               - longitude
             properties:
               latitude:
-                type: double
+                type: number
                 example: "35.9078"
               longitude:
-                type: double
+                type: number
                 example: "127.7669"
       responses:
         200:
@@ -659,7 +658,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
-  chat/room:
+  /chat/room:
     get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
@@ -837,7 +836,7 @@ paths:
         - bookmark
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 유저의 토큰
@@ -866,7 +865,7 @@ paths:
         - bookmark
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 유저의 토큰
@@ -897,7 +896,7 @@ paths:
         - bookmark
       parameters: 
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 유저의 토큰
@@ -1054,7 +1053,6 @@ definitions:
         type: boolean
         example: true
 
-# 재현
 # 재현
 # 내 주변 마켓 리스트        
   Near_Market:
@@ -1348,7 +1346,7 @@ definitions:
           type: object
           properties:
             chatting_room_id:
-              type: Integer
+              type: integer
               example: 1
             name:
               type: string
@@ -1439,7 +1437,7 @@ definitions:
               example: 1
               description: 만든 사람의 고유 아이디
                       
-    market_review_list:
+  market_review_list:
       type: object
       properties:
         message:
@@ -1470,21 +1468,21 @@ definitions:
                 items:
                     type: object
                     properties:
-                    image_url:
-                      type: string
-                      example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
-                      description: 이미지 url
+                      image_url:
+                        type: string
+                        example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
+                        description: 이미지 url
             reviews:
                 type: array
                 items:
                     type: object
                     properties:
-                    user_id:
-                      type: string
-                      example: 김감자
-                    content:
-                      type: string
-                      example: JMT 존맛탱 그자체
+                      user_id:
+                        type: string
+                        example: 김감자
+                      content:
+                        type: string
+                        example: JMT 존맛탱 그자체
   weekly_farmer:
     type: object
     properties:
@@ -1552,22 +1550,22 @@ definitions:
           items:
               type: object
               properties:
-              bookmark_id:
-                type: integer
-                example: 1
-                description: 북마크 고유 인덱스
-              market_id:
-                type: integer
-                example: 1
-                description: 마켓 고유 인덱스
-              market_image:
-                type: string
-                example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
-                description: 마켓 대표 이미지
-              market_name:
-                type: string
-                example: 현듀마켓
-                description: 마켓 이름
+                bookmark_id:
+                  type: integer
+                  example: 1
+                  description: 북마크 고유 인덱스
+                market_id:
+                  type: integer
+                  example: 1
+                  description: 마켓 고유 인덱스
+                market_image:
+                  type: string
+                  example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
+                  description: 마켓 대표 이미지
+                market_name:
+                  type: string
+                  example: 현듀마켓
+                  description: 마켓 이름
   post_bookmark:
     type: object
     properties:
@@ -1584,6 +1582,6 @@ definitions:
   post_review:
     type: object
     properties:
-    message:
-      type: string
-      example: success write review
+      message:
+        type: string
+        example: success write review
