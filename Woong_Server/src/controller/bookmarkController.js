@@ -4,7 +4,7 @@ const jwt = require('lib/token')
 
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
-const configAll = require('../../src/confingAll')
+const configAll = require('../../src/configAll')
 const bookmarkData = require('../models/bookmarkModel')
 
 // 1. 북마크 리스트  

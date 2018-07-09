@@ -1,6 +1,6 @@
 const dbConnection = require('lib/dbConnection')
 const jwt = require('lib/token')
-const secretKey = require('confingAll')
+const secretKey = require('configAll')
 const signinModel = require('models/signinModel')
 const Joi = require('joi')
 

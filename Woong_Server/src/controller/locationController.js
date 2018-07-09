@@ -1,6 +1,6 @@
 const dbconnection = require('lib/dbconnection')
 const jwt = require('lib/token')
-const secret = require('confingAll')
+const secret = require('configAll')
 const locationModel = require('models/locationModel')
 
 const put_location = async (req, res) => {

@@ -1,6 +1,6 @@
 const dbConnection = require('lib/dbConnection')
 const decoding = require('lib/token')
-const secretKey = require('../confingAll')
+const secretKey = require('../configAll')
 
 
 const room = async(req, res) => {
