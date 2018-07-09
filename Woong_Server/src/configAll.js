@@ -5,4 +5,3 @@ module.exports = {
   dbConfig,
   secretKey: secretKey[process.env.NODE_ENV],
 }
-

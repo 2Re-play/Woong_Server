@@ -6,6 +6,7 @@ const review = require('./review')
 const bookmark = require('./bookmark')
 const item = require('./item')
 const favorite = require('./favorite')
+const market = require('./market')
 
 const router = express.Router()
 
@@ -16,6 +17,7 @@ router.use('/weeklyfarmer', weeklyfarmer)
 router.use('/review', review)
 router.use('/item', item)
 router.use('/bookmark', bookmark)
+router.use('/market', market)
 router.use('/favorite', favorite)
 
 module.exports = router
