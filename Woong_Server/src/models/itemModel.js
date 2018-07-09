@@ -6,7 +6,7 @@ exports.selectItemByKeyword = (connection, { user_id }, keyword) => {
       i.item_name,
       m.market_name, i.item_unit, i.item_price, m.quick, m.delivery,
       S.user_id, ii.file_key,
-      IF(isnull(S.user_id), 0, IF(S.user_id = 1, 1, 0)) as favorite_flag
+      IF(isnull(S.user_id), 0, IF(S.user_id = ?, 1, 0)) as favorite_flag
     FROM
       WP_ITEM i
     INNER JOIN
@@ -22,8 +22,9 @@ exports.selectItemByKeyword = (connection, { user_id }, keyword) => {
       ) as S ON i.item_id = S.item_id
     WHERE
       i.item_name like '%${keyword}%'
+    Group by i.item_id
     `
-    connection.query(Query, [user_id], (err, data) => {
+    connection.query(Query, [user_id, user_id], (err, data) => {
       err && reject(new Error(err))
       resolve(data)
     })
