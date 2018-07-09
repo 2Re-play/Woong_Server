@@ -1,6 +1,9 @@
+const Joi = require('joi')
 const marketmodel = require('../models/marketModel')
 const dbConnection = require('../lib/dbConnection')
-
+const distance = require('../lib/distance')
+const { respondJson, respondOnError } = require('../lib/response')
+ 
 // 판매자 마켓 소개
 exports.IntroMarket = async (req, res) => {
   const connection = await dbConnection()
@@ -10,20 +13,19 @@ exports.IntroMarket = async (req, res) => {
   data = {
     market_id,
   }
+  const market_id_validation = Joi.validate(market_id, Joi.number().required())
+  if (market_id_validation.error) {
+    respondOnError(market_id_validation.error, res, 422)
+  }
   try {
     [market_introduce] = await marketmodel.introduce(connection, data)
     const result = {
       market_introduce,
     }
-    res.status(200).send({
-      message: 'successfully get market data',
-      data: result, // TODO : 나와 마켓 사이 거리 km 기능 구현
-    })
+    respondJson('successfully get market introduce data', result, res, 200)
   } catch (e) {
     console.log(e)
-    res.status(500).send({
-      message: 'Internal Server error',
-    })
+    respondOnError(e.message, res, 500)
   } finally {
     connection.release()
   }
@@ -38,20 +40,23 @@ exports.ItemDetail = async (req, res) => {
     market_id,
     item_id,
   }
+  const market_id_validation = Joi.validate(market_id, Joi.number().required())
+  const item_id_validation = Joi.validate(item_id, Joi.number().required())
+  if (market_id_validation.error || item_id_validation.error) {
+    respondOnError(market_id_validation.error, res, 422)
+    if (item_id_validation.error) {
+      respondOnError(item_id_validation, res, 422) 
+    }
+  } 
   try {
     [itemdetail] = await marketmodel.itemdetail(connection, data)
     const result = {
       itemdetail,
     }
-    res.status(200).send({
-      message: 'successfully get food detail data',
-      data: result, 
-    })
+    respondJson('successfully get item detail data', result, res, 200)
   } catch (e) {
     console.log(e)
-    res.status(500).send({
-      message: 'Internal Server error',
-    })
+    respondOnError(e.message, res, 500)
   } finally {
     connection.release()
   }
@@ -67,20 +72,22 @@ exports.Itemsorting = async (req, res) => {
     option,
     market_id,
   }
+  const query_validation = Joi.validate(option, Joi.string().required())
+  const market_id_validation = Joi.validate(market_id, Joi.number().required())
+  if (market_id_validation.error) {
+    respondOnError(market_id_validation.error, res, 422) 
+  } if (query_validation.error) {
+    respondOnError(query_validation.error, res, 422) 
+  }
   try {
     item_sort = await marketmodel.itemsorting(connection, data)
     const result = {
       item_sort,
     }
-    res.status(200).send({
-      message: 'successfully get sorting item data',
-      data: result, 
-    })
+    respondJson('successfully get sorting item data', result, res, 200)
   } catch (e) {
     console.log(e)
-    res.status(500).send({
-      message: 'Internal Server error',
-    })
+    respondOnError(e.message, res, 500)
   } finally {
     connection.release()
   }

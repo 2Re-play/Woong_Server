@@ -4,7 +4,7 @@ exports.postcart = (connection, data) => {
     const Query = ` 
     INSERT INTO 
       WP_ITEM_CART(item_id, user_id) 
-    VALUES (${data.item_id},${data.user_token}) `
+    VALUES (${data.item_id},${data.user_id}) `
     connection.query(Query, (err) => {
       err && reject(err)
       resolve({})
@@ -18,7 +18,7 @@ exports.deletecart = (connection, data) => {
     DELETE FROM
       WP_ITEM_CART 
     WHERE 
-      user_id =${data.user_token} AND item_id = ${data.item_id}
+      user_id =${data.user_id} AND item_id = ${data.item_id}
     `
     connection.query(Query, (err) => {
       err && reject(err)
@@ -30,10 +30,18 @@ exports.deletecart = (connection, data) => {
 exports.getcart = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `
+    SELECT 
+      CONCAT('[',c.market_name,'] ',b.item_name) AS carttitle ,d.file_key,
+      CONCAT(b.item_price,'원(',b.item_unit,')') AS packging,b.item_price, b.item_unit, c.delivery 
+    FROM 
+      WP_ITEM_CART a 
+    JOIN(( WP_ITEM b JOIN WP_MARKET c USING(market_id)) JOIN WP_ITEM_IMAGE d USING(item_id)) USING(item_id) 
+    WHERE 
+      a.user_id =${data.user_id};
     `
-    connection.query(Query, [data.item_idx, data.user_token], (err) => {
+    connection.query(Query, (err, info) => {
       err && reject(err)
-      resolve({})
+      resolve(info)
     })
   })
 } 
