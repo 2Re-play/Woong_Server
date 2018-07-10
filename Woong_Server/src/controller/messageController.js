@@ -48,12 +48,13 @@ const get_message = async (req, res) => {
 
 const post_message = async (req, res) => {
 
-  const  check_user_id = req.user.user_id
+  const { user_id } = req.user
   const { chatting_room_id } = req.body
   const { content } = req.body
 
   const connection = await dbconnection()  
   
+  console.log(user_id)
   console.log(chatting_room_id)
   console.log(content)
 
@@ -68,26 +69,14 @@ const post_message = async (req, res) => {
 
     console.log(current_time)
 
-    const get_user_id_result = await messageModel.get_user_id(connection, chatting_room_id)
-
-    const [{ user_id }] = get_user_id_result
-    
-    if (check_user_id === user_id) {
+        
+    const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, current_time)
+    console.log(post_message_result)
 
 
+    const data = {
+      post_message_result,
     }
-    // const post_message_result = await messageModel.post_message(connection, chatting_room_id)
-    // console.log(post_message_result)
-
-    // const db_user_id = post_message_result
-
-    // console.log(get_user_id)
-    // console.log(db_user_id)
-
-
-    // const data = {
-    //   post_message_result,
-    // }
 
     respondJson('성공적으로 채팅 리스트 반환!!', data, res, 200)
 
