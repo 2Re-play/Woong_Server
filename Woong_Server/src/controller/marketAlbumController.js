@@ -14,6 +14,11 @@ exports.getMarketAlbum = async (req, res) => {
   try {
     getMarketAlbumResult = await marketData.getAlbum(connection, data)
 
+    for (let i in getMarketAlbumResult) {
+      console.log(await signedurl.getSignedUrl(getMarketAlbumResult[i].file_key))
+      getMarketAlbumResult[i].file_key = await signedurl.getSignedUrl(getMarketAlbumResult[i].file_key)
+    }
+
     res.status(200).send({
       message: 'success',
       data: getMarketAlbumResult,

@@ -2,6 +2,8 @@
 const Joi = require('joi')
 const jwt = require('lib/token')
 
+const signedurl = require('../lib/signedurl')
+
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
 const configAll = require('../../src/configAll')
@@ -17,9 +19,13 @@ exports.getBookmark = async (req, res) => {
 
   const decode_result = await jwt.decode(user_token, secretKey)
   console.log(decode_result)
-  const user_id = await decode_result.user_id
+
   try {
+    const user_id = await decode_result.user_id
     bookmarkResult = await bookmarkData.getBookmark(connection, user_id)
+    bookmarkResult[0].title_image_key = await signedurl.getSignedUrl(bookmarkResult[0].title_image_key)
+    console.log(bookmarkResult[0].title_image_key)
+    // console.log('유저아이디: '+user_id)
     respondJson('success', bookmarkResult, res, 200)
 
   } catch (e) {
