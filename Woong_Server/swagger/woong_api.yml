@@ -674,6 +674,7 @@ paths:
             $ref: "#/definitions/500_error"
   /account/signup:
     post:
+    
       summary: signup(alex)
       description: signup
       produces: [application/json]
@@ -721,6 +722,26 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"          
+    get:
+      summary: get allergylist(alex)
+      description: get allergylist
+      consumes:
+        - application/json
+      tags:
+        - account 
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: "#/definitions/200_account_allergy_get"
+        403:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/403_error"
+        500:
+          description: status code 500
+          schema:
+            $ref: "#/definitions/500_error"  
   /account/signout:
     put:
       summary: signout(alex)
@@ -1456,6 +1477,26 @@ definitions:
           token: 
             type: string
             example: "askdnwqld,m/,cmpewjfwpq"
+  200_account_allergy_get:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Sucessfully get allergy list!!" 
+      data:
+        type: object
+        properties:
+          data: 
+            type: array
+            items:
+              type: object
+              properties:
+                allergy_id:
+                  type: integer
+                  example: 1
+                allergy_name:
+                  type: string
+                  example: 메밀           
   200_account_signup:
     type: object
     properties:

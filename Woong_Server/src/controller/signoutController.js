@@ -15,6 +15,8 @@ const signout = async (req, res) => {
     
     if (signout_result.changedRows === 0) {
       respondOnError('이미 로그아웃 하였습니다.', res, 500)
+      connection.release()
+      return
     }
 
     const data = {
