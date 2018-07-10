@@ -56,15 +56,10 @@ exports.IntroMarket = async (req, res) => {
   const connection = await dbConnection()
   try {
     market_introduce = await marketmodel.introduce(connection, data)
-    console.log(1, market_id)
     ulomo = await marketmodel.ulomlo(connection, data)
-    console.log(2, ulomo)
     const title_image_url = await signedUrl.getSignedUrl(market_introduce[0].title_image_key)
-    console.log(3, title_image_url)
     const farmer_image_url = await signedUrl.getSignedUrl(market_introduce[0].farmer_image_key)
-    console.log(4, farmer_image_url)
     const temp = await dista.getdistance(ulomo[0].user_latitude, ulomo[0].user_longitude, ulomo[0].market_latitude, ulomo[0].market_longitude)
-    console.log(5, temp)
     market_introduce[0].title_image_key = title_image_url
     market_introduce[0].farmer_image_key = farmer_image_url
     market_introduce[0].youandi = temp

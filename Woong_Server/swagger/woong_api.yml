@@ -4,7 +4,7 @@ info:
   version: "1.0"
   description: "project woong's server API"
 
-host: localhost:3000
+host: http://13.125.190.134:3000
 basePath: /api/v1.0
 schemes:
   - http
