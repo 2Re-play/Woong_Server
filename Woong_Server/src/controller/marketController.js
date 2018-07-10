@@ -96,12 +96,10 @@ exports.ItemDetail = async (req, res) => {
   const connection = await dbConnection()
   try {
     [itemdetail] = await marketmodel.itemdetail(connection, data)
+    console.log(itemdetail)
     const imageurl = await signedUrl.getSignedUrl(itemdetail.file_key)
     itemdetail.file_key = imageurl
-    const result = {
-      itemdetail,
-    }
-    respondJson('successfully get item detail data', result, res, 200)
+    respondJson('successfully get item detail data', itemdetail, res, 200)
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)
@@ -134,10 +132,7 @@ exports.Itemsorting = async (req, res) => {
       const temp = await signedUrl.getSignedUrl(item_sort[i].file_key)
       item_sort[i].file_key = temp
     }
-    const result = {
-      item_sort,
-    }
-    respondJson('successfully get sorting item data', result, res, 200)
+    respondJson('successfully get sorting item data', item_sort, res, 200)
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)

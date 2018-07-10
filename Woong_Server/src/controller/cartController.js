@@ -83,10 +83,7 @@ exports.getCart = async (req, res) => {
         cartlist[i].delivery = 0
       }
     }
-    const result = {
-      cartlist,
-    }
-    respondJson('successfully get cart data', result, res, 200) 
+    respondJson('successfully get cart data', cartlist, res, 200) 
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)
