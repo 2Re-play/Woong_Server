@@ -38,9 +38,8 @@ exports.addBookmark = async (req, res) => {
   const { secretKey } = configAll.secretKey
 
   const decode_result = await jwt.decode(user_token, secretKey)
-  console.log(decode_result)
   const user_id = await decode_result.user_id
-
+  console.log(`USER_ID:${user_id}`)
   const connection = await dbConnection()
   const validation = Joi.validate(market_id, Joi.number().required())
 

@@ -15,24 +15,6 @@ exports.postReview = (connection, data) => {
     })
   })
 }
-// 2. 리뷰 글 작성 시 사진 업로드
-// exports.postReviewImages = (connection, data, file) => {
-//   return new Promise((resolve, reject) => {
-//     let insert
-//     const Query = 'INSERT INTO WP_REVIEW_IMAGE (cr_dt,cr_user,) VALUES (?,?,?)'
-//     // 이미지 파일이 없을 때
-//     if (!file) {
-//       insert = [review_album_idx[0].review_album_idx, null, body.review_idx]
-//     } else {
-//       insert = [review_album_idx[0].review_album_idx, file.location, body.review_idx]
-//     t
-
-//     connection.query(Query, insert, (err, result) => {
-//       err && reject(err)
-//       resolve(result)
-//     })
-//   }
-//   }
 
 /** *** 특정 마켓의 후기 가져오기 **** */
 
@@ -50,10 +32,10 @@ exports.getReviewRate = (connection, data) => {
 // 2. 리뷰의 사진들 가져오기 (리뷰에 올라가 있는 모든 사진을 가져옴)
 exports.getReviewImages = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = `select * 
-                  from WP_REVIEW_IMAGE 
-                  where review_id 
-                  IN (select review_id from WP_MARKET_REVIEW where market_id=?)`
+    const Query = `select file_key
+                   from WP_REVIEW_IMAGE
+                   where review_id in
+                   (select review_id from WP_MARKET_REVIEW where market_id=?)`
     connection.query(Query, [data.market_id], (err, result) => {
       err && reject(err)
       resolve(result)

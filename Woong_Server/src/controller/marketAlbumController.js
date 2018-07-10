@@ -1,5 +1,6 @@
 const dbConnection = require('lib/dbConnection')
 const marketData = require('../models/marketModel')
+const signedurl = require('../lib/signedurl')
 
 // 1. 마켓 앨범 가져오기 
 exports.getMarketAlbum = async (req, res) => {

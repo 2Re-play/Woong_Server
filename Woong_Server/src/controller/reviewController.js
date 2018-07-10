@@ -5,6 +5,7 @@ const aws = require('aws-sdk')
 const dbConnection = require('lib/dbConnection')
 const { respondOnError } = require('lib/response')
 const reviewData = require('../models/reviewModel')
+const signedurl = require('../lib/signedurl')
 
 aws.config.loadFromPath('./config/credentials.json')
 
@@ -40,7 +41,12 @@ exports.getReview = async (req, res) => {
   data = {
     market_id,
   }
-
+  const options = {
+    Bucket: 'uniquegamza',
+    Expires: 300,
+    Key: 'review/2018/07/rk9Btl-mX.1531148609583.pdf',
+    ResponseContentDisposition: null,
+  }
   const validation = Joi.validate(market_id, Joi.number().required())
 
   if (validation.error) {
@@ -51,7 +57,18 @@ exports.getReview = async (req, res) => {
     [reviewRateResult] = await reviewData.getReviewRate(connection, data) 
     reviewImagesResult = await reviewData.getReviewImages(connection, data)
     reviewContentResult = await reviewData.getReviewContent(connection, data)
+
+    // for (const i in reviewImagesResult) {
+    //   options.Key=reviewImagesResult[i].file_key
+    //   s3.getSignedUrl('getObject', options, (err, result) => {
+    //     if (err) console.log(err)
+    //     console.log('결과: '+result)
+    //     reviewImagesResult[i].file_key=result
+    //   })
+    //   console.log('이미지 유알엘'+i+reviewImagesResult[i].file_key)
+    // }
     
+
     res.status(200).send({
       message: 'success',
       rate: reviewRateResult,
