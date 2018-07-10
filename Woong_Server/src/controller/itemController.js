@@ -5,16 +5,16 @@ const dbConnection = require('lib/dbConnection')
 
 const getItemSearchController = async (req, res) => {
   const { keyword } = req.query
-
-  const validation = Joi.validate(keyword, Joi.string().regex(/^[ㄱ-ㅎ|가-힣\*]+$/).required())
+  const { user } = req
+//  const validation = Joi.validate(keyword, Joi.string().regex(/^[ㄱ-ㅎ|가-힣\*]+$/).required())
   
-  if (validation.error) {
-    respondOnError(validation.error, res, 422)
-  }
+//  if (validation.error) {
+//    respondOnError(validation.error, res, 422)
+//  }
 
   const connection = await dbConnection()
   try {
-    const item_info = await itemModel.selectItemByKeyword(connection, keyword)
+    const item_info = await itemModel.selectItemByKeyword(connection, user, keyword)
     const data = {
       item_info,
     }
