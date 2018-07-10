@@ -1,54 +1,68 @@
 const dbConnection = require('lib/dbConnection')
-const jwt = require('lib/token')
-const secret = require('configAll')
 const locationModel = require('models/locationModel')
+const { respondJson, respondOnError } = require('../lib/response')
 
 const put_location = async (req, res) => {
 
-  const token = req.headers.token
-  const latitude = req.body.latitude
-  const longitude = req.body.longitude
-  const secret_key = secret.secretKey
+  const { user_id } = req.user
+  const { latitude } = req.body
+  const { longitude } = req.body
+  const { address } = req.body
 
-  console.log(token)
+  console.log(req.body)
+  console.log(user_id)
   console.log(latitude)
   console.log(longitude)
-  console.log(secret_key)
-
+  console.log(address)
 
   const connection = await dbConnection()
 
-  const decode_result = await jwt.decode(token, secret_key)
-  const user_id = decode_result.user_id
-  const address = '서울시 마포구'
-  console.log(user_id)
- 
-  const post_lcation_result = await locationModel.put_location(connection, user_id, latitude, longitude, address)
-  console.log(post_lcation_result)
+  try {
 
-  connection.release()
-  res.status(200).send('Successfully Put Location')
+    const put_location_result = await locationModel.put_location(connection, user_id, latitude, longitude, address)
+    console.log(put_location_result)
+    const data = {
+      put_location_result,
+    }
+    respondJson('성공적인 위치 데이터 저장!!', data, res, 200)
 
-  
+  } catch (e) {
+
+    respondOnError(e, res, 500)
+
+  } finally {
+
+    connection.release()
+
+  }
 }
 
 const get_location = async (req, res) => {
   
-  const token = req.headers.token
-
+  const { user_id } = req.user
+  console.log(user_id)
   const connection = await dbConnection()
 
-  const secret_key = secret.secretKey
-  const decode_result = await jwt.decode(token, secret_key)
-  const user_id = decode_result.user_id
   
-  console.log(user_id)
+  try {
+    const get_location_result = await locationModel.get_location(connection, user_id)
+    console.log(get_location_result)
+   
+    let [{ address }] = get_location_result
 
-  const get_location_result = await locationModel.get_location(connection, user_id)
-  console.log(get_location_result)
-  connection.release()
-  res.status(200).send('Successfully Get Location')
+    address = address.split(' ')
+    
+    const real_address = `${address[1]} ${address[2]}` 
 
+    const data = {
+      real_address,
+    }
+    respondJson('성공적인 위치 정보 반환!!', data, res, 200)
+  } catch (e) {
+    respondOnError('서버 내부 에러', res, 500)
+  } finally {
+    connection.release()
+  }
 }
 
 
