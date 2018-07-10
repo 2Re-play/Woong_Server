@@ -15,7 +15,7 @@ exports.introduce = (connection, data) => {
     SELECT 
     a.market_name,
     GROUP_CONCAT(c.tag_name
-        SEPARATOR ',') AS tag_name,
+        SEPARATOR ',') AS tag_name, a.delivery, a.quick,
     (SELECT 
             COUNT(*)
         FROM
