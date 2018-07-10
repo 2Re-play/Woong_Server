@@ -49,6 +49,7 @@ const signup = async (req, res) => {
   const connection = await dbConnection()
 
   try {
+
     const [duplicate_check_result] = await signupModel.duplicate_check(connection, email)
 
     console.log(duplicate_check_result)
@@ -62,15 +63,21 @@ const signup = async (req, res) => {
     // console.log(signin_result)
 
     const data = {
+
       signin_result,
+
     }
 
     respondJson('성공적인 회원가입!!', data, res, 200)
 
   } catch (e) {
+
     respondOnError('서버 내부 에러!!', res, 500)
+
   } finally {
+
     connection.release()
+
   }
 }
 
@@ -79,6 +86,7 @@ const get_allergy = async (req, res) => {
   const connection = await dbConnection()
 
   try {
+
     const allergy_result = await signupModel.get_allergy(connection)
     console.log(allergy_result)
 
@@ -89,9 +97,13 @@ const get_allergy = async (req, res) => {
     respondJson('성공적인 알러지 리스트!!', data, res, 200)
 
   } catch (e) {
+
     respondOnError('서버 내부 에러!!', res, 500)
+
   } finally {
+
     connection.release()
+
   }
 }
 

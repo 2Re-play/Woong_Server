@@ -6,10 +6,10 @@ const { respondJson, respondOnError } = require('lib/response')
 
 module.exports = async (req, res, next) => {
   const { usertoken } = req.headers
-  console.log(usertoken)
+  // console.log(usertoken)
   try {
     req.user = await token.decode(usertoken, 'JvaWQiLCJkZXZpY2VfdG9rZW4isInNldF90a')
-    console.log(req.user)
+    // console.log(req.user)
     if (_.isEmpty(req.user)) {
       throw new Error('user Authentication Error')
     } 
