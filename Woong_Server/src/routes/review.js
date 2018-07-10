@@ -1,6 +1,6 @@
 const express = require('express')
 
-const { multer } = require('..//lib/s3bucket')
+const { multer } = require('../lib/s3bucket')
 
 const reviewCtrl = require('../controller/reviewController')
 

@@ -623,10 +623,10 @@ paths:
             properties:
               email:
                 type: string
-                example : "dla1635@gmail.com"
+                example : dla1635@gmail.com
               password:
                 type: string
-                example : "1234"
+                example : 1234
       responses:
         200:
           description: status code 200

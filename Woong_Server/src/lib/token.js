@@ -6,7 +6,7 @@ exports.encode = (payload, subject, secret) => {
     jwt.sign(payload, secret, {
       issuer: 'service',
       algorithm: 'HS256',
-      expiresIn: 3600 * 24 * 10 * 10,
+      expiresIn: 60000 * 60 * 24 * 10 * 10 * 10, // 춴일 동안~
       subject,
     }, (err, result) => {
       err && reject(new Error(err))
