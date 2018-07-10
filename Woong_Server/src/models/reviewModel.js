@@ -1,6 +1,5 @@
 const moment = require('moment')
 
-
 /** *** 후기 (리뷰) 작성하기 **** */
 
 // 1. 리뷰 글 작성
@@ -8,7 +7,7 @@ exports.postReview = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `INSERT INTO 
                   WP_MARKET_REVIEW (user_id,market_id,content,date,rate_speed,rate_fresh,rate_taste,rate_kindness,cr_dt,cr_user)
-                  VALUES (?,?,?,?,?,?,?,?,?)`
+                  VALUES (?,?,?,?,?,?,?,?,?,?)`
     connection.query(Query, [Number(data.user_id), Number(data.market_id), data.content, moment().format('YYYY-MM-DD'), Number(data.rate_speed), Number(data.rate_fresh), Number(data.rate_taste), Number(data.rate_kindness), moment().format('YYYY-MM-DD'), Number(data.user_id)], (err, result) => {
       err && reject(err)
       resolve(result)

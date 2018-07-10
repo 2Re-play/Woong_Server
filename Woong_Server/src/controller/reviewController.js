@@ -16,13 +16,13 @@ exports.postReview = async (req, res) => {
   console.log(req.files)
   const connection = await dbConnection()
   let postReviewResult
-  const { user_id } = req.body
+
   const { market_id } = req.params
-  const { content } = req.body
-  const { rate_speed } = req.body
-  const { rate_fresh } = req.body
-  const { rate_taste } = req.body
-  const { rate_kindness } = req.body
+
+  const {
+    user_id, content, rate_speed, rate_fresh, rate_taste, rate_kindness, 
+  } = req.body
+
 
   let data = {}
   data = {
@@ -34,6 +34,7 @@ exports.postReview = async (req, res) => {
     rate_taste,
     rate_kindness,
   }
+  
   try {
     postReviewResult = await reviewData.postReview(connection, data)
     res.status(200).send({
@@ -42,7 +43,7 @@ exports.postReview = async (req, res) => {
     })
 
   } catch (e) {
-    console.log(e)
+    console.log(`에러${e}`)
   } finally {
     connection.release()
   }
@@ -70,7 +71,7 @@ exports.getReview = async (req, res) => {
     [reviewRateResult] = await reviewData.getReviewRate(connection, data) 
     reviewImagesResult = await reviewData.getReviewImages(connection, data)
 
-    for (let i in reviewImagesResult) {
+    for (const i in reviewImagesResult) {
       console.log(await signedurl.getSignedUrl(reviewImagesResult[i].file_key))
       reviewImagesResult[i].file_key = await signedurl.getSignedUrl(reviewImagesResult[i].file_key)
     }

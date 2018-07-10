@@ -2,10 +2,9 @@
 const Joi = require('joi')
 const jwt = require('lib/token')
 
-const signedurl = require('../lib/signedurl')
-
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
+const signedurl = require('../lib/signedurl')
 const configAll = require('../../src/configAll')
 const bookmarkData = require('../models/bookmarkModel')
 
