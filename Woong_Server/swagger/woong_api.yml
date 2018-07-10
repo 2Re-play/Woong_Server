@@ -1255,41 +1255,46 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get market introduce data
+        example: successfully get market data
       data:
           type: object
           properties:
-            market_introduce:
-              type: object
-              properties:
-                market_name:
-                  type: string
-                  example: 현듀마켓
-                  description: 마켓이름
-                market_info:
-                  type: string
-                  example : 안녕하세요. 현듀마켓 입니다. 등등
-                  description: 마켓 소개글
-                title_image_key:
-                  type: string
-                  example: s3주소/1529150684832.jpeg
-                  description: 마켓 대표이미지
-                farmer_image_key:
-                  type: string
-                  example: s3주소/1529150684832.jpeg
-                  description: 농부 프로필사진
-                tag_name:
-                      type: string
-                      example: 유기농1, 유기농2, 유기농3
-                      description: 마켓 태그 name
-                bookmark_count:
-                    type: integer
-                    example: 70
-                    description: 즐겨찾기 카운트 수              
-                youandi:
-                  type: integer
-                  example: 10
-                  description: 마켓과 나와의 거리
+              market_name:
+                type: string
+                example: 현듀마켓
+                description: 마켓이름
+              tag_name:
+                type: string
+                example: 유기농1, 유기농2, 유기농3
+                description: 마켓 태그 name
+              delivery:
+                type: integer
+                example: 1
+                description: 1은 유료배송 0은 무료배송
+              quick:
+                type: integer
+                example: 1
+                description: 1은 당일배송x 0은 당일배송
+              bookmark_count:
+                type: integer
+                example: 70
+                description: 즐겨찾기 카운트 수                      
+              title_image_key:
+                type: string
+                example: s3주소/1529150684832.jpeg
+                description: 마켓 대표이미지
+              farmer_image_key:
+                type: string
+                example: s3주소/1529150684832.jpeg
+                description: 농부 프로필사진                    
+              market_info:
+                type: string
+                example : 안녕하세요. 현듀마켓 입니다. 등등
+                description: 마켓 소개글
+              youandi:
+                type: integer
+                example: 10
+                description: 마켓과 나와의 거리
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object
