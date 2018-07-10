@@ -1,18 +1,35 @@
-const put_signout = (connection, user_id) => {
+const put_signout = (connection, 
+  email, 
+  password, 
+  user_name,
+  birth, 
+  phone_number, 
+  login_type) => {
   return new Promise((resolve, reject) => {
-    console.log(user_id)
     const Query = `
-    UPDATE
-      woong_potato.WP_USER
-    SET
-      token = null
-    WHERE
-      user_id = ?
+    INSERT INTO
+      woong_potato.WP_USER(
+        email, 
+        password, 
+        user_name, 
+        birth, 
+        phone_number, 
+        login_type
+      )
+    VALUES
+      (?, ?, ?, ?, ?, ?)
     `
-    connection.query(Query, [user_id], (err, data) => {
-      err && reject(err)
-      resolve(data)
-    })
+    connection.query(Query, 
+      [email, 
+        password, 
+        user_name,
+        birth, 
+        phone_number, 
+        login_type,
+      ], (err, data) => {
+        err && reject(err)
+        resolve(data)
+      })
   })
 }
 
