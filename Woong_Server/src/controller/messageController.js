@@ -6,14 +6,27 @@ const { respondJson, respondOnError } = require('../lib/response')
 
 const get_message = async (req, res) => {
 
+  const { user_id } = req.user
   const { chatting_room_id } = req.params
   const connection = await dbconnection()  
 
+  console.log(user_id)
+  console.log(chatting_room_id)
   
   try {
+    // const get_user_name_result = await messageModel.get_user_name(connection, user_id)
+    // console.log(get_user_name_result)
+
     const get_message_result = await messageModel.get_message(connection, chatting_room_id)
     console.log(get_message_result)
 
+    for (let i = 0; i < get_message_result.length; i++) {
+      if (user_id === get_message_result[i].sender_user_id) {
+
+        get_message_result[i].sender_user_id = 'me'
+
+      }
+    }
 
     const data = {
       get_message_result,
@@ -35,6 +48,7 @@ const get_message = async (req, res) => {
 
 const post_message = async (req, res) => {
 
+  const  check_user_id = req.user.user_id
   const { chatting_room_id } = req.body
   const { content } = req.body
 
@@ -57,7 +71,11 @@ const post_message = async (req, res) => {
     const get_user_id_result = await messageModel.get_user_id(connection, chatting_room_id)
 
     const [{ user_id }] = get_user_id_result
-    console.log(user_id)
+    
+    if (check_user_id === user_id) {
+
+
+    }
     // const post_message_result = await messageModel.post_message(connection, chatting_room_id)
     // console.log(post_message_result)
 
