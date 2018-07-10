@@ -27,10 +27,15 @@ const getSubCategoryListController = async (req, res) => {
 }
 
 const getItemListController = async (req, res) => {
-  const { main_id, sub_id } = req.params
+  let data = req.params
+  const { user } = req
 
-  let validation = Joi.validate(main_id, Joi.number().required())
-  validation = Joi.validate(sub_id, Joi.number().required())
+  const sheme = {
+    main_id: Joi.number().required(),
+    sub_id: Joi.number().required(),
+  }
+
+  const validation = Joi.validate(data, sheme)
 
   if (validation.error) {
     throw new Error(validation.error)
@@ -38,9 +43,8 @@ const getItemListController = async (req, res) => {
 
   const connection = await dbConnection()
   try {
-    const item_info = await categoryModel.selectItemByMarket(connection, main_id, sub_id)
-    console.log(item_info)
-    const data = {
+    const item_info = await categoryModel.selectItemByMarket(connection, data, user)
+    data = {
       item_info,
     }
     respondJson('get favorite success', data, res, 200)

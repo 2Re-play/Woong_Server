@@ -14,6 +14,7 @@ aws.config.loadFromPath('./config/credentials.json')
 // 1. 후기 (리뷰) 쓰기
 exports.postReview = async (req, res) => {
   console.log(req.files)
+  
   const connection = await dbConnection()
   let postReviewResult
 
@@ -34,13 +35,20 @@ exports.postReview = async (req, res) => {
     rate_taste,
     rate_kindness,
   }
-  
+
+  for(var i in req.files){
+    console.log(req.files[i].transforms[2])
+  }
+
   try {
+
+    // 별점 남기는 부분
     postReviewResult = await reviewData.postReview(connection, data)
     res.status(200).send({
       message: 'success',
       result: postReviewResult,
     })
+
 
   } catch (e) {
     console.log(`에러${e}`)

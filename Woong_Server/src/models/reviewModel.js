@@ -14,6 +14,19 @@ exports.postReview = (connection, data) => {
     })
   })
 }
+// 2. 리뷰 이미지 테이블에 이미지 저장
+exports.saveImage = (connection, review_id, file_key, file_size, file_name_origin, cr_user, file_url) => {
+  return new Promise((resolve, reject) => {
+    const Query = `INSERT INTO
+                   WP_REVIEW_IMAGE (review_id,file_key,file_size,file_name_origin,cr_dt,cr_user, file_url)
+                   VALUES(?,?,?,?,?,?,?)`
+    connection.query(Query, [review_id, file_key, file_size, file_name_origin, moment().format('YYYY-MM-DD'), cr_user, file_url], (err, result) => {
+      err && reject(err)
+      resolve(result)
+    })
+  })
+}
+
 
 /** *** 특정 마켓의 후기 가져오기 **** */
 

@@ -3,69 +3,75 @@ const jwt = require('lib/token')
 const secretKey = require('configAll')
 const signinModel = require('models/signinModel')
 const Joi = require('joi')
+const { respondJson, respondOnError } = require('../lib/response')
 
 
 const signin_app = async (req, res) => {
 
-  const email = req.body.email || 'dongsu@gmail.com'
-  const password = req.body.password || '1234'
-  
+  const { email } = req.body || 'dongsu@gmail.com'
+  const { password } = req.body || '1234'
+
+  console.log(req.body)
+  console.log(email)
+  console.log(password)
+
+  const validation_data = { email, password }
   const secret = secretKey.secretKey
   const subject = 'user_token'
 
-  const id_validation = Joi.validate(email, Joi.string().email().required())
-  const pw_validation = Joi.validate(password, Joi.string().required())
+  const sheme = {
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  }
 
-  console.log(id_validation)
-  console.log(pw_validation)
+  const email_password_validation = Joi.validate(validation_data, sheme)
+  console.log(email_password_validation)
 
-  if (id_validation.error) {
-    throw new Error(id_validation.error)
-  } else if (pw_validation.error) {
-    throw new Error(pw_validation.error)
+  // 잘못된 형식의 이메일,비밀번호가 들어왔을 경우
+  if (email_password_validation.error) {
+    respondOnError('이메일 형식이 아닙니다.', res, 400)
   }
 
   const connection = await dbConnection()
-  
   try {
     
-    const [user_info] = signinModel.signin_validation(connection, email)
-      
-    if (!user_info) {
-      throw new Error('Internal Error')
-    }
+    const [user_info] = await signinModel.signin_validation(connection, email)   
     console.log(user_info)
+    // 등록되지 않은 이메일
+    if (!user_info) {
+      respondOnError('등록되지 않은 이메일 입니다.', res, 400)
+    }
 
-    const user_id = user_info.user_id
+    const { user_id } = user_info
     const db_password = user_info.password 
 
     console.log(user_id) 
     console.log(db_password)
 
+    if (db_password === password) { //  user_id가 db에 존재하고 비빌번호도 일치한다면
 
-    if (user_id && db_password === password) { //  user_id가 db에 존재하고 비빌번호도 일치한다면
-      console.log('인증 성공')
       const payload = { user_id, email }
       const token = await jwt.encode(payload, subject, secret)
     
       console.log(token)
       const insert = await signinModel.signin_insert(user_id, token, connection)
+      
       console.log(insert)
       const data = {
         token,
       }
-      res.status(200)
-      res.send({ data })
+      // 로그인 성공
+      respondJson('성공적인 로그인!!', data, res, 200)
       
+    } else { // 패스워드가 틀렸을 경우
+      respondOnError('잘못된 패스워드!!', res, 400)
     }
-    
-    
-  } catch (e) {
-    res.status(600)
-    res.send(e)
-  } 
-  connection.release()
-  
+        
+  } catch (e) { // 서버 내부 에러
+    respondOnError('서버 내부 에러', res, 500)
+  } finally {
+    connection.release()
+  }
 
 }
 

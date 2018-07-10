@@ -4,7 +4,7 @@ info:
   version: "1.0"
   description: "project woong's server API"
 
-host: localhost:3000
+host: http://13.125.190.134:3000
 basePath: /api/v1.0
 schemes:
   - http
@@ -13,7 +13,7 @@ paths:
 # 카테고리별 식품 리스트
   /category/main/{main_id}:
     get:
-      summary: 메인 카테고리에 속한 데이터
+      summary: 메인 카테고리에 속한 데이터 - 완료(O)
       description: 카테고리별로 식품 리스트를 가져옵니다.
       consumes:
         - application/x-www-form-urlencoded
@@ -29,7 +29,29 @@ paths:
         200:
           description: status code 200
           schema:
-            $ref: '#/definitions/sub_list'
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+                description: 성공 메시지
+              data:
+                type: object
+                properties:
+                  category_info:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        sub_id:
+                          type: integer
+                          example: 1
+                        sub_name:
+                          type: string
+                          example: 바나나
+                        sub_image:
+                          type: string
+                          example: https://s3_bucket
         403:
           description: status code 403
           schema:
@@ -41,13 +63,18 @@ paths:
 # 해당상품의 판매마켓리스트 가져오기
   /category/main/{main_id}/sub/{sub_id}:
     get:
-      summary: 마켓별 상품 리스트
+      summary: 마켓별 상품 리스트 - 완료(O)
       description: 상품 리스트
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - category
       parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 유저정보를 위한 토큰
         - in: path
           name: main_id
           type: integer
@@ -67,7 +94,56 @@ paths:
         200:
           description: status code 200
           schema:
-            $ref: '#/definitions/item_info'
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+                description: 성공 메시지
+              data:
+                type: object
+                properties:
+                  item_info:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        item_id:
+                          type: integer
+                          example: 1
+                        market_id:
+                          type: integer
+                          example: 1
+                        main_id:
+                          type: integer
+                          example: 1
+                        sub_id:
+                          type: integer
+                          example: 1
+                        market_name:
+                          type: string
+                          example: 동수네감자집
+                        item_image:
+                          type: string
+                          example: https://s3.bucket
+                        item_name:
+                          type: string
+                          example: 왕왕큰감자
+                        item_unit:
+                          type: string
+                          example: 1kg
+                        item_price:
+                          type: integer
+                          example: 3000
+                        quick:
+                          type: boolean
+                          example: true
+                        delivery:
+                          type: boolean
+                          example: ture
+                        favorite_flag:
+                          type: boolean
+                          example: true
         403:
           description: status code 403
           schema:
@@ -79,13 +155,18 @@ paths:
 # 상품 검색 
   /item/search:
     get:
-      summary: 상품 검색하기
+      summary: 상품 검색하기 - 완료(O)
       description: 판매자들이 등록한 상품 검색
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - item_food
       parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 유저정보를 위한 토큰
         - in : query
           name : keyword
           type : string
@@ -104,8 +185,47 @@ paths:
               data:
                 type: object
                 properties:
-                  sheme:
-                    $ref: '#/definitions/item_info'
+                  item_info:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        item_id:
+                          type: integer
+                          example: 1
+                        market_id:
+                          type: integer
+                          example: 1
+                        main_id:
+                          type: integer
+                          example: 1
+                        sub_id:
+                          type: integer
+                          example: 1
+                        market_name:
+                          type: string
+                          example: 동수네감자집
+                        item_image:
+                          type: string
+                          example: https://s3.bucket
+                        item_name:
+                          type: string
+                          example: 왕왕큰감자
+                        item_unit:
+                          type: string
+                          example: 1kg
+                        item_price:
+                          type: integer
+                          example: 3000
+                        quick:
+                          type: boolean
+                          example: true
+                        delivery:
+                          type: boolean
+                          example: ture
+                        favorite_flag:
+                          type: boolean
+                          example: true
         403:
           description: status code 403
           schema:
@@ -118,7 +238,7 @@ paths:
 # 상품 찜하기 등록
   /favorite/{item_id}:
     post:
-      summary: 상품 찜하기
+      summary: 상품 찜하기 - 완료(O)
       description: 사용자가 관심있는 상품 찜하기
       consumes:
         - application/x-www-form-urlencoded
@@ -131,10 +251,10 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
-          description: 유저의 토큰
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
@@ -153,10 +273,10 @@ paths:
         500:
           description: status code 500
           schema:
-            $ref: '#/definitions/500_error'              
+            $ref: '#/definitions/500_error'
 # 상품 찜하기 해제
     delete:
-      summary: 찜한 상품 해제
+      summary: 찜한 상품 해제 - 완료(O)
       description: 사용자가 등록한 찜한 상품 해제
       consumes:
         - application/x-www-form-urlencoded
@@ -169,10 +289,10 @@ paths:
           required: true
           description: 상품의 아이디
         - in: header
-          name: user_tokenuser_token
+          name: usertoken
           type: string
           required: true
-          description: 유저의 토큰
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
@@ -195,7 +315,7 @@ paths:
 # 찜하기 리스트
   /favorite:
     get:
-      summary: 찜하기 리스트
+      summary: 찜하기 리스트 - 완료(O)
       description: 내가 찜한 상품의 리스트
       consumes:
         - application/x-www-form-urlencoded
@@ -203,10 +323,10 @@ paths:
         - favorite
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
-          description: 유저의 토큰
+          description: 사용자의 token 
       responses:
         200:
           description: status code 200
@@ -220,8 +340,47 @@ paths:
               data:
                 type: object
                 properties:
-                  sheme:
-                    $ref: '#/definitions/item_info'
+                  item_info:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        item_id:
+                          type: integer
+                          example: 1
+                        market_id:
+                          type: integer
+                          example: 1
+                        main_id:
+                          type: integer
+                          example: 1
+                        sub_id:
+                          type: integer
+                          example: 1
+                        market_name:
+                          type: string
+                          example: 동수네감자집
+                        item_image:
+                          type: string
+                          example: https://s3.bucket
+                        item_name:
+                          type: string
+                          example: 왕왕큰감자
+                        item_unit:
+                          type: string
+                          example: 1kg
+                        item_price:
+                          type: integer
+                          example: 3000
+                        quick:
+                          type: boolean
+                          example: true
+                        delivery:
+                          type: boolean
+                          example: ture
+                        favorite_flag:
+                          type: boolean
+                          example: true
         403:
           description: status code 403
           schema:
@@ -235,7 +394,7 @@ paths:
 # 내 주변 마켓 리스트
   /market/distance:
     get:
-      summary: 내 주변 마켓 리스트 (Jay)
+      summary: 내 주변 마켓 리스트 (Jay) 거의 다 함!
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -244,7 +403,7 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token 
@@ -264,13 +423,18 @@ paths:
 #판매자 마켓 소개
   /market/info/{market_id}:
     get:
-      summary: 판매자 마켓 소개 (Jay)
+      summary: 판매자 마켓 소개 (Jay) OK
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - market
       parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 사용자 token
         - in: path
           name: market_id
           type: integer
@@ -292,7 +456,7 @@ paths:
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
-      summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay)
+      summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay) OK
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -321,9 +485,10 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
+ # 판매자 특정물품 정보
   /market/{market_id}/item/{item_id}:
     get:
-      summary: 판매자 특정물품 정보 (Jay)
+      summary: 판매자 특정물품 정보 (Jay) 쿼리 문제 발견 빠른 시일에 복구하겠습니다.
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -356,7 +521,7 @@ paths:
 #상품 장바구니 등록,해제
   /cart/{item_id}:
     post:
-      summary: 상품 장바구니 등록 (Jay)
+      summary: 상품 장바구니 등록 (Jay) OK
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -365,7 +530,7 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token
@@ -388,14 +553,14 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
     delete:
-      summary: 상품 장바구니 해제 (Jay)
+      summary: 상품 장바구니 해제 (Jay) OK
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - cart
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 토큰
@@ -420,14 +585,14 @@ paths:
 #상품 장바구니 리스트
   /cart:
     get:
-      summary: 상품 장바구니 리스트 (Jay)
+      summary: 상품 장바구니 리스트 (Jay) 토큰테스트만 하면 끝
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - cart
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token
@@ -445,7 +610,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #종완이형
-  account/signin/app:
+  /account/signin/app:
     post:
       summary: signin(alex)
       description: signin
@@ -464,10 +629,10 @@ paths:
             properties:
               email:
                 type: string
-                example : "dla1635@gmail.com"
+                example : dla1635@gmail.com
               password:
                 type: string
-                example : "1234"
+                example : 1234
       responses:
         200:
           description: status code 200
@@ -481,7 +646,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  account/signin/sns:
+  /account/signin/sns:
     post:
       summary: sns_signin(alex)
       description: sns_signin
@@ -513,7 +678,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  account/signup:
+  /account/signup:
     post:
       summary: signup(alex)
       description: signup
@@ -562,7 +727,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"          
-  account/signout:
+  /account/signout:
     put:
       summary: signout(alex)
       description: signout
@@ -588,7 +753,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"                    
-  account/location:
+  /account/location:
     get:
       summary: get location(alex)
       description: get location
@@ -626,7 +791,6 @@ paths:
           name: token
           type: string
           required: true
-          
         - in: body
           name : data
           schema:
@@ -634,13 +798,17 @@ paths:
             required:
               - latitude
               - longitude
+              - address
             properties:
               latitude:
-                type: double
-                example: "35.9078"
+                type: Integer
+                example: 35.9078
               longitude:
-                type: double
-                example: "127.7669"
+                type: Integer
+                example: 127.7669
+              address:
+                type: string
+                example: 서울시 마포구
       responses:
         200:
           description: status code 200
@@ -654,7 +822,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
-  chat/room:
+  /chat/room:
     get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
@@ -832,7 +1000,7 @@ paths:
         - bookmark
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 유저의 토큰
@@ -861,7 +1029,7 @@ paths:
         - bookmark
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 유저의 토큰
@@ -892,7 +1060,7 @@ paths:
         - bookmark
       parameters: 
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 유저의 토큰
@@ -1050,7 +1218,6 @@ definitions:
         example: true
 
 # 재현
-# 재현
 # 내 주변 마켓 리스트        
   Near_Market:
     type: object
@@ -1088,7 +1255,7 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get market data
+        example: successfully get market introduce data
       data:
           type: object
           properties:
@@ -1103,17 +1270,17 @@ definitions:
                   type: string
                   example : 안녕하세요. 현듀마켓 입니다. 등등
                   description: 마켓 소개글
-                titleimage:
+                title_image_key:
                   type: string
                   example: s3주소/1529150684832.jpeg
                   description: 마켓 대표이미지
-                farmer_image:
+                farmer_image_key:
                   type: string
                   example: s3주소/1529150684832.jpeg
                   description: 농부 프로필사진
                 tag_name:
                       type: string
-                      example: 유기농
+                      example: 유기농1, 유기농2, 유기농3
                       description: 마켓 태그 name
                 bookmark_count:
                     type: integer
@@ -1129,7 +1296,7 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get market data
+        example: successfully get sorting item data 
       data:
         type: object
         properties:
@@ -1150,6 +1317,9 @@ definitions:
                 item_name:
                   type: string
                   example: 돼지감자
+                file_key:
+                    type: string
+                    example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/456456?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180709%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180709T200423Z&X-Amz-Expires=300&X-Amz-Signature=87a1b2d2451e8f4d5ef8d4d7d98a3eb0383d6d7f3b66fde6a431d3259283af9e&X-Amz-SignedHeaders=host
                 packaging:
                       type: string
                       example: 1kg당 100원
@@ -1167,7 +1337,7 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get food detail data
+        example: successfully get item detail data
       data:
         type: object
         properties:
@@ -1343,7 +1513,7 @@ definitions:
           type: object
           properties:
             chatting_room_id:
-              type: Integer
+              type: integer
               example: 1
             name:
               type: string
@@ -1434,7 +1604,7 @@ definitions:
               example: 1
               description: 만든 사람의 고유 아이디
                       
-    market_review_list:
+  market_review_list:
       type: object
       properties:
         message:
@@ -1465,21 +1635,21 @@ definitions:
                 items:
                     type: object
                     properties:
-                    image_url:
-                      type: string
-                      example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
-                      description: 이미지 url
+                      image_url:
+                        type: string
+                        example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
+                        description: 이미지 url
             reviews:
                 type: array
                 items:
                     type: object
                     properties:
-                    user_id:
-                      type: string
-                      example: 김감자
-                    content:
-                      type: string
-                      example: JMT 존맛탱 그자체
+                      user_id:
+                        type: string
+                        example: 김감자
+                      content:
+                        type: string
+                        example: JMT 존맛탱 그자체
   weekly_farmer:
     type: object
     properties:
@@ -1547,22 +1717,22 @@ definitions:
           items:
               type: object
               properties:
-              bookmark_id:
-                type: integer
-                example: 1
-                description: 북마크 고유 인덱스
-              market_id:
-                type: integer
-                example: 1
-                description: 마켓 고유 인덱스
-              market_image:
-                type: string
-                example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
-                description: 마켓 대표 이미지
-              market_name:
-                type: string
-                example: 현듀마켓
-                description: 마켓 이름
+                bookmark_id:
+                  type: integer
+                  example: 1
+                  description: 북마크 고유 인덱스
+                market_id:
+                  type: integer
+                  example: 1
+                  description: 마켓 고유 인덱스
+                market_image:
+                  type: string
+                  example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
+                  description: 마켓 대표 이미지
+                market_name:
+                  type: string
+                  example: 현듀마켓
+                  description: 마켓 이름
   post_bookmark:
     type: object
     properties:
@@ -1579,6 +1749,6 @@ definitions:
   post_review:
     type: object
     properties:
-    message:
-      type: string
-      example: success write review
+      message:
+        type: string
+        example: success write review

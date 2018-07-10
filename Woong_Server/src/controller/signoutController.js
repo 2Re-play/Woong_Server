@@ -1,26 +1,32 @@
-const jwt = require('lib/token')
-const dbconnection = require('lib/dbconnection')
-const secretKey = require('configAll')
+const dbconnection = require('lib/dbConnection')
 const signoutModel = require('models/signoutModel')
+const { respondJson, respondOnError } = require('../lib/response')
+
 
 const signout = async (req, res) => {
   
-  const token = req.headers.token
-  const secret_key = secretKey.secretKey
-  
-  console.log(token)
-  console.log(secret_key)
+  const { user_id } = req.user
+  // console.log(user_id)
+  const connection = await dbconnection()  
 
-  const connection = await dbconnection()
-  const decode_result = await jwt.decode(token, secret_key)
-  const user_id = decode_result.user_id
+  try {
+    const signout_result = await signoutModel.put_signout(connection, user_id)
+    console.log(signout_result)
+    
+    if (signout_result.changedRows === 0) {
+      respondOnError('이미 로그아웃 하였습니다.', res, 500)
+    }
 
-  
-  console.log(decode_result)
-  console.log(decode_result.user_id)
+    const data = {
+      signout_result,
+    }
 
-  const signout_result = await signoutModel.put_signout(connection, user_id)
-  console.log(signout_result)
+    respondJson('성공적인 로그아웃!!', data, res, 200)
+  } catch (e) {
+    respondOnError('서버 내부 에러', res, 500)
+  } finally {
+    connection.release()
+  }
 
 }
 

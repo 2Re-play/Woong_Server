@@ -15,15 +15,14 @@ exports.selectSubListByMain = (connection, main_id) => {
   })
 }
 
-exports.selectItemByMarket = (connection, main_id, sub_id, user_id) => {
-  console.log('test', main_id, sub_id)
+exports.selectItemByMarket = (connection, { main_id, sub_id }, { user_id }) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
       i.item_id, i.market_id, i.main_id, i.sub_id,
       m.market_name, i.item_unit, i.item_price, m.quick, m.delivery,
       S.user_id, ii.file_key,
-      IF(isnull(S.user_id), 0, IF(S.user_id = 1, 1, 0)) as favorite_flag
+      IF(isnull(S.user_id), 0, IF(S.user_id = ${user_id}, 1, 0)) as favorite_flag
     FROM
       WP_ITEM i
     INNER JOIN
@@ -39,12 +38,12 @@ exports.selectItemByMarket = (connection, main_id, sub_id, user_id) => {
           user_id, item_id
         FROM
           WP_ITEM_FAVORITE wif
-        WHERE wif.user_id = 1
+        WHERE wif.user_id = ?
       ) as S ON i.item_id = S.item_id
     WHERE
       i.main_id = ? AND i.sub_id = ?
     `
-    connection.query(Query, [main_id, sub_id], (err, data) => {
+    connection.query(Query, [user_id, main_id, sub_id], (err, data) => {
       err && reject(new Error(err))
       resolve(data)
     })

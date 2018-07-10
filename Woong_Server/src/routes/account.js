@@ -3,7 +3,7 @@ const signinController = require('controller/signinController')
 const signupController = require('controller/signupController')
 const signoutController = require('controller/signoutController')
 const locationController = require('controller/locationController')
-
+const needAuth = require('middlewares/userCheck')
 
 const account = express.Router()
 
@@ -11,10 +11,10 @@ const account = express.Router()
 account.post('/signin/app', signinController.signin_app)
 account.post('/signin/sns', signinController.signin_sns)
 account.post('/signup', signupController.signup)
-account.put('/signout', signoutController.signout)
+account.put('/signout', needAuth, signoutController.signout)
 
-account.get('/location', locationController.get_location)
-account.put('/location', locationController.put_location)
+account.get('/location', needAuth, locationController.get_location)
+account.put('/location', needAuth, locationController.put_location)
 
 
 module.exports = account
