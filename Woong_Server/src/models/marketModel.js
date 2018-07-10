@@ -12,15 +12,27 @@ exports.getAlbum = (connection, data) => {
 exports.introduce = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `
-    SELECT DISTINCT
-        market_name, market_info, title_image_key, farmer_image_key, (SELECT GROUP_CONCAT( tag_name SEPARATOR ',') FROM WP_MARKET_TAG WHERE m.market_id =${data.market_id}) AS tag_name ,
-        (SELECT count(*) FROM WP_MARKET_BOOKMARK as b WHERE b.market_id = m.market_id) as bookmark_count 
-    FROM 
-        WP_MARKET_TAG t 
-    JOIN
-        ( WP_MARKET_BOOKMARK b JOIN WP_MARKET m USING(market_id)) USING(market_id) 
-    WHERE 
-        m.market_id=${data.market_id};
+    SELECT 
+    a.market_name,
+    GROUP_CONCAT(c.tag_name
+        SEPARATOR ',') AS tag_name,
+    (SELECT 
+            COUNT(*)
+        FROM
+            WP_MARKET_BOOKMARK AS b
+        WHERE
+            b.market_id = a.market_id) AS bookmark_count,
+    a.title_image_key,
+    a.farmer_image_key,
+    a.market_info,
+    a.market_info AS youandi
+FROM
+    WP_MARKET a
+        JOIN
+    WP_MARKET_TAG c USING (market_id)
+WHERE
+    a.market_id = ${data.market_id}
+GROUP BY market_id;
     `
     connection.query(Query, (err, info) => {
       err && reject(err)
@@ -79,6 +91,68 @@ exports.itemsorting = (connection, data) => {
         favorite_count DESC
       `
     }
+    connection.query(Query, (err, info) => {
+      err && reject(err)
+      resolve(info)
+    })
+  })
+}
+exports.ulocation = (connection, data) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT 
+    WP_USER.latitude AS user_latitude,
+    WP_USER.longitude AS user_longitude,
+    WP_MARKET.latitude AS market_latitude,
+    WP_MARKET.longitude AS market_longitude
+FROM
+    WP_USER,
+    WP_MARKET
+WHERE
+    user_id = ${data.user_id};
+    `
+    connection.query(Query, (err, info) => {
+      err && reject(err)
+      resolve(info)
+    })
+  })
+}
+exports.marketform = (connection) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT 
+    a.market_name,
+    a.market_address,
+    a.title_image_key,
+    GROUP_CONCAT(b.tag_name
+        SEPARATOR ',') AS tag_name,
+	  a.latitude AS youandi
+FROM
+    WP_MARKET a
+        JOIN
+    WP_MARKET_TAG b USING (market_id)
+GROUP BY market_id;
+    `
+    connection.query(Query, (err, info) => {
+      err && reject(err)
+      resolve(info)
+    })
+  })
+}
+exports.ulomlo = (connection, data) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT 
+    WP_USER.latitude AS user_latitude,
+    WP_USER.longitude AS user_longitude,
+    WP_MARKET.latitude AS market_latitude,
+    WP_MARKET.longitude AS market_longitude
+FROM
+    WP_USER,
+    WP_MARKET
+WHERE
+    user_id = ${data.user_id} and market_id = ${data.market_id};
+    `
     connection.query(Query, (err, info) => {
       err && reject(err)
       resolve(info)

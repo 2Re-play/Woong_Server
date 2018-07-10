@@ -6,33 +6,69 @@ const signedUrl = require('../lib/signedurl')
 const dista = require('../lib/distance')
 
 const { respondJson, respondOnError } = require('../lib/response')
+
+exports.distance = async (req, res) => {
+  const { user } = req
+  let data = {}
+  let user_id
+  let location
+  let marketform
+  data = {
+    user_id,
+  }
+  data.user_id = user.user_id 
+  const connection = await dbConnection()
+  try {
+    location = await marketmodel.ulocation(connection, data)
+    marketform = await marketmodel.marketform(connection)
+    for (let i = 0; i < location.length; i++) {
+      const temp = await dista.getdistance(location[i].user_latitude, location[i].user_longitude, location[i].market_latitude, location[i].market_longitude) // 유저 마켓 위도경도로 수정하기
+      marketform[i].youandi = temp
+    }
+    console.log(marketform)
+    respondJson('successfully get sorting item data', marketform, res, 200)
+  } catch (e) {
+    console.log(e)
+    respondOnError(e.message, res, 500)
+  } finally {
+    connection.release()
+  }
+}
  
 // 판매자 마켓 소개
 exports.IntroMarket = async (req, res) => {
+  const { user } = req 
   const { market_id } = req.params
+  console.log(req.params)
   let data = {}
+  let user_id
   let market_introduce
+  let ulomo
   data = {
     market_id,
+    user_id,
   }
+  data.user_id = user.user_id 
   const market_id_validation = Joi.validate(market_id, Joi.number().required())
-  
   if (market_id_validation.error) {
     respondOnError(market_id_validation.error, res, 422)
   }
   const connection = await dbConnection()
   try {
-    [market_introduce] = await marketmodel.introduce(connection, data)
-    const title_image_url = await signedUrl.getSignedUrl(market_introduce.title_image_key)
-    const farmer_image_url = await signedUrl.getSignedUrl(market_introduce.farmer_image_key)
-    console.log(market_introduce)
-    console.log(1, title_image_url)
-    market_introduce.title_image_key = title_image_url
-    market_introduce.farmer_image_key = farmer_image_url
-    const result = {
-      market_introduce,
-    }
-    respondJson('successfully get market introduce data', result, res, 200)
+    market_introduce = await marketmodel.introduce(connection, data)
+    console.log(1, market_id)
+    ulomo = await marketmodel.ulomlo(connection, data)
+    console.log(2, ulomo)
+    const title_image_url = await signedUrl.getSignedUrl(market_introduce[0].title_image_key)
+    console.log(3, title_image_url)
+    const farmer_image_url = await signedUrl.getSignedUrl(market_introduce[0].farmer_image_key)
+    console.log(4, farmer_image_url)
+    const temp = await dista.getdistance(ulomo[0].user_latitude, ulomo[0].user_longitude, ulomo[0].market_latitude, ulomo[0].market_longitude)
+    console.log(5, temp)
+    market_introduce[0].title_image_key = title_image_url
+    market_introduce[0].farmer_image_key = farmer_image_url
+    market_introduce[0].youandi = temp
+    respondJson('successfully get market introduce data', market_introduce, res, 200)
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)
@@ -100,34 +136,6 @@ exports.Itemsorting = async (req, res) => {
     }
     const result = {
       item_sort,
-    }
-    respondJson('successfully get sorting item data', result, res, 200)
-  } catch (e) {
-    console.log(e)
-    respondOnError(e.message, res, 500)
-  } finally {
-    connection.release()
-  }
-}
-
-exports.distance = async (req, res) => {
-    
-  const { user } = req
-  let data = {}
-  let distance
-  data = {
-    user_id,
-  }
-  data.user_id = user.user_id 
-  const connection = await dbConnection()
-  try {
-    distance = await marketmodel.itemsorting(connection, data)
-    for (let i = 0; i < distance.length; i++) {
-      const temp = await dista.getdistance(distance.userLatitude, distance.userLongitude, distacne.lat2, distance.lon2) // 유저 마켓 위도경도로 수정하기
-      distance[i].youandi = temp
-    }
-    const result = {
-      distance,
     }
     respondJson('successfully get sorting item data', result, res, 200)
   } catch (e) {

@@ -244,7 +244,7 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token 
@@ -271,6 +271,11 @@ paths:
       tags:
         - market
       parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 사용자 token
         - in: path
           name: market_id
           type: integer
@@ -366,7 +371,7 @@ paths:
       parameters:
       # path parameter 설정하기
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token
@@ -396,7 +401,7 @@ paths:
         - cart
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 토큰
@@ -428,7 +433,7 @@ paths:
         - cart
       parameters:
         - in: header
-          name: user_token
+          name: usertoken
           type: string
           required: true
           description: 사용자의 token

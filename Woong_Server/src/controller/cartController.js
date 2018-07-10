@@ -9,6 +9,7 @@ const signedUrl = require('../lib/signedurl')
 exports.InsertCart = async (req, res) => {
   const { user } = req
   const { item_id } = req.params
+  console.log(user)
   let data = {}
   let user_id
   data = {
@@ -57,10 +58,11 @@ exports.deleteCart = async (req, res) => {
     connection.release()
   }
 }
-// 장바구니 목록
+// 장바구니 목록  쿼리 2개 돌려서 하자 
 exports.getCart = async (req, res) => {
-  // const { user } = req
   const { user } = req
+  console.log(req.headers)
+  console.log(user)
   let data = {}
   let cartlist
   let user_id
