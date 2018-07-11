@@ -6,7 +6,7 @@ const { respondJson, respondOnError } = require('lib/response')
 
 module.exports = async (req, res, next) => {
   const { usertoken } = req.headers
-  console.log(usertoken)
+  // console.log(usertoken)
   try {
     req.user = await token.decode(usertoken, secretKey)
     // console.log())

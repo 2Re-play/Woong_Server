@@ -30,6 +30,8 @@ const signin_app = async (req, res) => {
   // 잘못된 형식의 이메일,비밀번호가 들어왔을 경우
   if (email_password_validation.error) {
     respondOnError('이메일 형식이 아닙니다.', res, 400)
+    connection.release()
+    return
   }
 
   const connection = await dbConnection()
@@ -40,6 +42,8 @@ const signin_app = async (req, res) => {
     // 등록되지 않은 이메일
     if (!user_info) {
       respondOnError('등록되지 않은 이메일 입니다.', res, 400)
+      connection.release()
+      return
     }
 
     const { user_id } = user_info
@@ -65,6 +69,8 @@ const signin_app = async (req, res) => {
       
     } else { // 패스워드가 틀렸을 경우
       respondOnError('잘못된 패스워드!!', res, 400)
+      connection.release()
+      return
     }
         
   } catch (e) { // 서버 내부 에러
