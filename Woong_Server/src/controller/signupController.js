@@ -15,6 +15,8 @@ const signup = async (req, res) => {
   const { use_type } = req.body
   const { allergy } = req.body
 
+  console.log(typeof(req.body.login_type))
+
 
   const validation_data = {
     email, 
