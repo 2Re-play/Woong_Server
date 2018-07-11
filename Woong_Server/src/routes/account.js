@@ -11,7 +11,6 @@ const account = express.Router()
 account.post('/signin/app', signinController.signin_app)
 account.post('/signin/sns', signinController.signin_sns)
 account.post('/signup', signupController.signup)
-account.get('/signup', signupController.get_allergy)
 account.put('/signout', needAuth, signoutController.signout)
 
 account.get('/location', needAuth, locationController.get_location)

@@ -1,6 +1,5 @@
 const dbconnection = require('lib/dbConnection')
 const chatting_room = require('models/roomModel')
-const messageModel = require('models/messageModel')
 const { respondJson, respondOnError } = require('../lib/response')
 
 const room = async (req, res) => {
@@ -11,8 +10,6 @@ const room = async (req, res) => {
   const array_data = []
 
   try {
-
-    const put_unread_result = await messageModel.put_unread_count(connection, chatting_room_id)
 
     const get_roomList_result = await chatting_room.get_room_list(connection, user_id)
     console.log(get_roomList_result)

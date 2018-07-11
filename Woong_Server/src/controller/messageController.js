@@ -74,7 +74,7 @@ const post_message = async (req, res) => {
 
     console.log(current_time)
 
-        
+    
     const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, current_time)
     console.log(post_message_result)
 

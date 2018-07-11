@@ -615,7 +615,7 @@ paths:
       summary: signin(alex)
       description: signin
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -651,7 +651,7 @@ paths:
       summary: sns_signin(alex)
       description: sns_signin
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -679,11 +679,12 @@ paths:
           schema:
             $ref: "#/definitions/500_error"
   /account/signup:
-    post: 
+    post:
       summary: signup(alex)
-      description: login_type -> 0 = user, 1 = seller user_type -> 0 = app, 1-> google 2-> kakao 
+      description: signup
+      produces: [application/json]
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -692,65 +693,32 @@ paths:
           schema:
             type: object
             required:
+              - birth
+              - name
               - email
               - password
-              - user_name
-              - birth
               - phone_number
-              - login_type
-              - use_type
             properties:
-              email:
-                type: string
-                example: dla1635@naver.com
-              password:
-                type: string
-                example: "1233"
-              user_name:
-                type: string
-                example: 임종완
               birth:
                 type: string
-                example: "1992/12/09"
+                example: "19921209"
+              name:
+                type: string
+                example: "임종완"
+              email:
+                type: string
+                example: "dla1635@gmail.com"
+              password:
+                type: string
+                example: "1234"
               phone_number:
                 type: string
                 example: "010-5051-4056"
-              login_type:
-                type: integer
-                example: 0
-              use_type:
-                type: integer
-                example: 1
-              allergy:
-                type: array
-                items:
-                  type: integer
-                  example: 1
       responses:
         200:
           description: status code 200
           schema:
             $ref: "#/definitions/200_account_signup"
-        400:
-          description: status code 403
-          schema:
-            $ref: "#/definitions/400_error"
-        500:
-          description: status code 500
-          schema:
-            $ref: "#/definitions/500_error"          
-    get:
-      summary: get allergylist(alex)
-      description: get allergylist
-      consumes:
-        - application/x-www-form-urlencoded
-      tags:
-        - account 
-      responses:
-        200:
-          description: status code 200
-          schema:
-            $ref: "#/definitions/200_account_allergy_get"
         403:
           description: status code 403
           schema:
@@ -758,18 +726,18 @@ paths:
         500:
           description: status code 500
           schema:
-            $ref: "#/definitions/500_error"  
+            $ref: "#/definitions/500_error"          
   /account/signout:
     put:
       summary: signout(alex)
       description: signout
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
         - in: header
-          name: usertoken
+          name: token
           type: string
           required: true
       responses:
@@ -790,12 +758,12 @@ paths:
       summary: get location(alex)
       description: get location
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
         - in: header
-          name: usertoken
+          name: token
           type: string
           required: true
       responses:
@@ -820,7 +788,7 @@ paths:
         - account
       parameters:
         - in: header
-          name: usertoken
+          name: token
           type: string
           required: true
         - in: body
@@ -859,12 +827,12 @@ paths:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: usertoken
+          name: token
           type: string
           required: true
       responses:
@@ -885,12 +853,12 @@ paths:
       summary: chatting list(alex)
       description: sender = me ->자신, 그 외 -> 상대방
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: usertoken
+          name: token
           type: string
           required: true
         - in: path
@@ -910,34 +878,23 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
-  /chat/message:
     post:
       summary: send message(alex)
       description: send message
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: usertoken
+          name: token
           type: string
           required: true
           
-        - in: body
-          name : data
-          schema:
-            type: object
-            required:
-              - chatting_room_id
-              - content
-            properties:
-              chatting_room_id:
-                type: integer
-                example : 1
-              content:
-                type: string
-                example : "hi,hello"
+        - in: path
+          name: chatting_room_id
+          type: integer
+          required: true
       responses:
         200:
           description: status code 200
@@ -1513,32 +1470,12 @@ definitions:
           token: 
             type: string
             example: "askdnwqld,m/,cmpewjfwpq"
-  200_account_allergy_get:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Sucessfully get allergy list!!" 
-      data:
-        type: object
-        properties:
-          data: 
-            type: array
-            items:
-              type: object
-              properties:
-                allergy_id:
-                  type: integer
-                  example: 1
-                allergy_name:
-                  type: string
-                  example: 메밀           
   200_account_signup:
     type: object
     properties:
       message:
         type: string
-        example: 성공적인 회원가입!!
+        example: Sucessfully SignUp!!
   200_account_signout:
     type: object
     properties:
@@ -1583,7 +1520,7 @@ definitions:
             chatting_room_id:
               type: integer
               example: 1
-            market_name:
+            name:
               type: string
               example: "현주마켓"
             unread_count:
@@ -1606,7 +1543,7 @@ definitions:
         items:
           type: object
           properties:
-            send_user_id:
+            sender:
               type: string
               example: "현주마켓"
             content:
@@ -1620,7 +1557,7 @@ definitions:
     properties:
       message:
         type: string
-        example: Sucessfully Post Chatting Message!!
+        example: Sucessfully Get Chatting List!!
       data:
         type : array
         items:
