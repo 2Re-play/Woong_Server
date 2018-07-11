@@ -1226,36 +1226,37 @@ definitions:
         type: string
         example: successfully get market data
       data:
-        type: object
-        properties:
-            Near_market:
-              type: array
-              items:
-                type: object
-                properties:
-                  market_name:
-                    type: string
-                    example: 현듀마켓
-                    description: 마켓이름
-                  market_address:
-                    type: string
-                    example: 서울시 마포구 와우산로
-                    description: 마켓 실 주소
-                  tag_name:
-                        type: string
-                        example: 유기농
-                        description: 마켓 태그 name          
-                  titleimage:
-                    type: string
-                    example: s3주소/1529150684832.jpeg
-                    description: 마켓 대표이미
+        type: array
+        items:
+          type: object
+          properties:
+            market_name:
+              type: string
+              example: 현듀마켓
+              description: 마켓이름
+            market_address:
+              type: string
+              example: 서울시 마포구 와우산로
+              description: 마켓 실 주소
+            title_image_key:
+              type: string
+              example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/review/2018/07/Hke5oxUM7m.1531236513586.JPG?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180711%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180711T130409Z&X-Amz-Expires=300&X-Amz-Signature=6bdede40fa4715eb3d9f8c07d04ba10d6ef2dea3eb8b152bee625beb815f5c88&X-Amz-SignedHeaders=host
+              description: 마켓 대표이미지 url
+            tag_name:
+                  type: string
+                  example: 유기농
+                  description: 마켓 태그 name          
+            youandi:
+              type: string
+              example: 10.1
+              description: 마켓과 유저 사이의 거리
 #판매자 마켓 소개              
   Market_introduce:
     type: object
     properties:
       message:
         type: string
-        example: successfully get market data
+        example: successfully get market introduce data
       data:
           type: object
           properties:
@@ -1342,56 +1343,53 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get item detail data
+        example: successfully get food detail data
       data:
         type: object
         properties:
-          itemdetail :
-            type: object
-            properties:
-              market_name:
-                type: string
-                example: 현듀마켓
-                description: 해당상품의 마켓이름
-              file_key:
-                type: string
-                example: s3주소/1529150684832.jpeg
-                description: 상품 이미지
-              item_name:
-                type: string
-                example: 돼지감자
-              item_info:
-                    type: string
-                    example: 겉은 고구마처럼..등등
-                    description: 상품 소개글
-              item_cook:
+            market_name:
+              type: string
+              example: 현듀마켓
+              description: 해당상품의 마켓이름
+            file_key:
+              type: string
+              example: s3주소/1529150684832.jpeg
+              description: 상품 이미지
+            item_name:
+              type: string
+              example: 돼지감자
+            item_info:
                   type: string
-                  example: 감자조림, 감자튀김
-                  description: 활용요리
-              item_maintain:
-                  type: string
-                  example: 직사광선을 피해랏!
-                  description: 상품 보관법
-              packaging:
-                  type: string
-                  example: 홍감자 1kg
-                  description: 홍감자 1kg뒤에 붙는 내외는 클라에서 해주세욤. 포장단위별 용량,수량,크기
-              item_manufacture:
+                  example: 겉은 고구마처럼..등등
+                  description: 상품 소개글
+            item_cook:
                 type: string
-                example: 2018.08.20
-                description: 제조연월일
-              item_expiration:
+                example: 감자조림, 감자튀김
+                description: 활용요리
+            item_maintain:
                 type: string
-                example: 2019.08.20
-                description: 유통기한
-              item_related:
+                example: 직사광선을 피해랏!
+                description: 상품 보관법
+            packaging:
                 type: string
-                example: 해당사항 없음
-                description: 관련법상 표시사항
-              item_producer:
-                type: string
-                example: 이현주
-                description: 생산자 이름
+                example: 홍감자 1kg
+                description: 홍감자 1kg뒤에 붙는 내외는 클라에서 해주세욤. 포장단위별 용량,수량,크기
+            item_manufacture:
+              type: string
+              example: 2018.08.20
+              description: 제조연월일
+            item_expiration:
+              type: string
+              example: 2019.08.20
+              description: 유통기한
+            item_related:
+              type: string
+              example: 해당사항 없음
+              description: 관련법상 표시사항
+            item_producer:
+              type: string
+              example: 이현주
+              description: 생산자 이름
 #상품 장바구니 등록
   ItemCart_Insert:
     type: object

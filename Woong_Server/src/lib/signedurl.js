@@ -1,12 +1,15 @@
 const aws = require('aws-sdk')
 
 aws.config.loadFromPath('./config/credentials.json')
-const s3 = new aws.S3()
+const s3 = new aws.S3({
+  region: 'ap-northeast-2',
+  signatureVersion: 'v4',
+})
 
 const getSignedUrl = async (key) => {
   const options = {
-    Bucket: 'uniquegamza',
-    Expires: 300,
+    Bucket: 'uniquegamza2',
+    Expires: 30000,
     Key: key,
     ResponseContentDisposition: null,
   }

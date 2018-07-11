@@ -25,7 +25,7 @@ module.exports = {
     let opt = {
       // 기본 옵션
       s3,
-      bucket: 'uniquegamza',
+      bucket: 'uniquegamza2',
       CacheControl: 'max-age = 31536000',
       acl: 'public-read-write',
       key(req, file, cb) {
