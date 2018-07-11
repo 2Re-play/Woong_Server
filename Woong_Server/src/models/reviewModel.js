@@ -14,6 +14,8 @@ exports.postReview = (connection, data) => {
     })
   })
 }
+
+
 // 2. 리뷰 이미지 테이블에 이미지 저장
 exports.saveImage = (connection, review_id, file_key, file_size, file_name_origin, cr_user, file_url) => {
   return new Promise((resolve, reject) => {
@@ -58,7 +60,12 @@ exports.getReviewImages = (connection, data) => {
 // 3. 리뷰 페이지 하단의 사용자들의 후기 가져오기 (사용자 이름, 후기 글만 가져옴)
 exports.getReviewContent = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = 'select user_id,content from WP_MARKET_REVIEW where market_id=?'
+    const Query = `SELECT 
+                   a.user_name, b.content 
+                   FROM 
+                   WP_MARKET_REVIEW b , WP_USER a
+                   WHERE
+                    b.market_id=? AND b.user_id=a.user_id`
     connection.query(Query, [data.market_id], (err, result) => {
       err && reject(err)
       resolve(result)

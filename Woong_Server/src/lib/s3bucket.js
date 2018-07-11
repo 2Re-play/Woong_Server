@@ -47,22 +47,6 @@ module.exports = {
           transform: (req, file, cb) => {
             cb(null, sharp().png())
           },
-        }, {
-          id: 'thumbnail',
-          key: (req, file, cb) => {
-            cb(null, `${which}/${date.YYYY}/${date.MM}/${shortid.generate()}.${Date.now()}.${file.originalname.split('.').pop()}`)
-          },
-          transform: (req, file, cb) => {
-            cb(null, sharp().png())
-          },
-        }, {
-          id: 'service',
-          key: (req, file, cb) => {
-            cb(null, `${which}/${date.YYYY}/${date.MM}/${shortid.generate()}.${Date.now()}.${file.originalname.split('.').pop()}`)
-          },
-          transform: (req, file, cb) => {
-            cb(null, sharp().png())
-          },
         }],
       }, opt)
     } else if (which === 'libraries' || which === 'reference') {
