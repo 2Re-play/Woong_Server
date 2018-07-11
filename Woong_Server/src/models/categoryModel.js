@@ -2,7 +2,7 @@ exports.selectSubListByMain = (connection, main_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      *
+      main_id, sub_id, sub_name
     FROM
       WP_CATEGORY_SUB
     WHERE

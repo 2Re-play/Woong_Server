@@ -340,7 +340,7 @@ paths:
               data:
                 type: object
                 properties:
-                  item_info:
+                  favorite_info:
                     type: array
                     items:
                       type: object
