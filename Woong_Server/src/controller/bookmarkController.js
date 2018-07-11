@@ -19,9 +19,7 @@ exports.getBookmark = async (req, res) => {
       console.log(await signedurl.getSignedUrl(bookmarkResult[i].title_image_key))
       bookmarkResult[i].title_image_key = await signedurl.getSignedUrl(bookmarkResult[i].title_image_key)
     }
-    // bookmarkResult[0].title_image_key = await signedurl.getSignedUrl(bookmarkResult[0].title_image_key)
-    // console.log(bookmarkResult[0].title_image_key)
-    // console.log('유저아이디: '+user_id)
+  
     respondJson('success', bookmarkResult, res, 200)
 
   } catch (e) {

@@ -59,6 +59,9 @@ exports.IntroMarket = async (req, res) => {
     ulomo = await marketmodel.ulomlo(connection, data)
     const title_image_url = await signedUrl.getSignedUrl(market_introduce[0].title_image_key)
     const farmer_image_url = await signedUrl.getSignedUrl(market_introduce[0].farmer_image_key)
+
+    console.log('이미지 유알엘: '+ title_image_url+ '#######')
+
     const temp = await dista.getdistance(ulomo[0].user_latitude, ulomo[0].user_longitude, ulomo[0].market_latitude, ulomo[0].market_longitude)
     market_introduce[0].title_image_key = title_image_url
     market_introduce[0].farmer_image_key = farmer_image_url
