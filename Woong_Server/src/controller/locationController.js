@@ -1,9 +1,13 @@
 const dbConnection = require('lib/dbConnection')
 const locationModel = require('models/locationModel')
+const Joi = require('joi')
 const { respondJson, respondOnError } = require('../lib/response')
+
 
 const put_location = async (req, res) => {
 
+  const connection = await dbConnection()
+  
   const { user_id } = req.user
   const { latitude } = req.body
   const { longitude } = req.body
@@ -15,9 +19,27 @@ const put_location = async (req, res) => {
   console.log(longitude)
   console.log(address)
 
-  const connection = await dbConnection()
+  const sheme = {
+    user_id: Joi.number().required(),
+    latitude: Joi.number().required(),
+    longitude: Joi.number().required(),
+    address: Joi.string().required(),
+  }
 
+  const validation_data = {
+    user_id,
+    latitude,
+    longitude,
+    address,
+  }
+  
   try {
+
+    const input_validation = Joi.validate(validation_data, sheme)
+
+    if (input_validation.error) {
+      throw new Error(422)
+    }
 
     const put_location_result = await locationModel.put_location(connection, user_id, latitude, longitude, address)
     console.log(put_location_result)
@@ -28,7 +50,11 @@ const put_location = async (req, res) => {
 
   } catch (e) {
 
-    respondOnError(e, res, 500)
+    if (e.message === '422') { 
+      respondOnError('형식이 맞지 않습니다.', res, 422) 
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
+    }
 
   } finally {
 
