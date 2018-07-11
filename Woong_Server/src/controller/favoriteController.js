@@ -20,11 +20,13 @@ const postFavoriteItemContorller = async (req, res) => {
     let favorite = [];
     [favorite] = await favoriteModel.selectCountByFavorite(connection, user, item_id)
     if (favorite.count === 0) await favoriteModel.insertFavoriteByUser(connection, user, item_id)
-    else throw respondOnError('DUPLICATE FAVORITE ITEM', res, 409)
+    else throw new Error(409)
+    // respondOnError('DUPLICATE FAVORITE ITEM', res, 409)
     
     respondJson('post favorite succes', {}, res, 200)
   } catch (e) {
-    respondOnError(e.message, res, 500)
+    if (e.message === 409) respondOnError('Duplicate Error', res, e.message) 
+    else respondOnError('SERVER ERROR', res, 500)
   }
   connection.release()
 }
