@@ -17,7 +17,7 @@ const swaggerDefinition = {
     version: '1.0.0', // Version (required)
     description: 'woong\'s potato', // Description (optional)
   },
-  host: '13.125.190.134:3000', // Host (optional)
+  host: 'http://13.125.190.134:3000', // Host (optional)
   basePath: '/', // Base path (optional)
 }
 

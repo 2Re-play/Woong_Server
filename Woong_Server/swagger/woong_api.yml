@@ -632,7 +632,7 @@ paths:
                 example : dla1635@gmail.com
               password:
                 type: string
-                example : 1234
+                example : "1234"
       responses:
         200:
           description: status code 200
@@ -651,7 +651,7 @@ paths:
       summary: sns_signin(alex)
       description: sns_signin
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
@@ -679,12 +679,11 @@ paths:
           schema:
             $ref: "#/definitions/500_error"
   /account/signup:
-    post:
+    post: 
       summary: signup(alex)
-      description: signup
-      produces: [application/json]
+      description: login_type -> 0 = user, 1 = seller user_type -> 0 = app, 1-> google 2-> kakao 
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
@@ -693,32 +692,65 @@ paths:
           schema:
             type: object
             required:
-              - birth
-              - name
               - email
               - password
+              - user_name
+              - birth
               - phone_number
+              - login_type
+              - use_type
             properties:
-              birth:
-                type: string
-                example: "19921209"
-              name:
-                type: string
-                example: "임종완"
               email:
                 type: string
-                example: "dla1635@gmail.com"
+                example: dla1635@naver.com
               password:
                 type: string
-                example: "1234"
+                example: "1233"
+              user_name:
+                type: string
+                example: 임종완
+              birth:
+                type: string
+                example: "1992/12/09"
               phone_number:
                 type: string
                 example: "010-5051-4056"
+              login_type:
+                type: integer
+                example: 0
+              use_type:
+                type: integer
+                example: 1
+              allergy:
+                type: array
+                items:
+                  type: integer
+                  example: 1
       responses:
         200:
           description: status code 200
           schema:
             $ref: "#/definitions/200_account_signup"
+        400:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/400_error"
+        500:
+          description: status code 500
+          schema:
+            $ref: "#/definitions/500_error"          
+    get:
+      summary: get allergylist(alex)
+      description: get allergylist
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - account 
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: "#/definitions/200_account_allergy_get"
         403:
           description: status code 403
           schema:
@@ -726,18 +758,18 @@ paths:
         500:
           description: status code 500
           schema:
-            $ref: "#/definitions/500_error"          
+            $ref: "#/definitions/500_error"  
   /account/signout:
     put:
       summary: signout(alex)
       description: signout
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
       responses:
@@ -758,12 +790,12 @@ paths:
       summary: get location(alex)
       description: get location
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - account
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
       responses:
@@ -788,7 +820,7 @@ paths:
         - account
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
         - in: body
@@ -827,12 +859,12 @@ paths:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - chat
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
       responses:
@@ -853,12 +885,12 @@ paths:
       summary: chatting list(alex)
       description: sender = me ->자신, 그 외 -> 상대방
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - chat
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
         - in: path
@@ -878,23 +910,34 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  /chat/message:
     post:
       summary: send message(alex)
       description: send message
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       tags:
         - chat
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
           
-        - in: path
-          name: chatting_room_id
-          type: integer
-          required: true
+        - in: body
+          name : data
+          schema:
+            type: object
+            required:
+              - chatting_room_id
+              - content
+            properties:
+              chatting_room_id:
+                type: integer
+                example : 1
+              content:
+                type: string
+                example : "hi,hello"
       responses:
         200:
           description: status code 200
@@ -1227,36 +1270,37 @@ definitions:
         type: string
         example: successfully get market data
       data:
-        type: object
-        properties:
-            Near_market:
-              type: array
-              items:
-                type: object
-                properties:
-                  market_name:
-                    type: string
-                    example: 현듀마켓
-                    description: 마켓이름
-                  market_address:
-                    type: string
-                    example: 서울시 마포구 와우산로
-                    description: 마켓 실 주소
-                  tag_name:
-                        type: string
-                        example: 유기농
-                        description: 마켓 태그 name          
-                  titleimage:
-                    type: string
-                    example: s3주소/1529150684832.jpeg
-                    description: 마켓 대표이미
+        type: array
+        items:
+          type: object
+          properties:
+            market_name:
+              type: string
+              example: 현듀마켓
+              description: 마켓이름
+            market_address:
+              type: string
+              example: 서울시 마포구 와우산로
+              description: 마켓 실 주소
+            title_image_key:
+              type: string
+              example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/review/2018/07/Hke5oxUM7m.1531236513586.JPG?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180711%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180711T130409Z&X-Amz-Expires=300&X-Amz-Signature=6bdede40fa4715eb3d9f8c07d04ba10d6ef2dea3eb8b152bee625beb815f5c88&X-Amz-SignedHeaders=host
+              description: 마켓 대표이미지 url
+            tag_name:
+                  type: string
+                  example: 유기농
+                  description: 마켓 태그 name          
+            youandi:
+              type: string
+              example: 10.1
+              description: 마켓과 유저 사이의 거리
 #판매자 마켓 소개              
   Market_introduce:
     type: object
     properties:
       message:
         type: string
-        example: successfully get market data
+        example: successfully get market introduce data
       data:
           type: object
           properties:
@@ -1343,56 +1387,53 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get item detail data
+        example: successfully get food detail data
       data:
         type: object
         properties:
-          itemdetail :
-            type: object
-            properties:
-              market_name:
-                type: string
-                example: 현듀마켓
-                description: 해당상품의 마켓이름
-              file_key:
-                type: string
-                example: s3주소/1529150684832.jpeg
-                description: 상품 이미지
-              item_name:
-                type: string
-                example: 돼지감자
-              item_info:
-                    type: string
-                    example: 겉은 고구마처럼..등등
-                    description: 상품 소개글
-              item_cook:
+            market_name:
+              type: string
+              example: 현듀마켓
+              description: 해당상품의 마켓이름
+            file_key:
+              type: string
+              example: s3주소/1529150684832.jpeg
+              description: 상품 이미지
+            item_name:
+              type: string
+              example: 돼지감자
+            item_info:
                   type: string
-                  example: 감자조림, 감자튀김
-                  description: 활용요리
-              item_maintain:
-                  type: string
-                  example: 직사광선을 피해랏!
-                  description: 상품 보관법
-              packaging:
-                  type: string
-                  example: 홍감자 1kg
-                  description: 홍감자 1kg뒤에 붙는 내외는 클라에서 해주세욤. 포장단위별 용량,수량,크기
-              item_manufacture:
+                  example: 겉은 고구마처럼..등등
+                  description: 상품 소개글
+            item_cook:
                 type: string
-                example: 2018.08.20
-                description: 제조연월일
-              item_expiration:
+                example: 감자조림, 감자튀김
+                description: 활용요리
+            item_maintain:
                 type: string
-                example: 2019.08.20
-                description: 유통기한
-              item_related:
+                example: 직사광선을 피해랏!
+                description: 상품 보관법
+            packaging:
                 type: string
-                example: 해당사항 없음
-                description: 관련법상 표시사항
-              item_producer:
-                type: string
-                example: 이현주
-                description: 생산자 이름
+                example: 홍감자 1kg
+                description: 홍감자 1kg뒤에 붙는 내외는 클라에서 해주세욤. 포장단위별 용량,수량,크기
+            item_manufacture:
+              type: string
+              example: 2018.08.20
+              description: 제조연월일
+            item_expiration:
+              type: string
+              example: 2019.08.20
+              description: 유통기한
+            item_related:
+              type: string
+              example: 해당사항 없음
+              description: 관련법상 표시사항
+            item_producer:
+              type: string
+              example: 이현주
+              description: 생산자 이름
 #상품 장바구니 등록
   ItemCart_Insert:
     type: object
@@ -1471,12 +1512,32 @@ definitions:
           token: 
             type: string
             example: "askdnwqld,m/,cmpewjfwpq"
+  200_account_allergy_get:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Sucessfully get allergy list!!" 
+      data:
+        type: object
+        properties:
+          data: 
+            type: array
+            items:
+              type: object
+              properties:
+                allergy_id:
+                  type: integer
+                  example: 1
+                allergy_name:
+                  type: string
+                  example: 메밀           
   200_account_signup:
     type: object
     properties:
       message:
         type: string
-        example: Sucessfully SignUp!!
+        example: 성공적인 회원가입!!
   200_account_signout:
     type: object
     properties:
@@ -1521,7 +1582,7 @@ definitions:
             chatting_room_id:
               type: integer
               example: 1
-            name:
+            market_name:
               type: string
               example: "현주마켓"
             unread_count:
@@ -1544,7 +1605,7 @@ definitions:
         items:
           type: object
           properties:
-            sender:
+            send_user_id:
               type: string
               example: "현주마켓"
             content:
@@ -1558,7 +1619,7 @@ definitions:
     properties:
       message:
         type: string
-        example: Sucessfully Get Chatting List!!
+        example: Sucessfully Post Chatting Message!!
       data:
         type : array
         items:

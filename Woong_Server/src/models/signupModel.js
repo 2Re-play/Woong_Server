@@ -33,8 +33,42 @@ const put_signout = (connection,
   })
 }
 
+const get_allergy = (connection) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT
+      allergy_id,allergy_name
+    FROM
+      woong_potato.WP_ALLERGY
+    `
+    connection.query(Query, (err, data) => {
+      err && reject(err)
+      resolve(data)
+    })
+  })
+}
+
+const duplicate_check = (connection, email) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT
+      user_id
+    FROM
+      woong_potato.WP_USER
+    WHERE
+      email = ?
+    `
+    connection.query(Query, [email], (err, data) => {
+      err && reject(err)
+      resolve(data)
+    })
+  })
+}
+
 
 module.exports = {
   put_signout,
+  get_allergy,
+  duplicate_check,
 
 }

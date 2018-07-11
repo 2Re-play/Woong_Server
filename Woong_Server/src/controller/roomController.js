@@ -1,25 +1,61 @@
-const dbConnection = require('lib/dbConnection')
-const decoding = require('lib/token')
-const secretKey = require('../configAll')
+const dbconnection = require('lib/dbConnection')
+const chatting_room = require('models/roomModel')
+const messageModel = require('models/messageModel')
+const { respondJson, respondOnError } = require('../lib/response')
 
+const room = async (req, res) => {
 
-const room = async(req, res) => {
-  const user_token = req.headers.token
+  const { user_id } = req.user
+  console.log(user_id)
+  const connection = await dbconnection()  
+  const array_data = []
 
-  const user_data = decoding.decoding(user_token, secretKey.secretKey)
-
-  console.log(user_data)
-
-  const getRoomList = await dbConnection(connection,user_data.user_id)
-  
   try {
-    // const room = roomModel.
+
+    const put_unread_result = await messageModel.put_unread_count(connection, chatting_room_id)
+
+    const get_roomList_result = await chatting_room.get_room_list(connection, user_id)
+    console.log(get_roomList_result)
+
+
+    for (let i = 0; i < get_roomList_result.length; i++ ) {
     
+      const get_message_result = await chatting_room.get_message_list(connection, get_roomList_result[i].chatting_room_id)
+      array_data.push(get_message_result)
+           
+    }
+
+    const message_data = []
+
+    for (let i = 0; i < get_roomList_result.length; i++ ) {
+    
+      message_data.push(array_data[i].slice(-1)[0].content)
+      
+    }
+
+
+    for (let i = 0; i < get_roomList_result.length; i++ ) {
+    
+      get_roomList_result[i].recent_message = message_data[i]
+      
+    }
+
+    const data = {
+      get_roomList_result,
+    }
+
+
+    respondJson('성공적인 채팅방 리스트 출력!!', data, res, 200)
+
+  
   } catch (e) {
-    res.status(500)
-    res.send(e)
+
+    respondOnError(e, res, 500)
+
+  } finally {
+    connection.release()
+
   }
-  connection.release()
   
   
 }
