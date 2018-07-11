@@ -7,22 +7,23 @@ const dbConnection = require('lib/dbConnection')
 const postFavoriteItemContorller = async (req, res) => {
   const { item_id } = req.params
   const { user } = req
-//  const validation = Joi.validate(item_id, Joi.number().required())
+ 
+  const validation = Joi.validate(item_id, Joi.number().required())
   
-//  if (validation.error) {
-//    respondOnError(validation.error, res, 422)
-//  }
+  if (validation.error) {
+    respondOnError(validation.error, res, 422)
+    return
+  }
 
   const connection = await dbConnection()
   try {
     let favorite = [];
     [favorite] = await favoriteModel.selectCountByFavorite(connection, user, item_id)
     if (favorite.count === 0) await favoriteModel.insertFavoriteByUser(connection, user, item_id)
-    else throw new Error('DUPLICATE ITEM FAVORITE')
+    else throw respondOnError('DUPLICATE FAVORITE ITEM', res, 409)
     
     respondJson('post favorite succes', {}, res, 200)
   } catch (e) {
-    console.log(e)
     respondOnError(e.message, res, 500)
   }
   connection.release()
@@ -35,7 +36,8 @@ const deleteFavoriteItemContorller = async (req, res) => {
   const validation = Joi.validate(item_id, Joi.number().required())
   
   if (validation.error) {
-    throw new Error(validation.error)
+    respondOnError(validation.error, res, 422)
+    return
   }
 
   const connection = await dbConnection()
@@ -43,11 +45,10 @@ const deleteFavoriteItemContorller = async (req, res) => {
     let favorite = [];
     [favorite] = await favoriteModel.selectCountByFavorite(connection, user, item_id)
     if (favorite.count > 0) await favoriteModel.deleteFavoriteByUser(connection, user, item_id)
-    else throw new Error('Doesn\'t Delete Anything')
+    else respondOnError('Doesn\'t Delete Anything', res, 204)
     
     respondJson('delete favorite success', {}, res, 200)
   } catch (e) {
-    console.log(e)
     respondOnError(e.message, res, 500)
   }
   connection.release()
@@ -55,24 +56,20 @@ const deleteFavoriteItemContorller = async (req, res) => {
 
 const getFavoriteItemContorller = async (req, res) => {
   const { user } = req
-  const { main_id } = req.params
-
-//  const validation = Joi.validate(main_id, Joi.number().required())
-  
-//  if (validation.error) {
-//    throw new Error(validation.error)
-//  }
 
   const connection = await dbConnection()
   try {
     let favorite_info = [];
     [favorite_info] = await favoriteModel.selectFavoriteByUser(connection, user)
+    if (favorite_info === undefined) respondOnError('Doesn\'t Data Anything', res, 204)
+    
+
     const data = {
       favorite_info,
     }
+
     respondJson('get favorite success', data, res, 200)
   } catch (e) {
-    console.log(e)
     respondOnError(e.message, res, 500)
   }
   connection.release()

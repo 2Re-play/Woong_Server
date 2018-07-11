@@ -1,10 +1,9 @@
 // 북마크 리스트/등록/해제 Controller
 const Joi = require('joi')
-const jwt = require('lib/token')
 
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
-const configAll = require('../../src/configAll')
+const signedurl = require('../lib/signedurl')
 const bookmarkData = require('../models/bookmarkModel')
 
 // 1. 북마크 리스트  
@@ -12,14 +11,17 @@ exports.getBookmark = async (req, res) => {
   const connection = await dbConnection()
   let bookmarkResult
 
-  const { user_token } = req.headers // 토큰
-  const { secretKey } = configAll.secretKey
+  const { user_id } = req.user // 토큰
 
-  const decode_result = await jwt.decode(user_token, secretKey)
-  console.log(decode_result)
-  const user_id = await decode_result.user_id
   try {
     bookmarkResult = await bookmarkData.getBookmark(connection, user_id)
+    for (const i in bookmarkResult) {
+      console.log(await signedurl.getSignedUrl(bookmarkResult[i].title_image_key))
+      bookmarkResult[i].title_image_key = await signedurl.getSignedUrl(bookmarkResult[i].title_image_key)
+    }
+    // bookmarkResult[0].title_image_key = await signedurl.getSignedUrl(bookmarkResult[0].title_image_key)
+    // console.log(bookmarkResult[0].title_image_key)
+    // console.log('유저아이디: '+user_id)
     respondJson('success', bookmarkResult, res, 200)
 
   } catch (e) {
@@ -33,13 +35,8 @@ exports.getBookmark = async (req, res) => {
 
 // 2. 북마크 등록
 exports.addBookmark = async (req, res) => {
-  const { user_token } = req.headers
+  const { user_id } = req.user
   const { market_id } = req.params
-  const { secretKey } = configAll.secretKey
-
-  const decode_result = await jwt.decode(user_token, secretKey)
-  console.log(decode_result)
-  const user_id = await decode_result.user_id
 
   const connection = await dbConnection()
   const validation = Joi.validate(market_id, Joi.number().required())
@@ -72,13 +69,7 @@ exports.deleteBookmark = async (req, res) => {
   const connection = await dbConnection()
 
   const { market_id } = req.params
-  const { user_token } = req.headers
-  const { secretKey } = configAll.secretKey
-
-
-  const decode_result = await jwt.decode(user_token, secretKey)
-  console.log(decode_result)
-  const user_id = await decode_result.user_id
+  const { user_id } = req.user
 
   const validation = Joi.validate(market_id, Joi.number().required())
 

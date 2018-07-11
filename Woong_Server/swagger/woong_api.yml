@@ -4,7 +4,7 @@ info:
   version: "1.0"
   description: "project woong's server API"
 
-host: localhost:3000
+host: http://13.125.190.134:3000
 basePath: /api/v1.0
 schemes:
   - http
@@ -340,7 +340,7 @@ paths:
               data:
                 type: object
                 properties:
-                  item_info:
+                  favorite_info:
                     type: array
                     items:
                       type: object
@@ -394,7 +394,7 @@ paths:
 # 내 주변 마켓 리스트
   /market/distance:
     get:
-      summary: 내 주변 마켓 리스트 (Jay)
+      summary: 내 주변 마켓 리스트 (Jay) 거의 다 함!
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -423,13 +423,18 @@ paths:
 #판매자 마켓 소개
   /market/info/{market_id}:
     get:
-      summary: 판매자 마켓 소개 (Jay)
+      summary: 판매자 마켓 소개 (Jay) OK
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
       tags:
         - market
       parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 사용자 token
         - in: path
           name: market_id
           type: integer
@@ -451,7 +456,7 @@ paths:
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
-      summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay)
+      summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay) OK
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -480,9 +485,10 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
+ # 판매자 특정물품 정보
   /market/{market_id}/item/{item_id}:
     get:
-      summary: 판매자 특정물품 정보 (Jay)
+      summary: 판매자 특정물품 정보 (Jay) 쿼리 문제 발견 빠른 시일에 복구하겠습니다.
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -515,7 +521,7 @@ paths:
 #상품 장바구니 등록,해제
   /cart/{item_id}:
     post:
-      summary: 상품 장바구니 등록 (Jay)
+      summary: 상품 장바구니 등록 (Jay) OK
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -547,7 +553,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
     delete:
-      summary: 상품 장바구니 해제 (Jay)
+      summary: 상품 장바구니 해제 (Jay) OK
       consumes:
         - application/x-www-form-urlencoded
       tags:
@@ -579,7 +585,7 @@ paths:
 #상품 장바구니 리스트
   /cart:
     get:
-      summary: 상품 장바구니 리스트 (Jay)
+      summary: 상품 장바구니 리스트 (Jay) 토큰테스트만 하면 끝
       consumes:
         - application/x-www-form-urlencoded
       tags:
@@ -1296,44 +1302,49 @@ definitions:
       data:
           type: object
           properties:
-            market_introduce:
-              type: object
-              properties:
-                market_name:
-                  type: string
-                  example: 현듀마켓
-                  description: 마켓이름
-                market_info:
-                  type: string
-                  example : 안녕하세요. 현듀마켓 입니다. 등등
-                  description: 마켓 소개글
-                titleimage:
-                  type: string
-                  example: s3주소/1529150684832.jpeg
-                  description: 마켓 대표이미지
-                farmer_image:
-                  type: string
-                  example: s3주소/1529150684832.jpeg
-                  description: 농부 프로필사진
-                tag_name:
-                      type: string
-                      example: 유기농
-                      description: 마켓 태그 name
-                bookmark_count:
-                    type: integer
-                    example: 70
-                    description: 즐겨찾기 카운트 수              
-                youandi:
-                  type: integer
-                  example: 10
-                  description: 마켓과 나와의 거리
+              market_name:
+                type: string
+                example: 현듀마켓
+                description: 마켓이름
+              tag_name:
+                type: string
+                example: 유기농1, 유기농2, 유기농3
+                description: 마켓 태그 name
+              delivery:
+                type: integer
+                example: 1
+                description: 1은 유료배송 0은 무료배송
+              quick:
+                type: integer
+                example: 1
+                description: 1은 당일배송x 0은 당일배송
+              bookmark_count:
+                type: integer
+                example: 70
+                description: 즐겨찾기 카운트 수                      
+              title_image_key:
+                type: string
+                example: s3주소/1529150684832.jpeg
+                description: 마켓 대표이미지
+              farmer_image_key:
+                type: string
+                example: s3주소/1529150684832.jpeg
+                description: 농부 프로필사진                    
+              market_info:
+                type: string
+                example : 안녕하세요. 현듀마켓 입니다. 등등
+                description: 마켓 소개글
+              youandi:
+                type: integer
+                example: 10
+                description: 마켓과 나와의 거리
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object
     properties:
       message:
         type: string
-        example: successfully get market data
+        example: successfully get sorting item data 
       data:
         type: object
         properties:
@@ -1354,6 +1365,9 @@ definitions:
                 item_name:
                   type: string
                   example: 돼지감자
+                file_key:
+                    type: string
+                    example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/456456?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180709%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180709T200423Z&X-Amz-Expires=300&X-Amz-Signature=87a1b2d2451e8f4d5ef8d4d7d98a3eb0383d6d7f3b66fde6a431d3259283af9e&X-Amz-SignedHeaders=host
                 packaging:
                       type: string
                       example: 1kg당 100원
@@ -1371,7 +1385,7 @@ definitions:
     properties:
       message:
         type: string
-        example: successfully get food detail data
+        example: successfully get item detail data
       data:
         type: object
         properties:

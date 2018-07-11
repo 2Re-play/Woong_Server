@@ -5,28 +5,56 @@ const aws = require('aws-sdk')
 const dbConnection = require('lib/dbConnection')
 const { respondOnError } = require('lib/response')
 const reviewData = require('../models/reviewModel')
+const signedurl = require('../lib/signedurl')
 
 aws.config.loadFromPath('./config/credentials.json')
 
-const s3 = new aws.S3()
+// const s3 = new aws.S3()
 
 // 1. 후기 (리뷰) 쓰기
 exports.postReview = async (req, res) => {
   console.log(req.files)
+  
+  const connection = await dbConnection()
+  let postReviewResult
 
-  const options = {
-    Bucket: 'uniquegamza',
-    Expires: 300,
-    Key: 'review/2018/07/rk9Btl-mX.1531148609583.pdf',
-    ResponseContentDisposition: null,
+  const { market_id } = req.params
+
+  const {
+    user_id, content, rate_speed, rate_fresh, rate_taste, rate_kindness, 
+  } = req.body
+
+
+  let data = {}
+  data = {
+    user_id,
+    market_id,
+    content,
+    rate_speed,
+    rate_fresh,
+    rate_taste,
+    rate_kindness,
   }
 
-  s3.getSignedUrl('getObject', options, (err, result) => {
-    if (err) console.log(err)
-    console.log(result) 
-  })
+  for(var i in req.files){
+    console.log(req.files[i].transforms[2])
+  }
 
-  res.send('asdf')
+  try {
+
+    // 별점 남기는 부분
+    postReviewResult = await reviewData.postReview(connection, data)
+    res.status(200).send({
+      message: 'success',
+      result: postReviewResult,
+    })
+
+
+  } catch (e) {
+    console.log(`에러${e}`)
+  } finally {
+    connection.release()
+  }
 }
 
 // 2. 후기 (리뷰) 가져오기
@@ -50,8 +78,14 @@ exports.getReview = async (req, res) => {
   try {
     [reviewRateResult] = await reviewData.getReviewRate(connection, data) 
     reviewImagesResult = await reviewData.getReviewImages(connection, data)
+
+    for (const i in reviewImagesResult) {
+      console.log(await signedurl.getSignedUrl(reviewImagesResult[i].file_key))
+      reviewImagesResult[i].file_key = await signedurl.getSignedUrl(reviewImagesResult[i].file_key)
+    }
+
     reviewContentResult = await reviewData.getReviewContent(connection, data)
-    
+
     res.status(200).send({
       message: 'success',
       rate: reviewRateResult,

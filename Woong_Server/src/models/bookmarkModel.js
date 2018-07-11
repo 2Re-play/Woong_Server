@@ -3,14 +3,13 @@ const moment = require('moment')
 // 1. 북마크 리스트
 exports.getBookmark = (connection, user_id) => {
   return new Promise((resolve, reject) => {
-    const Query = `select market_id,market_name,title_image 
+    const Query = `select market_id,market_name,title_image_key 
                    from WP_MARKET 
                    where market_id 
                    in (select market_id from WP_MARKET_BOOKMARK where user_id=?)`
     connection.query(Query, [user_id], (err, result) => {
       err && reject(err)
       console.log(result)
-      console.log(result.length)
       resolve(result)
     })
   })
@@ -41,7 +40,7 @@ exports.deleteBookmark = (connection, market_id, user_id) => {
 }
 
 // 사용자 북마크 개수
-exports.selectCountByBookmark = (connection, user_id, market_id) => {
+exports.selectCountByBookmark = (connection, market_id, user_id) => {
   console.log('model in')
   return new Promise((resolve, reject) => {
     const Query = `

@@ -53,7 +53,7 @@ module.exports = {
             cb(null, `${which}/${date.YYYY}/${date.MM}/${shortid.generate()}.${Date.now()}.${file.originalname.split('.').pop()}`)
           },
           transform: (req, file, cb) => {
-            cb(null, sharp().resize(100, 100).jpeg())
+            cb(null, sharp().png())
           },
         }, {
           id: 'service',
@@ -61,7 +61,7 @@ module.exports = {
             cb(null, `${which}/${date.YYYY}/${date.MM}/${shortid.generate()}.${Date.now()}.${file.originalname.split('.').pop()}`)
           },
           transform: (req, file, cb) => {
-            cb(null, sharp().resize(616).jpeg())
+            cb(null, sharp().png())
           },
         }],
       }, opt)

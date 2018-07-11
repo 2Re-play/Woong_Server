@@ -1,5 +1,6 @@
 const dbConnection = require('lib/dbConnection')
 const marketData = require('../models/marketModel')
+const signedurl = require('../lib/signedurl')
 
 // 1. 마켓 앨범 가져오기 
 exports.getMarketAlbum = async (req, res) => {
@@ -12,6 +13,11 @@ exports.getMarketAlbum = async (req, res) => {
   }
   try {
     getMarketAlbumResult = await marketData.getAlbum(connection, data)
+
+    for (let i in getMarketAlbumResult) {
+      console.log(await signedurl.getSignedUrl(getMarketAlbumResult[i].file_key))
+      getMarketAlbumResult[i].file_key = await signedurl.getSignedUrl(getMarketAlbumResult[i].file_key)
+    }
 
     res.status(200).send({
       message: 'success',
