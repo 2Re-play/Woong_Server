@@ -25,7 +25,12 @@ exports.distance = async (req, res) => {
       const temp = await dista.getdistance(location[i].user_latitude, location[i].user_longitude, location[i].market_latitude, location[i].market_longitude) // 유저 마켓 위도경도로 수정하기
       marketform[i].youandi = temp
     }
-    respondJson('successfully get sorting item data', marketform, res, 200)
+    console.log(marketform)
+    for (let i = 0; i < marketform.length; i++) {
+      const temp = await signedUrl.getSignedUrl(marketform[i].title_image_key)
+      marketform[i].title_image_key = temp
+    }
+    respondJson('successfully get around market data', marketform, res, 200)
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)

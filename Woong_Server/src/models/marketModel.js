@@ -66,7 +66,7 @@ exports.itemsorting = (connection, data) => {
       Query = `
       SELECT 
       a.market_id,b.item_id,a.market_name, b.item_name, c.file_key,
-      CONCAT(item_unit,'당  ',item_price) AS packaging,  a.quick, a.delivery 
+      CONCAT(item_unit,'당  ',item_price,'원') AS packaging,  a.quick, a.delivery 
       FROM 
         WP_MARKET a 
       JOIN (WP_ITEM b JOIN WP_ITEM_IMAGE c USING(item_id) )USING(market_id) 
@@ -79,7 +79,7 @@ exports.itemsorting = (connection, data) => {
       Query = `
       SELECT 
         a.market_id,b.item_id,a.market_name, b.item_name,c.file_key,
-        CONCAT(item_unit,'당  ',item_price) AS packaging,  a.quick, a.delivery,
+        CONCAT(item_unit,'당  ',item_price,'원') AS packaging,  a.quick, a.delivery,
         (SELECT count(*) FROM WP_ITEM_FAVORITE   WHERE item_id =b.item_id) AS favorite_count 
       FROM 
         WP_MARKET a 
