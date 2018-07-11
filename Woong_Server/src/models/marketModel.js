@@ -71,7 +71,7 @@ exports.itemsorting = (connection, data) => {
         WP_MARKET a 
       JOIN (WP_ITEM b JOIN WP_ITEM_IMAGE c USING(item_id) )USING(market_id) 
       WHERE
-        a.market_id = b.market_id =1
+       b.market_id =${data.market_id}
       ORDER BY
         b.item_name 
       ASC`
@@ -86,7 +86,7 @@ exports.itemsorting = (connection, data) => {
       JOIN 
         (WP_ITEM b JOIN WP_ITEM_IMAGE c USING(item_id))USING(market_id) 
       WHERE 
-        a.market_id = b.market_id =${data.market_id} 
+         b.market_id =${data.market_id}
       ORDER BY 
         favorite_count DESC
       `
