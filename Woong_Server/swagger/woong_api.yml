@@ -1175,17 +1175,18 @@ paths:
           type: integer
           required: true
           description: 마켓의 고유 인덱스
+        - in: header
+          name: usertoken
+          required: ture
+          description: 유저의 토큰
         - in: body
           name : review post item
-          description: 유저이름, 신선도, 맛, 친절도, 작성한 후기, 사진 
+          description: 신선도, 맛, 친절도, 작성한 후기, 사진 
           schema:
             type: object
             required:
               - userName
             properties:
-              user_id:
-                type: integer
-                example: 김감자
               rate_speed:
                 type: integer
                 example: 4
@@ -1687,15 +1688,11 @@ definitions:
               type: integer
               example: 1
               description: 앨범 고유 아이디
-            market_id:
+            album_title:
               type: integer
               example: 3
-              description: 마켓 고유의 아이디
-            album_title:
-              type: string
-              example: 오늘의 감자 사진
-              description: 이미지 제목
-            album_url:
+              description: 사진의 제목
+            file_key:
               type: string
               example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
               description: 앨범 사진의 url
@@ -1703,10 +1700,6 @@ definitions:
               type: string
               example: 2018년 7월 3일
               description: 만들어진 날짜
-            cr_user:
-              type: integer
-              example: 1
-              description: 만든 사람의 고유 아이디
                       
   market_review_list:
       type: object
@@ -1739,7 +1732,7 @@ definitions:
                 items:
                     type: object
                     properties:
-                      image_url:
+                      file_key:
                         type: string
                         example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
                         description: 이미지 url
@@ -1748,12 +1741,12 @@ definitions:
                 items:
                     type: object
                     properties:
-                      user_id:
+                      user_name:
                         type: string
-                        example: 김감자
+                        example: 김진영
                       content:
                         type: string
-                        example: JMT 존맛탱 그자체
+                        example: 진짜 맛있어용!
   weekly_farmer:
     type: object
     properties:
@@ -1764,7 +1757,6 @@ definitions:
         data:
           type: object
           properties:
-                    
             farmer_image:
               type: string
               example: image_url
@@ -1821,22 +1813,20 @@ definitions:
           items:
               type: object
               properties:
-                bookmark_id:
-                  type: integer
-                  example: 1
-                  description: 북마크 고유 인덱스
                 market_id:
                   type: integer
                   example: 1
                   description: 마켓 고유 인덱스
-                market_image:
-                  type: string
-                  example: https://s3.amazonaws.com/uniquegamza/1527315355648.JPG
-                  description: 마켓 대표 이미지
                 market_name:
                   type: string
                   example: 현듀마켓
                   description: 마켓 이름
+                market_address:
+                  type: string
+                  example: 서울시 광진구 화양동
+                title_image_key:
+                  type: string
+                  example: image url...
   post_bookmark:
     type: object
     properties:
