@@ -389,7 +389,7 @@ paths:
 # 내 주변 마켓 리스트
   /market/distance:
     get:
-      summary: 내 주변 마켓 리스트 (Jay) 거의 다 함!
+      summary: 내 주변 마켓 리스트 (Jay) 완료
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -418,7 +418,7 @@ paths:
 #판매자 마켓 소개
   /market/info/{market_id}:
     get:
-      summary: 판매자 마켓 소개 (Jay) OK
+      summary: 판매자 마켓 소개 (Jay) 완료
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -451,7 +451,7 @@ paths:
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
-      summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay) OK
+      summary: 판매자 마켓 물품 리스트<이름순,인기순> (Jay) 완료
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -483,7 +483,7 @@ paths:
  # 판매자 특정물품 정보
   /market/{market_id}/item/{item_id}:
     get:
-      summary: 판매자 특정물품 정보 (Jay) 쿼리 문제 발견 빠른 시일에 복구하겠습니다.
+      summary: 판매자 특정물품 정보 (Jay) 완료
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -516,7 +516,7 @@ paths:
 #상품 장바구니 등록,해제
   /cart/{item_id}:
     post:
-      summary: 상품 장바구니 등록 (Jay) OK
+      summary: 상품 장바구니 등록 (Jay) 완료
       #produces: application/json
       consumes:
         - application/x-www-form-urlencoded
@@ -548,7 +548,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
     delete:
-      summary: 상품 장바구니 해제 (Jay) OK
+      summary: 상품 장바구니 해제 (Jay) 완료
       consumes:
         - application/x-www-form-urlencoded
       tags:
@@ -580,7 +580,7 @@ paths:
 #상품 장바구니 리스트
   /cart:
     get:
-      summary: 상품 장바구니 리스트 (Jay) 토큰테스트만 하면 끝
+      summary: 상품 장바구니 리스트 (Jay) 완료
       consumes:
         - application/x-www-form-urlencoded
       tags:
