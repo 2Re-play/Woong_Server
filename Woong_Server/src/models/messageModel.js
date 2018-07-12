@@ -71,7 +71,25 @@ const set_zero_unread_count = (connection, chatting_room_id) => {
   })
 }
 
+const get_market_id = (connection, user_id) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT
+      market_id
+    FROM
+      woong_potato.WP_USER
+    WHERE
+      user_id = ?
+    `
+    connection.query(Query, [user_id], (err, data) => {
+      err && reject(err)
+      resolve(data)
+    })
+  })
+}
+
 module.exports = {
+  get_market_id,
   get_message,
   post_chat_message,
   count_up_unread_count,

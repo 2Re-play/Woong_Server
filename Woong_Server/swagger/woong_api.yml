@@ -856,6 +856,42 @@ paths:
             $ref: "#/definitions/500_error"  
   #메세지 방 리스트 출력
   /chat/room:
+    post:
+      summary: create room(alex)
+      description: create room
+      consumes:
+        - application/json
+      tags:
+        - chat
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          
+        - in: body
+          name : data
+          schema:
+            type: object
+            required:
+              - market_id
+            properties:
+              market_id:
+                type: integer
+                example: 1
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: "#/definitions/200_chat_room_post"
+        403:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/403_error"
+        500:
+          description: status code 500
+          schema:
+            $ref: "#/definitions/500_error"
     get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
@@ -1579,6 +1615,9 @@ definitions:
             items:
               type: object
               properties:
+                farmer_image:
+                  type: string
+                  example: "sadqjncqwddl,q.wfqwfb"
                 market_name:
                   type: string
                   example: "현주마켓"
@@ -1615,6 +1654,13 @@ definitions:
             send_day_time:
               type: string
               example: "월요일, 10:40 am"
+   #메세지 입력
+  200_chat_room_post:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Sucessfully Create Room!!            
   #메세지 입력
   200_chat_message_post:
     type: object

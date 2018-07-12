@@ -143,18 +143,23 @@ const post_message = async (req, res) => {
 
     console.log(weekdays)
     console.log(date)
-    
 
-    const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, weekdays, date)
-    console.log(post_message_result)
+    const [get_market_id] = await messageModel.get_market_id(connection, user_id)
+
+    if (get_market_id.market_id !== 0) {
+      const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, get_market_id.market_id, content, weekdays, date)
+      console.log(post_message_result)     
+    } else {
+      const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, weekdays, date)
+      console.log(post_message_result)
+    }
+    
 
     const count_up_unread_count_result = await messageModel.count_up_unread_count(connection, chatting_room_id)
 
     console.log(count_up_unread_count_result)
 
-    const data = {
-      post_message_result,
-    }
+    const data = {}
 
     respondJson('성공적으로 채팅 메세지 등록 !!', data, res, 200)
 
