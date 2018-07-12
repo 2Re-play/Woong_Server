@@ -1,6 +1,4 @@
 const Joi = require('joi')
-const _ = require('lodash')
-
 
 const categoryModel = require('models/categoryModel')
 const { respondJson, respondOnError } = require('lib/response')

@@ -2,6 +2,7 @@ const Joi = require('joi')
 const itemModel = require('models/itemModel')
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
+const signedUrl = require('../lib/signedurl')
 
 const getItemSearchController = async (req, res) => {
   const { keyword } = req.query
