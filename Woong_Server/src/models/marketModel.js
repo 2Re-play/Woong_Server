@@ -56,11 +56,9 @@ exports.itemdetail = (connection, data) => {
   })
 }
 
-exports.itemsorting = (connection, data) => {
+exports.itemsorting1 = (connection, data) => {
   return new Promise((resolve, reject) => {
-    let Query
-    if (data.option === 'name') {
-      Query = `
+    const Query = `
       SELECT 
       a.market_id,b.item_id,a.market_name, b.item_name, c.file_key,
       CONCAT(item_unit,'당  ',item_price,'원') AS packaging,  a.quick, a.delivery 
@@ -72,9 +70,17 @@ exports.itemsorting = (connection, data) => {
       ORDER BY
         b.item_name 
       ASC`
-    } else if (data.option === 'best') {
-      Query = `
-      SELECT 
+    
+    connection.query(Query, (err, info) => {
+      err && reject(err)
+      resolve(info)
+    })
+  })
+}
+exports.itemsorting2 = (connection, data) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT 
         a.market_id,b.item_id,a.market_name, b.item_name,c.file_key,
         CONCAT(item_unit,'당  ',item_price,'원') AS packaging,  a.quick, a.delivery,
         (SELECT count(*) FROM WP_ITEM_FAVORITE   WHERE item_id =b.item_id) AS favorite_count 
@@ -86,8 +92,7 @@ exports.itemsorting = (connection, data) => {
          b.market_id =${data.market_id}
       ORDER BY 
         favorite_count DESC
-      `
-    }
+    `
     connection.query(Query, (err, info) => {
       err && reject(err)
       resolve(info)
