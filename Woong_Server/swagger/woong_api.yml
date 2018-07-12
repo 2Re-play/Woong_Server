@@ -610,12 +610,13 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #종완이형
+  #앱 로그인
   /account/signin/app:
     post:
       summary: signin(alex)
       description: signin
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -638,20 +639,25 @@ paths:
           description: status code 200
           schema:
             $ref: "#/definitions/200_account_signin_app"
-        403:
+        401:
           description: status code 403
+          schema:
+            $ref: "#/definitions/401_error"
+        403:
+          description: status code 500
           schema:
             $ref: "#/definitions/403_error"
         500:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
+  #SNS 로그인
   /account/signin/sns:
     post:
       summary: sns_signin(alex)
       description: sns_signin
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -678,12 +684,13 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
+  #회원가입
   /account/signup:
-    post: 
+    post:
       summary: signup(alex)
-      description: login_type -> 0 = user, 1 = seller user_type -> 0 = app, 1-> google 2-> kakao 
+      description: signup
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -702,69 +709,54 @@ paths:
             properties:
               email:
                 type: string
-                example: dla1635@naver.com
+                example: "dla1635@gmail.com"
               password:
                 type: string
-                example: "1233"
+                example: "1635"
               user_name:
                 type: string
-                example: 임종완
+                example: "임종완"
               birth:
                 type: string
                 example: "1992/12/09"
               phone_number:
                 type: string
-                example: "010-5051-4056"
+                example: "01050514056"
               login_type:
                 type: integer
                 example: 0
               use_type:
                 type: integer
-                example: 1
+                example: 0
               allergy:
                 type: array
                 items:
                   type: integer
-                  example: 1
+                  example: 1            
       responses:
         200:
           description: status code 200
           schema:
             $ref: "#/definitions/200_account_signup"
-        400:
-          description: status code 403
-          schema:
-            $ref: "#/definitions/400_error"
-        500:
-          description: status code 500
-          schema:
-            $ref: "#/definitions/500_error"          
-    get:
-      summary: get allergylist(alex)
-      description: get allergylist
-      consumes:
-        - application/x-www-form-urlencoded
-      tags:
-        - account 
-      responses:
-        200:
-          description: status code 200
-          schema:
-            $ref: "#/definitions/200_account_allergy_get"
         403:
           description: status code 403
           schema:
             $ref: "#/definitions/403_error"
+        409:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/409_error"
         500:
           description: status code 500
           schema:
-            $ref: "#/definitions/500_error"  
+            $ref: "#/definitions/500_error"          
+  #로그아웃
   /account/signout:
     put:
       summary: signout(alex)
       description: signout
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -777,6 +769,10 @@ paths:
           description: status code 200
           schema:
             $ref: "#/definitions/200_account_signout"
+        401:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/401_error"
         403:
           description: status code 403
           schema:
@@ -785,12 +781,14 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"                    
+  #사용자 위치
   /account/location:
+    #사용자 위치 출력
     get:
       summary: get location(alex)
       description: get location
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -811,11 +809,12 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+    #사용자 위치 입력
     put:
       summary: change location(alex)
       description: change location
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
@@ -823,6 +822,7 @@ paths:
           name: usertoken
           type: string
           required: true
+
         - in: body
           name : data
           schema:
@@ -833,10 +833,10 @@ paths:
               - address
             properties:
               latitude:
-                type: Integer
+                type: integer
                 example: 35.9078
               longitude:
-                type: Integer
+                type: integer
                 example: 127.7669
               address:
                 type: string
@@ -854,12 +854,13 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  #메세지 방 리스트 출력
   /chat/room:
     get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - chat
       parameters:
@@ -880,12 +881,13 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  #메세지 출력
   /chat/message/{chatting_room_id}:
     get:
       summary: chatting list(alex)
-      description: sender = me ->자신, 그 외 -> 상대방
+      description: send_user_id = 0 ->자신, 그 외 -> 상대방
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - chat
       parameters:
@@ -910,12 +912,13 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  #메세지 입력
   /chat/message:
     post:
       summary: send message(alex)
       description: send message
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - chat
       parameters:
@@ -934,10 +937,10 @@ paths:
             properties:
               chatting_room_id:
                 type: integer
-                example : 1
+                example: 1
               content:
                 type: string
-                example : "hi,hello"
+                example: test
       responses:
         200:
           description: status code 200
@@ -1199,7 +1202,13 @@ definitions:
       message:
         type: string
         example: Internal Server Error
-
+# Unauthorized      
+  401_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Unauthorized
 # Forbidden      
   403_error:
     type: object
@@ -1207,6 +1216,20 @@ definitions:
       message:
         type: string
         example: Forbidden
+# Conflict Error     
+  409_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Conflict Error
+# Validation      
+  422_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Validation Error
 # SUB_LIST
   sub_list:
     type: object
@@ -1348,39 +1371,36 @@ definitions:
         type: string
         example: successfully get sorting item data 
       data:
-        type: object
-        properties:
-          item_sort:
-            type: array
-            items:
-              type: object
-              properties:
-                market_id:
-                  type: integer
-                  example: 1
-                item_id:
-                  type: integer
-                  example: 3
-                market_name:
+        type: array
+        items:
+          type: object
+          properties:
+            market_id:
+              type: integer
+              example: 1
+            item_id:
+              type: integer
+              example: 3
+            market_name:
+              type: string
+              example: 현듀마켓
+            item_name:
+              type: string
+              example: 돼지감자
+            file_key:
+                type: string
+                example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/456456?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180709%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180709T200423Z&X-Amz-Expires=300&X-Amz-Signature=87a1b2d2451e8f4d5ef8d4d7d98a3eb0383d6d7f3b66fde6a431d3259283af9e&X-Amz-SignedHeaders=host
+            packaging:
                   type: string
-                  example: 현듀마켓
-                item_name:
-                  type: string
-                  example: 돼지감자
-                file_key:
-                    type: string
-                    example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/456456?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180709%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180709T200423Z&X-Amz-Expires=300&X-Amz-Signature=87a1b2d2451e8f4d5ef8d4d7d98a3eb0383d6d7f3b66fde6a431d3259283af9e&X-Amz-SignedHeaders=host
-                packaging:
-                      type: string
-                      example: 1kg당 100원
-                quick:
-                  type: integer
-                  example: 0
-                  description: 1이면 당일배송 0이면 당일배송 x
-                delivery:
-                  type: integer
-                  example: 0
-                  description: 1이면 무료배송 0이면 무료배송 x
+                  example: 1kg당 100원
+            quick:
+              type: integer
+              example: 0
+              description: 1이면 당일배송 0이면 당일배송 x
+            delivery:
+              type: integer
+              example: 0
+              description: 1이면 무료배송 0이면 무료배송 x
 #판매자 특정물품 정보
   Item_detail:
     type: object
@@ -1456,38 +1476,36 @@ definitions:
         type: string
         example: successfully get cart item detail data
       data:
-        type: object
-        properties:
-          cart_item:
-            type: array
-            items:
-              type: object
-              properties:
-                item_image:
-                  type: string
-                  example: s3주소/1529150684832.jpeg
-                  description: 상품이미지
-                market_name:
-                  type: string
-                  example: 현듀마켓
-                  description: 마켓이름
-                item_name:
-                      type: string
-                      example: 돼지감자
-                      description: 상품이름
-                item_price:
-                    type: integer
-                    example: 6000
-                    description: 상품가격
-                item_unit:
-                  type: string
-                  example: 1kg
-                  description: 상품 단위
-                delivery_free:
-                    type: integer
-                    example: 1
-                    description: 1이면 무료배송 0이면 2500원
+        type: array
+        items:
+          type: object
+          properties:
+              cart_title:
+                type: string
+                example: "[알렉스마켓] 재현감자"
+                description: 장바구니에 담긴 [마켓이름] 상품이름
+              file_key:
+                type: string
+                example: https://uniquegamza2.s3.ap-northeast-2.amazonaws.com/review/2018/07/ry-nQm5mXm.1531319075890.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180712%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180712T044130Z&X-Amz-Expires=30000&X-Amz-Signature=434962d05b702dea9bfe140d4ec06a19a7091768d2289861a149544ce1e04a0d&X-Amz-SignedHeaders=host
+                description: 이미지
+              packging:
+                    type: string
+                    example: 500원(1kg)
+                    description: 가격'원'(단위)
+              item_price:
+                  type: integer
+                  example: 6000
+                  description: 상품가격
+              item_unit:
+                type: string
+                example: 1kg
+                description: 상품 단위
+              delivery:
+                  type: integer
+                  example: 2500
+                  description: 서버에 1이 들어오면 무료배송 0이 들어오면 2500원으로 반환
 #종완이형
+  #앱로그인
   200_account_signin_app:
     type: object
     properties:
@@ -1500,6 +1518,7 @@ definitions:
           token:
             type: string
             example : "asdsd@#as.d@#$kfoke;w/.!@#asd#"
+  #SNS로그인 
   200_account_signin_sns:
     type: object
     properties:
@@ -1512,44 +1531,21 @@ definitions:
           token: 
             type: string
             example: "askdnwqld,m/,cmpewjfwpq"
-  200_account_allergy_get:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Sucessfully get allergy list!!" 
-      data:
-        type: object
-        properties:
-          data: 
-            type: array
-            items:
-              type: object
-              properties:
-                allergy_id:
-                  type: integer
-                  example: 1
-                allergy_name:
-                  type: string
-                  example: 메밀           
+  #회원가입
   200_account_signup:
     type: object
     properties:
       message:
         type: string
-        example: 성공적인 회원가입!!
+        example: Sucessfully SignUp!!
+  #로그아웃
   200_account_signout:
     type: object
     properties:
       message:
         type: string
         example: "Sucessfully Signout!!"
-  200_account_location_post:
-    type: object
-    properties:
-      message:
-        type: string
-        example: Sucessfully Post Location!!
+  #위치받기
   200_account_location_get:
     type: object
     properties:
@@ -1559,15 +1555,17 @@ definitions:
       data: 
         type: object
         properties:
-          user_address:
+          real_address:
             type: string
             example: "마포구 상수동"
+  #위치수정
   200_account_location_put:
     type: object
     properties:
       message:
         type: string
         example: Sucessfully Change Location!!
+  #메세지방리스트 출력
   200_chat_room:
     type: object
     properties:
@@ -1575,25 +1573,29 @@ definitions:
         type: string
         example: Sucessfully Get Chatting Room List!!
       data:
-        type : array
-        items:
-          type: object
-          properties:
-            chatting_room_id:
-              type: integer
-              example: 1
-            market_name:
-              type: string
-              example: "현주마켓"
-            unread_count:
-              type: integer
-              example: 3
-            message_date:
-              type: integer
-              example: 2
-            recent_message:
-              type: string
-              example: "신선하네요!"
+        type : object
+        properties:
+          get__result:
+            type: array
+            items:
+              type: object
+              properties:
+                market_name:
+                  type: string
+                  example: "현주마켓"
+                chatting_room_id:
+                  type: integer
+                  example: 1
+                unread_count:
+                  type: integer
+                  example: 3
+                recent_message:
+                  type: string
+                  example: "신선하네요!"  
+                interval_time:
+                  type: integer
+                  example: 2
+  #메세지 출력
   200_chat_message_get:
     type: object
     properties:
@@ -1607,33 +1609,20 @@ definitions:
           properties:
             send_user_id:
               type: string
-              example: "현주마켓"
+              example: 1
             content:
               type: string
               example: "신선하군요!"
             send_day_time:
               type: string
               example: "월요일, 10:40 am"
+  #메세지 입력
   200_chat_message_post:
     type: object
     properties:
       message:
         type: string
-        example: Sucessfully Post Chatting Message!!
-      data:
-        type : array
-        items:
-          type: object
-          properties:
-            sender:
-              type: string
-              example: "현주마켓"
-            chatting_content:
-              type: string
-              example: "신선하군요!"
-            chatting_sendDayTime:
-              type: string
-              example: "월요일, 10:40 am"
+        example: Sucessfully Post Chatting List!!
 #진영 (Claire)
   market_album:
     type: object

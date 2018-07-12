@@ -70,7 +70,7 @@ exports.IntroMarket = async (req, res) => {
     market_introduce[0].title_image_key = title_image_url
     market_introduce[0].farmer_image_key = farmer_image_url
     market_introduce[0].youandi = temp
-    respondJson('successfully get market introduce data', market_introduce, res, 200)
+    respondJson('successfully get market introduce data', market_introduce[0], res, 200)
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)

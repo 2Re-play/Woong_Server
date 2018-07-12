@@ -8,73 +8,73 @@ const { respondJson, respondOnError } = require('../lib/response')
 
 const signin_app = async (req, res) => {
 
+  const connection = await dbConnection()
   const { email } = req.body || 'dongsu@gmail.com'
   const { password } = req.body || '1234'
-
-  console.log(req.body)
-  console.log(email)
-  console.log(password)
-
   const validation_data = { email, password }
   const secret = secretKey.secretKey
   const subject = 'user_token'
 
+  // email -> 이메일형식,string  password -> string
   const sheme = {
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }
 
-  const email_password_validation = Joi.validate(validation_data, sheme)
-  console.log(email_password_validation)
+  console.log(email)
+  console.log(password)
 
-  // 잘못된 형식의 이메일,비밀번호가 들어왔을 경우
-  if (email_password_validation.error) {
-    respondOnError('이메일 형식이 아닙니다.', res, 400)
-    connection.release()
-    return
-  }
-
-  const connection = await dbConnection()
+  
   try {
-    
+    // 입력 값의 유효성 확인 (not null, 유효한 형태)
+    const email_password_validation = Joi.validate(validation_data, sheme)
+
+    // 유효하지 않은 경우
+    if (email_password_validation.error) {
+      throw new Error(403)
+    }
+    // 등록된 이메일인지 확인
     const [user_info] = await signinModel.signin_validation(connection, email)   
-    console.log(user_info)
-    // 등록되지 않은 이메일
+  
+    // 등록되지 않은 이메일일 경우
     if (!user_info) {
-      respondOnError('등록되지 않은 이메일 입니다.', res, 400)
-      connection.release()
-      return
+      throw new Error(401)
     }
 
     const { user_id } = user_info
     const db_password = user_info.password 
-
-    console.log(user_id) 
-    console.log(db_password)
-
-    if (db_password === password) { //  user_id가 db에 존재하고 비빌번호도 일치한다면
-
-      const payload = { user_id, email }
-      const token = await jwt.encode(payload, subject, secret)
     
-      console.log(token)
-      const insert = await signinModel.signin_insert(user_id, token, connection)
+    // 입력된 비밀번호와 저장된 비밀번호 비교
+    if (db_password === password) { 
       
-      console.log(insert)
+      const payload = { user_id, email }
+     
+      const token = await jwt.encode(payload, subject, secret)
+      // 생성된 토큰을 WP.USER 테이블에 저장
+      const signin_result = await signinModel.signin_insert(connection, token, user_id)
+      console.log(user_id)
+
+      console.log(signin_result)
       const data = {
         token,
       }
       // 로그인 성공
       respondJson('성공적인 로그인!!', data, res, 200)
       
-    } else { // 패스워드가 틀렸을 경우
-      respondOnError('잘못된 패스워드!!', res, 400)
-      connection.release()
-      return
+    } else { 
+      // 패스워드가 틀렸을 경우
+      throw new Error(401)
+    }    
+  } catch (e) {
+
+    if (e.message === '401') { 
+      respondOnError('이메일 또는 비밀번호가 일치하지 않습니다.', res, 401) 
+    } else if (e.message === '403') { 
+      respondOnError('형식이 맞지 않습니다.', res, 403) 
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
     }
-        
-  } catch (e) { // 서버 내부 에러
-    respondOnError('서버 내부 에러', res, 500)
+
   } finally {
     connection.release()
   }

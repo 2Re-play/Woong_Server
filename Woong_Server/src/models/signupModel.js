@@ -1,4 +1,4 @@
-const put_signout = (connection, 
+const post_signup = (connection, 
   email, 
   password, 
   user_name,
@@ -33,15 +33,18 @@ const put_signout = (connection,
   })
 }
 
-const get_allergy = (connection) => {
+const post_allergy = (connection, allergy_id, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
-    SELECT
-      allergy_id,allergy_name
-    FROM
-      woong_potato.WP_ALLERGY
+    INSERT INTO
+      woong_potato.WP_USER_ALLERGY_LIST(
+        allergy_id,
+        user_id
+      )
+    VALUES
+      (?, ?)
     `
-    connection.query(Query, (err, data) => {
+    connection.query(Query, [allergy_id, user_id], (err, data) => {
       err && reject(err)
       resolve(data)
     })
@@ -67,8 +70,8 @@ const duplicate_check = (connection, email) => {
 
 
 module.exports = {
-  put_signout,
-  get_allergy,
+  post_signup,
+  post_allergy,
   duplicate_check,
 
 }

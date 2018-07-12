@@ -5,7 +5,10 @@ const { respondJson, respondOnError } = require('../lib/response')
 
 
 const signup = async (req, res) => {
-
+  // allergy null 가능
+  // use_type 0->app, 1->google, 2->facebook 
+  // login_type 0-> 소비자, 1->판매자
+  const connection = await dbConnection()
   const { email } = req.body
   const { password } = req.body
   const { user_name } = req.body
@@ -14,8 +17,6 @@ const signup = async (req, res) => {
   const { login_type } = req.body
   const { use_type } = req.body
   const { allergy } = req.body
-
-  console.log(typeof(req.body.login_type))
 
 
   const validation_data = {
@@ -26,9 +27,9 @@ const signup = async (req, res) => {
     phone_number, 
     login_type,
     use_type,
-    allergy,
   }
 
+  // email -> 이메일 형식 , login_type,use_type -> integer
   const sheme = {
     email: Joi.string().email().required(),
     password: Joi.string().required(),
@@ -37,80 +38,83 @@ const signup = async (req, res) => {
     phone_number: Joi.string().required(),
     login_type: Joi.number().required(),
     use_type: Joi.number().required(),
-    allergy: Joi.array().required(),
   }
 
-  const signin_info_validation = Joi.validate(validation_data, sheme)
-
-  if (signin_info_validation.error) {
-    respondOnError('회원 정보 형식이 안맞습니다.', res, 400)
-    connection.release()
-    return 
-  }
-
-  const connection = await dbConnection()
-
+  
   try {
+
+    const signin_info_validation = Joi.validate(validation_data, sheme)
+
+    if (signin_info_validation.error) {
+      throw new Error(403)
+    }
 
     const [duplicate_check_result] = await signupModel.duplicate_check(connection, email)
 
     console.log(duplicate_check_result)
     if (duplicate_check_result) {
-      respondOnError('아이디가 중복되었습니다.', res, 400)
-      connection.release()
-      return 
+      throw new Error(409)
     }
 
-    const signin_result = await signupModel.put_signout(connection, email, password, user_name, birth, phone_number, login_type)
-    // console.log(signin_result)
+    const signin_result = await signupModel.post_signup(connection, email, password, user_name, birth, phone_number, login_type)
+   
+    const user_id = signin_result.insertId
 
+    for (let i = 0; i < allergy.length; i += 1) {
+      signupModel.post_allergy(connection, allergy[i], user_id)   
+    }
+    
     const data = {
-
       signin_result,
-
     }
 
     respondJson('성공적인 회원가입!!', data, res, 200)
 
   } catch (e) {
 
-    respondOnError('서버 내부 에러!!', res, 500)
-
-  } finally {
-
-    connection.release()
-
-  }
-}
-
-const get_allergy = async (req, res) => {
-
-  const connection = await dbConnection()
-
-  try {
-
-    const allergy_result = await signupModel.get_allergy(connection)
-    console.log(allergy_result)
-
-    const data = {
-      allergy_result,
+    if (e.message === '409') {
+      respondOnError('중복된 이메일 입니다.', res, 409)
+    } else if (e.message === '403') {
+      respondOnError('형식이 맞지 않습니다.', res, 403)
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
     }
 
-    respondJson('성공적인 알러지 리스트!!', data, res, 200)
-
-  } catch (e) {
-
-    respondOnError('서버 내부 에러!!', res, 500)
-
   } finally {
 
     connection.release()
 
   }
 }
+
+// const get_allergy = async (req, res) => {
+
+//   const connection = await dbConnection()
+
+//   try {
+
+//     const allergy_result = await signupModel.get_allergy(connection)
+//     console.log(allergy_result)
+
+//     const data = {
+//       allergy_result,
+//     }
+
+//     respondJson('성공적인 알러지 리스트!!', data, res, 200)
+
+//   } catch (e) {
+
+//     respondOnError('서버 내부 에러!!', res, 500)
+
+//   } finally {
+
+//     connection.release()
+
+//   }
+// }
 
 
 module.exports = {
   signup,
-  get_allergy,
+  
 }
