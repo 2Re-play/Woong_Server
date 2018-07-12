@@ -1519,6 +1519,14 @@ definitions:
         items:
           type: object
           properties:
+              market_id:
+                type: integer
+                example: 1
+                description: 마켓 인덱스
+              item_id:
+                type: integer
+                example: 82
+                description: 아이템 인덱스
               cart_title:
                 type: string
                 example: "[알렉스마켓] 재현감자"
