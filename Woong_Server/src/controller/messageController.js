@@ -4,13 +4,13 @@ const messageModel = require('models/messageModel')
 const Joi = require('joi')
 const { respondJson, respondOnError } = require('../lib/response')
 
-
+// headers : token
+// params : chatting_room_id
 const get_message = async (req, res) => {
 
   const connection = await dbconnection()
 
-  // user_id : 디코딩된 user_id값
-  // params : 채팅방의 id값
+  
   const { user_id } = req.user
   const { chatting_room_id } = req.params
     
@@ -102,6 +102,9 @@ const get_message = async (req, res) => {
   }
 }
 
+// headers : token
+// body : chatting_room_id,
+//        content
 const post_message = async (req, res) => {
 
   const connection = await dbconnection() 

@@ -3,7 +3,8 @@ const dbconnection = require('lib/dbConnection')
 const chatting_room = require('models/roomModel')
 const Joi = require('joi')
 const { respondJson, respondOnError } = require('../lib/response')
-
+// hearders: token
+// body: market_id
 const post_room = async (req, res) => {
   
   const connection = await dbconnection() 
@@ -55,12 +56,12 @@ const post_room = async (req, res) => {
   
   
 }
-
+// headers : token
 const get_room = async (req, res) => {
 
+  const connection = await dbconnection() 
   const { user_id } = req.user
-  console.log(user_id)
-  const connection = await dbconnection()  
+  console.log(user_id) 
   const array_data = []
 
   try {
@@ -75,6 +76,7 @@ const get_room = async (req, res) => {
     console.log(get_roomList_result)
 
 
+    // 한 사용자의 채팅방들의 메세지 리스트들을 2차원배열로 생성
     for (let i = 0; i < get_roomList_result.length; i += 1) {
     
       const get_message_result = await chatting_room.get_message_list(connection, get_roomList_result[i].chatting_room_id)
@@ -86,7 +88,7 @@ const get_room = async (req, res) => {
 
     const message_data = []
     const date_data = []
-
+    // 각 방의 마지막
     for (let i = 0; i < get_roomList_result.length; i += 1) {
     
       message_data.push(array_data[i].slice(-1)[0].content)
