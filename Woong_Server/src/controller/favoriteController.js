@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const favoriteModel = require('models/favoriteModel')
 
+const signedUrl = require('../lib/signedurl')
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
 
@@ -62,9 +63,13 @@ const getFavoriteItemContorller = async (req, res) => {
   const connection = await dbConnection()
   try {
     let favorite_info = [];
-    [favorite_info] = await favoriteModel.selectFavoriteByUser(connection, user)
+    favorite_info = await favoriteModel.selectFavoriteByUser(connection, user)
     if (favorite_info === undefined) respondOnError('Doesn\'t Data Anything', res, 204)
     
+    for (const i in favorite_info) {
+      favorite_info[i].file_key = await signedUrl.getSignedUrl(favorite_info[i].file_key)
+      console.log(favorite_info[i].file_key)
+    }
 
     const data = {
       favorite_info,
