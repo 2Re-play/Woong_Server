@@ -77,8 +77,8 @@ exports.deleteBookmark = async (req, res) => {
 
   try {
     let bookmark = [];
-    [bookmark] = await bookmarkData.selectCountByBookmark(connection, user_id, market_id)
-    if (bookmark.count > 0) await bookmarkData.deleteBookmark(connection, user_id, market_id)
+    [bookmark] = await bookmarkData.selectCountByBookmark(connection, market_id, user_id)
+    if (bookmark.count > 0) await bookmarkData.deleteBookmark(connection, market_id, user_id)
     else throw new Error('you already deleted')
 
     respondJson('success delete bookmark', {}, res, 200)

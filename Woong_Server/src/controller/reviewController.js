@@ -44,7 +44,8 @@ exports.postReview = async (req, res) => {
 
     for (const i in req.files) {
       const imageData = req.files[i].transforms[0]
-      postReviewImageResult = await reviewData.saveImage(connection, postReviewResult.insertId, imageData.key, imageData.size, imageData.key, data.user_id, imageData.location)
+      console.log(imageData)
+      postReviewImageResult = await reviewData.saveImage(connection, postReviewResult.insertId, imageData.key, imageData.size, req.files[i].originalname, data.user_id, imageData.location)
     }
 
     res.status(200).send({

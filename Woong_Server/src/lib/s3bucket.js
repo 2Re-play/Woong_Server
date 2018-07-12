@@ -32,7 +32,7 @@ module.exports = {
         cb(null, `${which}/${date.YYYY}/${date.MM}/${shortid.generate()}.${Date.now()}.${file.originalname.split('.').pop()}`)
       },
     }
-    if (which === 'review') {
+    if (which === 'item') {
       opt = _.defaultsDeep({
         ...options,
         acl: 'public-read',
@@ -46,6 +46,9 @@ module.exports = {
           },
           transform: (req, file, cb) => {
             cb(null, sharp().png())
+          },
+          originalname: (req, file, cb) => {
+            cb(null, `${file.originalname}`)
           },
         }],
       }, opt)

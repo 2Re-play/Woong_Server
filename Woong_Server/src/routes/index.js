@@ -9,6 +9,7 @@ const item = require('./item')
 const favorite = require('./favorite')
 const account = require('./account')
 const chat = require('./chat')
+const dummyImage = require('./image')
 
 const router = express.Router()
 
@@ -23,5 +24,6 @@ router.use('/market', market)
 router.use('/favorite', favorite)
 router.use('/account', account)
 router.use('/chat', chat)
+router.use('/dummyImage', dummyImage)
 
 module.exports = router
