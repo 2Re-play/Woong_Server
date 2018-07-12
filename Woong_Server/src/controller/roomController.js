@@ -2,60 +2,10 @@ const moment = require('moment')
 const dbconnection = require('lib/dbConnection')
 const chatting_room = require('models/roomModel')
 const Joi = require('joi')
+const signedurl = require('lib/signedurl')
 const { respondJson, respondOnError } = require('../lib/response')
-// hearders: token
-// body: market_id
-const post_room = async (req, res) => {
-  
-  const connection = await dbconnection() 
-  const { user_id } = req.user
-  const { market_id } = req.body
-  console.log(user_id)
-   
-  const validation_data = {
-    user_id,
-    market_id,
-  }
 
-  const sheme = {
-    user_id: Joi.number().required(),
-    market_id: Joi.number().required(),
-  }
- 
-  try {
 
-    const input_validation = Joi.validate(validation_data, sheme)
-
-    if (input_validation.error) {
-      throw new Error(403)
-    }
-
-    const post_room_result = await chatting_room.post_room(connection, user_id, market_id)
-    console.log(post_room_result)
-
-    const data = {
-      post_room_result,
-    }
-
-    respondJson('성공적인 채팅방 생성!!', data, res, 200)
-
-  
-  } catch (e) {
-
-    if (e.message === '403') {
-      respondOnError('형식이 맞지 않습니다.', res, 403)
-    } else {
-      respondOnError('서버 내부 에러', res, 500)
-    }
-
-  } finally {
-
-    connection.release()
-
-  }
-  
-  
-}
 // headers : token
 const get_room = async (req, res) => {
 
@@ -80,8 +30,9 @@ const get_room = async (req, res) => {
     for (let i = 0; i < get_roomList_result.length; i += 1) {
     
       const get_message_result = await chatting_room.get_message_list(connection, get_roomList_result[i].chatting_room_id)
-      array_data.push(get_message_result)
-           
+      if (get_message_result.length) {
+        array_data.push(get_message_result)
+      }
     }
     console.log(array_data)
 
@@ -89,17 +40,18 @@ const get_room = async (req, res) => {
     const message_data = []
     const date_data = []
     // 각 방의 마지막
-    for (let i = 0; i < get_roomList_result.length; i += 1) {
+    for (let i = 0; i < array_data.length; i += 1) {
     
-      message_data.push(array_data[i].slice(-1)[0].content)
-      
+      if (array_data[i].slice(-1)[0].content.length) {
+        message_data.push(array_data[i].slice(-1)[0].content)
+      }
     }
     console.log(message_data)
 
-    for (let i = 0; i < get_roomList_result.length; i += 1) {
-    
-      date_data.push(array_data[i].slice(-1)[0].date)
-      
+    for (let i = 0; i < array_data.length; i += 1) {
+      if (array_data[i].slice(-1)[0].date.length) {
+        date_data.push(array_data[i].slice(-1)[0].date)
+      }
     }
     console.log(date_data)
 
@@ -112,7 +64,6 @@ const get_room = async (req, res) => {
 
       let interval_time = `${moment.duration(current_time.diff(message_time)).asHours()} `
      
-
       if (interval_time < 1) {
         interval_time = `${Math.round(moment.duration(current_time.diff(message_time)).asMinutes())}분 전`
       } else if (interval_time > 1 && interval_time < 24) {
@@ -123,23 +74,49 @@ const get_room = async (req, res) => {
 
       interval_time_array.push(interval_time)
     }
+
+    const farmer_image = []
+    for (let i = 0; i < get_roomList_result.length; i += 1) {
+      
+      farmer_image.push(await signedurl.getSignedUrl(get_roomList_result[i].farmer_image_key))
+
+    }
+
+    console.log(farmer_image)
+
+    const data = []
+    const market_name = []
+    const unread_count = []
+    const chatting_room_id = []
+    const market_id = []
+    for (let i = 0; i < get_roomList_result.length; i += 1) {
+    
+      market_name.push(get_roomList_result[i].market_name)
+      unread_count.push(get_roomList_result[i].unread_count)
+      chatting_room_id.push(get_roomList_result[i].chatting_room_id)
+      market_id.push(get_roomList_result[i].market_id)
+    }
   
     for (let i = 0; i < get_roomList_result.length; i += 1) {
     
+      data.push({
+        farmer_image: farmer_image[i],
+        market_name: market_name[i],
+        chatting_room_id: chatting_room_id[i],
+        market_id: market_id[i],
+        unread_count: unread_count[i],
+        recent_message: message_data[i],
+        interval_time: interval_time_array[i],
+
+      })
       get_roomList_result[i].recent_message = message_data[i]
       get_roomList_result[i].interval_time = interval_time_array[i]
       
     }
    
 
-    const data = {
-      get_roomList_result,
-    }
-
-
     respondJson('성공적인 채팅방 리스트 출력!!', data, res, 200)
 
-  
   } catch (e) {
 
     if (e.message === '403') {
@@ -152,13 +129,10 @@ const get_room = async (req, res) => {
 
     connection.release()
 
-  }
-  
-  
+  } 
 }
 
 
 module.exports = {
-  post_room,
   get_room,
 }

@@ -1,6 +1,7 @@
 const moment = require('moment')
 const dbconnection = require('lib/dbConnection')
 const messageModel = require('models/messageModel')
+const chatting_room = require('models/roomModel')
 const Joi = require('joi')
 const { respondJson, respondOnError } = require('../lib/response')
 
@@ -10,7 +11,6 @@ const get_message = async (req, res) => {
 
   const connection = await dbconnection()
 
-  
   const { user_id } = req.user
   const { chatting_room_id } = req.params
     
@@ -103,15 +103,18 @@ const get_message = async (req, res) => {
 }
 
 // headers : token
-// body : chatting_room_id,
-//        content
+// body : 
+//        content,
+//        market_id,
 const post_message = async (req, res) => {
 
   const connection = await dbconnection() 
 
   const { user_id } = req.user
-  const { chatting_room_id } = req.body
+  // const { chatting_room_id } = req.body
   const { content } = req.body
+  const { market_id } = req.body
+  let chatting_room_id 
 
   moment.locale('ko', {
     weekdays: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
@@ -119,36 +122,60 @@ const post_message = async (req, res) => {
 
   const sheme = {
     user_id: Joi.number().required(),
-    chatting_room_id: Joi.number().required(),
+    // chatting_room_id: Joi.number().required(),
     content: Joi.string().required(),
   }
 
   const validation_data = {
     user_id,
-    chatting_room_id,
+    // chatting_room_id,
     content,
   }
   console.log(user_id)
-  console.log(chatting_room_id)
+  console.log(market_id)
   console.log(content)
 
  
   try {
-    
+    // 유효성 체크
     const input_validation = Joi.validate(validation_data, sheme)
-
     if (input_validation.error) {
       throw new Error(403)
     }
 
+    // 현재 시간 받기
     const weekdays = moment().locale('ko').format('dddd')
     const date = moment().locale('ko').format('YYYY-MM-DD HH:mm') // 데이터 타입 VARCHAR
-
     console.log(weekdays)
     console.log(date)
 
-    const [get_market_id] = await messageModel.get_market_id(connection, user_id)
+    // 이미 방이 만들어져 있는지 디비 통신
+    const [check_existing_room] = await messageModel.check_existing_room(connection, user_id, market_id)
+    console.log(check_existing_room)
 
+    
+    // user_id와 market_id에 값에 일치하는 메세지가 존재하는지 확인 -> 없다면 방 생성 
+    let post_room_result
+    if (!check_existing_room) {
+      post_room_result = await chatting_room.post_room(connection, user_id, market_id)
+      chatting_room_id = post_room_result.insertId
+    } else {
+      chatting_room_id = check_existing_room.chatting_room_id
+      console.log(chatting_room_id)
+    }
+
+    console.log(post_room_result)
+    // console.log(post_room_result)
+
+    // chatting_room_id = post_room_result.insertId
+    // console.log(chatting_room_id)
+
+     
+    // user_id로 유저가 판매자인지 소비자인지 체크
+    const [get_market_id] = await messageModel.get_market_id(connection, user_id)
+    // console.log(get_market_id.market_id)
+
+    // market_id가 0이라면 소비자, 이외의 값이라면 판매자로 구분하여 user_id 또는 market_id를 input으로 넣어서 메세지 등록
     if (get_market_id.market_id !== 0) {
       const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, get_market_id.market_id, content, weekdays, date)
       console.log(post_message_result)     
@@ -156,14 +183,12 @@ const post_message = async (req, res) => {
       const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, weekdays, date)
       console.log(post_message_result)
     }
-    
 
+    // unread count를 업한다.
     const count_up_unread_count_result = await messageModel.count_up_unread_count(connection, chatting_room_id)
-
-    console.log(count_up_unread_count_result)
+    // console.log(count_up_unread_count_result)
 
     const data = {}
-
     respondJson('성공적으로 채팅 메세지 등록 !!', data, res, 200)
 
   } catch (e) {

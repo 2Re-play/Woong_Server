@@ -851,42 +851,6 @@ paths:
             $ref: "#/definitions/500_error"  
   #메세지 방 리스트 출력
   /chat/room:
-    post:
-      summary: create room(alex)
-      description: create room
-      consumes:
-        - application/json
-      tags:
-        - chat
-      parameters:
-        - in: header
-          name: usertoken
-          type: string
-          required: true
-          
-        - in: body
-          name : data
-          schema:
-            type: object
-            required:
-              - market_id
-            properties:
-              market_id:
-                type: integer
-                example: 1
-      responses:
-        200:
-          description: status code 200
-          schema:
-            $ref: "#/definitions/200_chat_room_post"
-        403:
-          description: status code 403
-          schema:
-            $ref: "#/definitions/403_error"
-        500:
-          description: status code 500
-          schema:
-            $ref: "#/definitions/500_error"
     get:
       summary: chatting room list(alex)
       description: unread_count = 0 -> 읽은메세지,그이상 -> 안읽은메세지
@@ -963,10 +927,10 @@ paths:
           schema:
             type: object
             required:
-              - chatting_room_id
+              - market_id
               - content
             properties:
-              chatting_room_id:
+              market_id:
                 type: integer
                 example: 1
               content:
@@ -1616,6 +1580,9 @@ definitions:
                 market_name:
                   type: string
                   example: "현주마켓"
+                market_id:
+                  type: integer
+                  example: 1
                 chatting_room_id:
                   type: integer
                   example: 1
@@ -1626,8 +1593,8 @@ definitions:
                   type: string
                   example: "신선하네요!"  
                 interval_time:
-                  type: integer
-                  example: 2
+                  type: string
+                  example: 2분 전
   #메세지 출력
   200_chat_message_get:
     type: object
@@ -1648,14 +1615,7 @@ definitions:
               example: "신선하군요!"
             send_day_time:
               type: string
-              example: "월요일, 10:40 am"
-   #메세지 입력
-  200_chat_room_post:
-    type: object
-    properties:
-      message:
-        type: string
-        example: Sucessfully Create Room!!            
+              example: "월요일, 10:40 am"           
   #메세지 입력
   200_chat_message_post:
     type: object

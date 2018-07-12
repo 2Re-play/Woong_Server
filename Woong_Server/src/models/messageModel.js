@@ -1,14 +1,15 @@
-const get_message = (connection, chatting_room_id) => {
+const check_existing_room = (connection, user_id, market_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      send_user_id, content, weekdays, date
+      chatting_room_id
     FROM
-      woong_potato.WP_CHATTING_MESSAGE
+      woong_potato.WP_CHATTING_ROOM
     WHERE
-      chatting_room_id = ?
+      user_id = ? 
+      AND market_id = ?
     `
-    connection.query(Query, [chatting_room_id], (err, data) => {
+    connection.query(Query, [user_id, market_id], (err, data) => {
       err && reject(err)
       resolve(data)
     })
@@ -90,7 +91,7 @@ const get_market_id = (connection, user_id) => {
 
 module.exports = {
   get_market_id,
-  get_message,
+  check_existing_room,
   post_chat_message,
   count_up_unread_count,
   set_zero_unread_count,
