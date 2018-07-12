@@ -32,7 +32,7 @@ module.exports = {
         cb(null, `${which}/${date.YYYY}/${date.MM}/${shortid.generate()}.${Date.now()}.${file.originalname.split('.').pop()}`)
       },
     }
-    if (which === 'item') {
+    if (which === 'review') {
       opt = _.defaultsDeep({
         ...options,
         acl: 'public-read',

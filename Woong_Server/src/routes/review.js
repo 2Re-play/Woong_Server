@@ -4,7 +4,7 @@ const { multer } = require('..//lib/s3bucket')
 
 const reviewCtrl = require('../controller/reviewController')
 
-const upload = multer('item')
+const upload = multer('review')
 
 
 const review = express.Router()
