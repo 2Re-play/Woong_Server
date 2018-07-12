@@ -2,6 +2,7 @@ const _ = require('lodash')
 
 const respondJson = (message, obj, res, status) => {
 
+  console.log(status)
   res
     .status(status)
     .json({
@@ -12,7 +13,8 @@ const respondJson = (message, obj, res, status) => {
 }
 
 const respondOnError = (message, res, status) => {
-  
+  console.log(status)
+
   res
     .status(status)
     .json({

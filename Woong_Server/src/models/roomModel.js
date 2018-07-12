@@ -21,7 +21,7 @@ const get_message_list = (connection, chatting_room_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      content
+      content, date
     FROM
       woong_potato.WP_CHATTING_MESSAGE
     WHERE

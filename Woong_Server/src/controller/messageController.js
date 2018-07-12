@@ -1,6 +1,7 @@
 const moment = require('moment')
 const dbconnection = require('lib/dbConnection')
 const messageModel = require('models/messageModel')
+const Joi = require('joi')
 const { respondJson, respondOnError } = require('../lib/response')
 
 
@@ -13,28 +14,74 @@ const get_message = async (req, res) => {
   const { user_id } = req.user
   const { chatting_room_id } = req.params
     
+  const validation_data = {
+    user_id,
+    chatting_room_id,
+  }
+
+  const sheme = {
+    user_id: Joi.number().required(),
+    chatting_room_id: Joi.number().required(),
+  }
 
   console.log(user_id)
   console.log(chatting_room_id)
   
   try {
 
+    const input_validation = Joi.validate(validation_data, sheme)
+
+    if (input_validation.error) {
+      throw new Error(403)
+    }
+
     // 메세지함 입장시 unread_count
-    const put_unread_result = await messageModel.set_zero_unread_count(connection, chatting_room_id)
+    const set_zero_result = await messageModel.set_zero_unread_count(connection, chatting_room_id)
+    // console.log(set_zero_result)
 
     const get_message_result = await messageModel.get_message(connection, chatting_room_id)
     console.log(get_message_result)
 
-    for (let i = 0; i < get_message_result.length; i++) {
-      if (user_id === get_message_result[i].send_user_id) {
+    const weekdays = []
+    const real_time = []
+    const date = []
+    for (let i = 0; i < get_message_result.length; i += 1) {
+      
+      const time = get_message_result[i].date.split(' ')[1]
 
-        get_message_result[i].send_user_id = 'me'
+      weekdays.push(get_message_result[i].weekdays)
+      real_time.push(time)
+
+      date[i] = `${weekdays[i]}, ${real_time[i]}`
+    }
+
+    
+    const send_data = []
+    for (let i = 0; i < get_message_result.length; i += 1) {
+  
+      send_data.push({
+        send_user_id: get_message_result[i].send_user_id,
+        content: get_message_result[i].content,
+        date: date[i],
+
+      })     
+    }
+
+    console.log(send_data)
+    
+    // 메세지보낸 사람이 본인이라면 user_id = 0 으로 변환
+    for (let i = 0; i < send_data.length; i += 1) {
+      if (user_id === send_data[i].send_user_id) {
+
+        send_data[i].send_user_id = 0
 
       }
     }
 
+    console.log(send_data)
+
     const data = {
-      get_message_result,
+      send_data,
     }
 
     respondJson('성공적으로 채팅 리스트 반환!!', data, res, 200)
@@ -42,7 +89,11 @@ const get_message = async (req, res) => {
 
   } catch (e) {
 
-    respondOnError('서버 내부 에러', res, 500)
+    if (e.message === '403') { 
+      respondOnError('형식이 맞지 않습니다.', res, 403) 
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
+    }
 
   } finally {
     
@@ -53,29 +104,48 @@ const get_message = async (req, res) => {
 
 const post_message = async (req, res) => {
 
+  const connection = await dbconnection() 
+
   const { user_id } = req.user
   const { chatting_room_id } = req.body
   const { content } = req.body
-
-  const connection = await dbconnection()  
-  
-  console.log(user_id)
-  console.log(chatting_room_id)
-  console.log(content)
 
   moment.locale('ko', {
     weekdays: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
   })
 
+  const sheme = {
+    user_id: Joi.number().required(),
+    chatting_room_id: Joi.number().required(),
+    content: Joi.string().required(),
+  }
+
+  const validation_data = {
+    user_id,
+    chatting_room_id,
+    content,
+  }
+  console.log(user_id)
+  console.log(chatting_room_id)
+  console.log(content)
+
+ 
   try {
     
+    const input_validation = Joi.validate(validation_data, sheme)
 
-    const current_time = moment().locale('ko').format('dddd, HH:mm ') // 데이터 타입 VARCHAR
+    if (input_validation.error) {
+      throw new Error(403)
+    }
 
-    console.log(current_time)
+    const weekdays = moment().locale('ko').format('dddd')
+    const date = moment().locale('ko').format('YYYY-MM-DD HH:mm') // 데이터 타입 VARCHAR
 
-        
-    const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, current_time)
+    console.log(weekdays)
+    console.log(date)
+    
+
+    const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, weekdays, date)
     console.log(post_message_result)
 
     const count_up_unread_count_result = await messageModel.count_up_unread_count(connection, chatting_room_id)
@@ -88,14 +158,18 @@ const post_message = async (req, res) => {
 
     respondJson('성공적으로 채팅 메세지 등록 !!', data, res, 200)
 
-
   } catch (e) {
 
-    respondOnError('서버 내부 에러', res, 500)
+    if (e.message === '403') { 
+      respondOnError('형식이 맞지 않습니다.', res, 403) 
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
+    }
 
   } finally {
     
     connection.release()
+
   }
 }
 

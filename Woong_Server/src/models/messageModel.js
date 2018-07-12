@@ -2,7 +2,7 @@ const get_message = (connection, chatting_room_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      sender_user_id, content, day_time
+      send_user_id, content, weekdays, date
     FROM
       woong_potato.WP_CHATTING_MESSAGE
     WHERE
@@ -16,7 +16,7 @@ const get_message = (connection, chatting_room_id) => {
 }
 
 
-const post_chat_message = (connection, chatting_room_id, user_id, content, current_time) => {
+const post_chat_message = (connection, chatting_room_id, user_id, content, weekdays, date) => {
   return new Promise((resolve, reject) => {
     const Query = `
     INSERT INTO
@@ -24,19 +24,20 @@ const post_chat_message = (connection, chatting_room_id, user_id, content, curre
         chatting_room_id, 
         send_user_id, 
         content, 
-        day_time 
+        weekdays,
+        date 
       )
     VALUES
-      (?, ?, ?, ?)
+      (?, ?, ?, ?, ?)
     `
-    connection.query(Query, [chatting_room_id, user_id, content, current_time], (err, data) => {
+    connection.query(Query, [chatting_room_id, user_id, content, weekdays, date], (err, data) => {
       err && reject(err)
       resolve(data)
     })
   })
 }
 
-const put_unread_count = (connection, chatting_room_id) => {
+const count_up_unread_count = (connection, chatting_room_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     UPDATE
@@ -53,9 +54,27 @@ const put_unread_count = (connection, chatting_room_id) => {
   })
 }
 
+const set_zero_unread_count = (connection, chatting_room_id) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    UPDATE
+      woong_potato.WP_CHATTING_ROOM
+    SET
+      unread_count = 0
+    WHERE
+      chatting_room_id = ?    
+    `
+    connection.query(Query, [chatting_room_id], (err, data) => {
+      err && reject(err)
+      resolve(data)
+    })
+  })
+}
+
 module.exports = {
   get_message,
   post_chat_message,
-  put_unread_count,
+  count_up_unread_count,
+  set_zero_unread_count,
 
 }

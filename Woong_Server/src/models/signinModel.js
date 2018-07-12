@@ -15,7 +15,7 @@ const signin_validation = (connection, email) => {
   })
 }
 
-const signin_insert = (db_idx, user_token, connection) => {
+const signin_insert = (connection, user_token, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     UPDATE 
@@ -25,7 +25,7 @@ const signin_insert = (db_idx, user_token, connection) => {
     WHERE
       user_id = ?
     `
-    connection.query(Query, [user_token, 1], (err, data) => {
+    connection.query(Query, [user_token, user_id], (err, data) => {
       err && reject(err)
       resolve(data)
     })
