@@ -79,17 +79,12 @@ paths:
           name: main_id
           type: integer
           required: true
-          description: 마켓을 구분하는 마켓 고유의 인덱스
+          description: 메인 카테고리 아이디
         - in: path
           name: sub_id
           type: integer
           required: true
-          description: 마켓을 구분하는 마켓 고유의 인덱스
-        - in : query
-          name : keyword
-          type : string
-          required : false
-          description: 상품검색에 대한 판매 마켓 리스트
+          description: 서브 카테고리 아이디
       responses:
         200:
           description: status code 200
