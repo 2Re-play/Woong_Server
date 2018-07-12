@@ -6,8 +6,7 @@ const { respondJson, respondOnError } = require('../lib/response')
 
 const put_location = async (req, res) => {
 
-  const connection = await dbConnection()
-  
+  const connection = await dbConnection()  
   const { user_id } = req.user
   const { latitude } = req.body
   const { longitude } = req.body
@@ -38,7 +37,7 @@ const put_location = async (req, res) => {
     const input_validation = Joi.validate(validation_data, sheme)
 
     if (input_validation.error) {
-      throw new Error(422)
+      throw new Error(403)
     }
 
     const put_location_result = await locationModel.put_location(connection, user_id, latitude, longitude, address)
@@ -50,8 +49,8 @@ const put_location = async (req, res) => {
 
   } catch (e) {
 
-    if (e.message === '422') { 
-      respondOnError('형식이 맞지 않습니다.', res, 422) 
+    if (e.message === '403') { 
+      respondOnError('형식이 맞지 않습니다.', res, 403) 
     } else {
       respondOnError('서버 내부 에러', res, 500)
     }
@@ -65,14 +64,19 @@ const put_location = async (req, res) => {
 
 const get_location = async (req, res) => {
   
-  const { user_id } = req.user
-  console.log(user_id)
   const connection = await dbConnection()
-
+  const { user_id } = req.user
   
+ 
   try {
+
+    const user_id_validation = Joi.validate(user_id, Joi.number().required())
+    
+    if (user_id_validation.error) {
+      throw new Error(403)
+    }
+
     const get_location_result = await locationModel.get_location(connection, user_id)
-    console.log(get_location_result)
    
     let [{ address }] = get_location_result
 
@@ -80,12 +84,19 @@ const get_location = async (req, res) => {
     
     const real_address = `${address[1]} ${address[2]}` 
 
+    console.log(real_address)
     const data = {
       real_address,
     }
     respondJson('성공적인 위치 정보 반환!!', data, res, 200)
   } catch (e) {
-    respondOnError('서버 내부 에러', res, 500)
+
+    if (e.message === '403') {
+      respondOnError('형식이 맞지 않습니다.', res, 403)
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
+    }
+
   } finally {
     connection.release()
   }

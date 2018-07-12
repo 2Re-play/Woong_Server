@@ -12,8 +12,9 @@ const signout = async (req, res) => {
   try {
 
     const user_id_validation = Joi.validate(user_id, Joi.number().required())
+    
     if (user_id_validation.error) {
-      throw new Error(422)
+      throw new Error(403)
     }
 
     const signout_result = await signoutModel.put_signout(connection, user_id)
@@ -32,9 +33,9 @@ const signout = async (req, res) => {
   } catch (e) {
 
     if (e.message === '401') {
-      respondOnError('이미 로그아웃 하였습니다.', res, 422)
-    } else if (e.message === '422') {
-      respondOnError('형식이 맞지 않습니다.', res, 500)
+      respondOnError('이미 로그아웃 하였습니다.', res, 401)
+    } else if (e.message === '403') {
+      respondOnError('형식이 맞지 않습니다.', res, 403)
     } else {
       respondOnError('서버 내부 에러', res, 500)
     }

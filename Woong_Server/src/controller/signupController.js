@@ -46,14 +46,14 @@ const signup = async (req, res) => {
     const signin_info_validation = Joi.validate(validation_data, sheme)
 
     if (signin_info_validation.error) {
-      throw new Error(422)
+      throw new Error(403)
     }
 
     const [duplicate_check_result] = await signupModel.duplicate_check(connection, email)
 
     console.log(duplicate_check_result)
     if (duplicate_check_result) {
-      throw new Error(203)
+      throw new Error(409)
     }
 
     const signin_result = await signupModel.post_signup(connection, email, password, user_name, birth, phone_number, login_type)
@@ -72,10 +72,10 @@ const signup = async (req, res) => {
 
   } catch (e) {
 
-    if (e.message === '203') {
-      respondOnError('중복된 이메일 입니다.', res, 203)
-    } else if (e.message === '422') {
-      respondOnError('형식이 맞지 않습니다.', res, 422)
+    if (e.message === '409') {
+      respondOnError('중복된 이메일 입니다.', res, 409)
+    } else if (e.message === '403') {
+      respondOnError('형식이 맞지 않습니다.', res, 403)
     } else {
       respondOnError('서버 내부 에러', res, 500)
     }

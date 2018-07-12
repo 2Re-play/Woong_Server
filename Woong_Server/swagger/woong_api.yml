@@ -610,6 +610,7 @@ paths:
           schema:
             $ref: '#/definitions/403_error'
 #종완이형
+  #앱 로그인
   /account/signin/app:
     post:
       summary: signin(alex)
@@ -638,14 +639,19 @@ paths:
           description: status code 200
           schema:
             $ref: "#/definitions/200_account_signin_app"
-        403:
+        401:
           description: status code 403
+          schema:
+            $ref: "#/definitions/401_error"
+        403:
+          description: status code 500
           schema:
             $ref: "#/definitions/403_error"
         500:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
+  #SNS 로그인
   /account/signin/sns:
     post:
       summary: sns_signin(alex)
@@ -678,11 +684,11 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
+  #회원가입
   /account/signup:
     post:
       summary: signup(alex)
       description: signup
-      produces: [application/json]
       consumes:
         - application/json
       tags:
@@ -693,27 +699,40 @@ paths:
           schema:
             type: object
             required:
-              - birth
-              - name
               - email
               - password
+              - user_name
+              - birth
               - phone_number
+              - login_type
+              - use_type
             properties:
-              birth:
-                type: string
-                example: "19921209"
-              name:
-                type: string
-                example: "임종완"
               email:
                 type: string
                 example: "dla1635@gmail.com"
               password:
                 type: string
-                example: "1234"
+                example: "1635"
+              user_name:
+                type: string
+                example: "임종완"
+              birth:
+                type: string
+                example: "1992/12/09"
               phone_number:
                 type: string
-                example: "010-5051-4056"
+                example: "01050514056"
+              login_type:
+                type: integer
+                example: 0
+              use_type:
+                type: integer
+                example: 0
+              allergy:
+                type: array
+                items:
+                  type: integer
+                  example: 1            
       responses:
         200:
           description: status code 200
@@ -723,10 +742,15 @@ paths:
           description: status code 403
           schema:
             $ref: "#/definitions/403_error"
+        409:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/409_error"
         500:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"          
+  #로그아웃
   /account/signout:
     put:
       summary: signout(alex)
@@ -737,7 +761,7 @@ paths:
         - account
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
       responses:
@@ -745,6 +769,10 @@ paths:
           description: status code 200
           schema:
             $ref: "#/definitions/200_account_signout"
+        401:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/401_error"
         403:
           description: status code 403
           schema:
@@ -753,7 +781,9 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"                    
+  #사용자 위치
   /account/location:
+    #사용자 위치 출력
     get:
       summary: get location(alex)
       description: get location
@@ -763,7 +793,7 @@ paths:
         - account
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
       responses:
@@ -779,18 +809,20 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+    #사용자 위치 입력
     put:
       summary: change location(alex)
       description: change location
       consumes:
-        - application/x-www-form-urlencoded
+        - application/json
       tags:
         - account
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
+
         - in: body
           name : data
           schema:
@@ -801,10 +833,10 @@ paths:
               - address
             properties:
               latitude:
-                type: Integer
+                type: integer
                 example: 35.9078
               longitude:
-                type: Integer
+                type: integer
                 example: 127.7669
               address:
                 type: string
@@ -822,6 +854,7 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  #메세지 방 리스트 출력
   /chat/room:
     get:
       summary: chatting room list(alex)
@@ -832,7 +865,7 @@ paths:
         - chat
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
       responses:
@@ -848,17 +881,18 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  #메세지 출력
   /chat/message/{chatting_room_id}:
     get:
       summary: chatting list(alex)
-      description: sender = me ->자신, 그 외 -> 상대방
+      description: send_user_id = 0 ->자신, 그 외 -> 상대방
       consumes:
         - application/json
       tags:
         - chat
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
         - in: path
@@ -878,6 +912,8 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  #메세지 입력
+  /chat/message:
     post:
       summary: send message(alex)
       description: send message
@@ -887,14 +923,24 @@ paths:
         - chat
       parameters:
         - in: header
-          name: token
+          name: usertoken
           type: string
           required: true
           
-        - in: path
-          name: chatting_room_id
-          type: integer
-          required: true
+        - in: body
+          name : data
+          schema:
+            type: object
+            required:
+              - chatting_room_id
+              - content
+            properties:
+              chatting_room_id:
+                type: integer
+                example: 1
+              content:
+                type: string
+                example: test
       responses:
         200:
           description: status code 200
@@ -1155,7 +1201,13 @@ definitions:
       message:
         type: string
         example: Internal Server Error
-
+# Unauthorized      
+  401_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Unauthorized
 # Forbidden      
   403_error:
     type: object
@@ -1163,6 +1215,20 @@ definitions:
       message:
         type: string
         example: Forbidden
+# Conflict Error     
+  409_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Conflict Error
+# Validation      
+  422_error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Validation Error
 # SUB_LIST
   sub_list:
     type: object
@@ -1444,6 +1510,7 @@ definitions:
                     example: 1
                     description: 1이면 무료배송 0이면 2500원
 #종완이형
+  #앱로그인
   200_account_signin_app:
     type: object
     properties:
@@ -1456,6 +1523,7 @@ definitions:
           token:
             type: string
             example : "asdsd@#as.d@#$kfoke;w/.!@#asd#"
+  #SNS로그인 
   200_account_signin_sns:
     type: object
     properties:
@@ -1468,24 +1536,21 @@ definitions:
           token: 
             type: string
             example: "askdnwqld,m/,cmpewjfwpq"
+  #회원가입
   200_account_signup:
     type: object
     properties:
       message:
         type: string
         example: Sucessfully SignUp!!
+  #로그아웃
   200_account_signout:
     type: object
     properties:
       message:
         type: string
         example: "Sucessfully Signout!!"
-  200_account_location_post:
-    type: object
-    properties:
-      message:
-        type: string
-        example: Sucessfully Post Location!!
+  #위치받기
   200_account_location_get:
     type: object
     properties:
@@ -1495,15 +1560,17 @@ definitions:
       data: 
         type: object
         properties:
-          user_address:
+          real_address:
             type: string
             example: "마포구 상수동"
+  #위치수정
   200_account_location_put:
     type: object
     properties:
       message:
         type: string
         example: Sucessfully Change Location!!
+  #메세지방리스트 출력
   200_chat_room:
     type: object
     properties:
@@ -1511,25 +1578,29 @@ definitions:
         type: string
         example: Sucessfully Get Chatting Room List!!
       data:
-        type : array
-        items:
-          type: object
-          properties:
-            chatting_room_id:
-              type: integer
-              example: 1
-            name:
-              type: string
-              example: "현주마켓"
-            unread_count:
-              type: integer
-              example: 3
-            message_date:
-              type: integer
-              example: 2
-            recent_message:
-              type: string
-              example: "신선하네요!"
+        type : object
+        properties:
+          get__result:
+            type: array
+            items:
+              type: object
+              properties:
+                market_name:
+                  type: string
+                  example: "현주마켓"
+                chatting_room_id:
+                  type: integer
+                  example: 1
+                unread_count:
+                  type: integer
+                  example: 3
+                recent_message:
+                  type: string
+                  example: "신선하네요!"  
+                interval_time:
+                  type: integer
+                  example: 2
+  #메세지 출력
   200_chat_message_get:
     type: object
     properties:
@@ -1541,35 +1612,22 @@ definitions:
         items:
           type: object
           properties:
-            sender:
+            send_user_id:
               type: string
-              example: "현주마켓"
+              example: 1
             content:
               type: string
               example: "신선하군요!"
             send_day_time:
               type: string
               example: "월요일, 10:40 am"
+  #메세지 입력
   200_chat_message_post:
     type: object
     properties:
       message:
         type: string
-        example: Sucessfully Get Chatting List!!
-      data:
-        type : array
-        items:
-          type: object
-          properties:
-            sender:
-              type: string
-              example: "현주마켓"
-            chatting_content:
-              type: string
-              example: "신선하군요!"
-            chatting_sendDayTime:
-              type: string
-              example: "월요일, 10:40 am"
+        example: Sucessfully Post Chatting List!!
 #진영 (Claire)
   market_album:
     type: object

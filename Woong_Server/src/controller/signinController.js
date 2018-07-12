@@ -21,6 +21,9 @@ const signin_app = async (req, res) => {
     password: Joi.string().required(),
   }
 
+  console.log(email)
+  console.log(password)
+
   
   try {
     // 입력 값의 유효성 확인 (not null, 유효한 형태)
@@ -28,14 +31,14 @@ const signin_app = async (req, res) => {
 
     // 유효하지 않은 경우
     if (email_password_validation.error) {
-      throw new Error(422)
+      throw new Error(403)
     }
     // 등록된 이메일인지 확인
     const [user_info] = await signinModel.signin_validation(connection, email)   
   
     // 등록되지 않은 이메일일 경우
     if (!user_info) {
-      throw new Error(203)
+      throw new Error(401)
     }
 
     const { user_id } = user_info
@@ -48,8 +51,10 @@ const signin_app = async (req, res) => {
      
       const token = await jwt.encode(payload, subject, secret)
       // 생성된 토큰을 WP.USER 테이블에 저장
-      signinModel.signin_insert(user_id, token, connection)
-      
+      const signin_result = await signinModel.signin_insert(connection, token, user_id)
+      console.log(user_id)
+
+      console.log(signin_result)
       const data = {
         token,
       }
@@ -58,17 +63,18 @@ const signin_app = async (req, res) => {
       
     } else { 
       // 패스워드가 틀렸을 경우
-      throw new Error(203)
+      throw new Error(401)
     }    
   } catch (e) {
 
-    if (e.message === '203') { 
-      respondOnError('이메일 또는 비밀번호가 일치하지 않습니다.', res, 203) 
-    } else if (e.message === '422') { 
-      respondOnError('형식이 맞지 않습니다.', res, 422) 
+    if (e.message === '401') { 
+      respondOnError('이메일 또는 비밀번호가 일치하지 않습니다.', res, 401) 
+    } else if (e.message === '403') { 
+      respondOnError('형식이 맞지 않습니다.', res, 403) 
     } else {
       respondOnError('서버 내부 에러', res, 500)
     }
+
   } finally {
     connection.release()
   }
