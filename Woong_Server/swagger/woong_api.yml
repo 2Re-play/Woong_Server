@@ -1296,6 +1296,10 @@ definitions:
         items:
           type: object
           properties:
+            market_id:
+              type: integer
+              example: 1
+              description: 마켓 인덱스
             market_name:
               type: string
               example: 현듀마켓
@@ -1326,6 +1330,10 @@ definitions:
       data:
           type: object
           properties:
+              market_id:
+                type: integer
+                example: 1
+                description: 마켓 인덱스
               market_name:
                 type: string
                 example: 현듀마켓

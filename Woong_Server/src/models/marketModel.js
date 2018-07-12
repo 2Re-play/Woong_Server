@@ -13,26 +13,23 @@ exports.introduce = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT 
+    a.market_id,
     a.market_name,
-    GROUP_CONCAT(c.tag_name
-        SEPARATOR ',') AS tag_name, a.delivery, a.quick,
-    (SELECT 
-            COUNT(*)
-        FROM
-            WP_MARKET_BOOKMARK AS b
-        WHERE
-            b.market_id = a.market_id) AS bookmark_count,
+    GROUP_CONCAT(c.tag_name SEPARATOR ',') AS tag_name,
+    a.delivery,
+    a.quick,
+    (SELECT COUNT(*) FROM WP_MARKET_BOOKMARK AS b WHERE b.market_id = a.market_id) AS bookmark_count,
     a.title_image_key,
     a.farmer_image_key,
     a.market_info,
     a.market_info AS youandi
 FROM
     WP_MARKET a
-        JOIN
-    WP_MARKET_TAG c USING (market_id)
+INNER JOIN
+    WP_MARKET_TAG c ON a.market_id = c.market_id
 WHERE
     a.market_id = ${data.market_id}
-GROUP BY market_id;
+GROUP BY a.market_id
     `
     connection.query(Query, (err, info) => {
       err && reject(err)
@@ -121,12 +118,13 @@ exports.marketform = (connection) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT 
+    a.market_id,
     a.market_name,
     a.market_address,
     a.title_image_key,
     GROUP_CONCAT(b.tag_name
         SEPARATOR ',') AS tag_name,
-	  a.latitude AS youandi
+a.latitude AS youandi
     FROM
     WP_MARKET a
         JOIN
@@ -151,7 +149,7 @@ FROM
     WP_USER,
     WP_MARKET
 WHERE
-    user_id = ${data.user_id} and market_id = ${data.market_id};
+    user_id = ${data.user_id} and WP_MARKET.market_id = ${data.market_id};
     `
     connection.query(Query, (err, info) => {
       err && reject(err)
