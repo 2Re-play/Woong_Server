@@ -3,7 +3,7 @@ const moment = require('moment')
 // 1. 북마크 리스트
 exports.getBookmark = (connection, user_id) => {
   return new Promise((resolve, reject) => {
-    const Query = `select market_id,market_name,title_image_key 
+    const Query = `select market_id,market_name,market_address,title_image_key 
                    from WP_MARKET 
                    where market_id 
                    in (select market_id from WP_MARKET_BOOKMARK where user_id=?)`
