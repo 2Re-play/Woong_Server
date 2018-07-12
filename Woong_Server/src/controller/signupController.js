@@ -18,6 +18,11 @@ const signup = async (req, res) => {
   const { use_type } = req.body
   const { allergy } = req.body
 
+<<<<<<< HEAD
+=======
+  console.log(req.body)
+
+>>>>>>> 9630658ecbff816b70b0d61660540bfd9db4cb3d
 
   const validation_data = {
     email, 

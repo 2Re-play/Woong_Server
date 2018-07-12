@@ -1370,39 +1370,36 @@ definitions:
         type: string
         example: successfully get sorting item data 
       data:
-        type: object
-        properties:
-          item_sort:
-            type: array
-            items:
-              type: object
-              properties:
-                market_id:
-                  type: integer
-                  example: 1
-                item_id:
-                  type: integer
-                  example: 3
-                market_name:
+        type: array
+        items:
+          type: object
+          properties:
+            market_id:
+              type: integer
+              example: 1
+            item_id:
+              type: integer
+              example: 3
+            market_name:
+              type: string
+              example: 현듀마켓
+            item_name:
+              type: string
+              example: 돼지감자
+            file_key:
+                type: string
+                example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/456456?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180709%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180709T200423Z&X-Amz-Expires=300&X-Amz-Signature=87a1b2d2451e8f4d5ef8d4d7d98a3eb0383d6d7f3b66fde6a431d3259283af9e&X-Amz-SignedHeaders=host
+            packaging:
                   type: string
-                  example: 현듀마켓
-                item_name:
-                  type: string
-                  example: 돼지감자
-                file_key:
-                    type: string
-                    example: https://uniquegamza.s3.ap-northeast-2.amazonaws.com/456456?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180709%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180709T200423Z&X-Amz-Expires=300&X-Amz-Signature=87a1b2d2451e8f4d5ef8d4d7d98a3eb0383d6d7f3b66fde6a431d3259283af9e&X-Amz-SignedHeaders=host
-                packaging:
-                      type: string
-                      example: 1kg당 100원
-                quick:
-                  type: integer
-                  example: 0
-                  description: 1이면 당일배송 0이면 당일배송 x
-                delivery:
-                  type: integer
-                  example: 0
-                  description: 1이면 무료배송 0이면 무료배송 x
+                  example: 1kg당 100원
+            quick:
+              type: integer
+              example: 0
+              description: 1이면 당일배송 0이면 당일배송 x
+            delivery:
+              type: integer
+              example: 0
+              description: 1이면 무료배송 0이면 무료배송 x
 #판매자 특정물품 정보
   Item_detail:
     type: object
@@ -1478,37 +1475,34 @@ definitions:
         type: string
         example: successfully get cart item detail data
       data:
-        type: object
-        properties:
-          cart_item:
-            type: array
-            items:
-              type: object
-              properties:
-                item_image:
-                  type: string
-                  example: s3주소/1529150684832.jpeg
-                  description: 상품이미지
-                market_name:
-                  type: string
-                  example: 현듀마켓
-                  description: 마켓이름
-                item_name:
-                      type: string
-                      example: 돼지감자
-                      description: 상품이름
-                item_price:
-                    type: integer
-                    example: 6000
-                    description: 상품가격
-                item_unit:
-                  type: string
-                  example: 1kg
-                  description: 상품 단위
-                delivery_free:
-                    type: integer
-                    example: 1
-                    description: 1이면 무료배송 0이면 2500원
+        type: array
+        items:
+          type: object
+          properties:
+              cart_title:
+                type: string
+                example: "[알렉스마켓] 재현감자"
+                description: 장바구니에 담긴 [마켓이름] 상품이름
+              file_key:
+                type: string
+                example: https://uniquegamza2.s3.ap-northeast-2.amazonaws.com/review/2018/07/ry-nQm5mXm.1531319075890.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJCDI3PNAPXV3DP3Q%2F20180712%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20180712T044130Z&X-Amz-Expires=30000&X-Amz-Signature=434962d05b702dea9bfe140d4ec06a19a7091768d2289861a149544ce1e04a0d&X-Amz-SignedHeaders=host
+                description: 이미지
+              packging:
+                    type: string
+                    example: 500원(1kg)
+                    description: 가격'원'(단위)
+              item_price:
+                  type: integer
+                  example: 6000
+                  description: 상품가격
+              item_unit:
+                type: string
+                example: 1kg
+                description: 상품 단위
+              delivery:
+                  type: integer
+                  example: 2500
+                  description: 서버에 1이 들어오면 무료배송 0이 들어오면 2500원으로 반환
 #종완이형
   #앱로그인
   200_account_signin_app:
