@@ -1,8 +1,27 @@
+const post_room = (connection, user_id, market_id) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    INSERT INTO
+      woong_potato.WP_CHATTING_ROOM(
+        user_id, 
+        market_id, 
+        unread_count 
+      )
+    VALUES
+      (?, ?, 0)
+    `
+    connection.query(Query, [user_id, market_id], (err, data) => {
+      err && reject(err)
+      resolve(data)
+    })
+  })
+}
+
 const get_room_list = (connection, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      m.market_name, r.chatting_room_id, r.unread_count
+      m.farmer_image_key, m.market_name, r.chatting_room_id, r.unread_count
     FROM
       woong_potato.WP_MARKET m,
       woong_potato.WP_CHATTING_ROOM r
@@ -34,7 +53,9 @@ const get_message_list = (connection, chatting_room_id) => {
   })
 }
 
+
 module.exports = {
+  post_room,
   get_room_list,
   get_message_list,
 

@@ -1,7 +1,10 @@
 const Joi = require('joi')
+
 const categoryModel = require('models/categoryModel')
 const { respondJson, respondOnError } = require('lib/response')
 const dbConnection = require('lib/dbConnection')
+
+const signedUrl = require('../lib/signedurl')
 
 const getSubCategoryListController = async (req, res) => {
   const { main_id } = req.params
@@ -44,6 +47,10 @@ const getItemListController = async (req, res) => {
   const connection = await dbConnection()
   try {
     const item_info = await categoryModel.selectItemByMarket(connection, data, user)
+    for (const i in item_info) {
+      item_info[i].file_key = await signedUrl.getSignedUrl(item_info[i].file_key)
+      console.log(item_info[i].file_key)
+    }
     data = {
       item_info,
     }
