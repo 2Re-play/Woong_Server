@@ -63,6 +63,9 @@ exports.IntroMarket = async (req, res) => {
     ulomo = await marketmodel.ulomlo(connection, data)
     const title_image_url = await signedUrl.getSignedUrl(market_introduce[0].title_image_key)
     const farmer_image_url = await signedUrl.getSignedUrl(market_introduce[0].farmer_image_key)
+
+    console.log(`이미지 유알엘: ${title_image_url}#######`)
+
     const temp = await dista.getdistance(ulomo[0].user_latitude, ulomo[0].user_longitude, ulomo[0].market_latitude, ulomo[0].market_longitude)
     market_introduce[0].title_image_key = title_image_url
     market_introduce[0].farmer_image_key = farmer_image_url
@@ -111,7 +114,8 @@ exports.Itemsorting = async (req, res) => {
   const { market_id } = req.params
   const { option } = req.query
   let data = {}
-  let item_sort
+  let name_sort
+  let best_sort
   data = {
     option,
     market_id,
@@ -125,13 +129,23 @@ exports.Itemsorting = async (req, res) => {
   }
   const connection = await dbConnection()
   try {
-    item_sort = await marketmodel.itemsorting(connection, data)
-    console.log(item_sort)
-    for (let i = 0; i < item_sort.length; i++) {
-      const temp = await signedUrl.getSignedUrl(item_sort[i].file_key)
-      item_sort[i].file_key = temp
-    }
-    respondJson('successfully get sorting item data', item_sort, res, 200)
+    name_sort = await marketmodel.itemsorting1(connection, data)
+    best_sort = await marketmodel.itemsorting2(connection, data)
+    if (option === 'name') {
+      for (let i = 0; i < name_sort.length; i++) {
+        const temp = await signedUrl.getSignedUrl(name_sort[i].file_key)
+        name_sort[i].file_key = temp
+      } 
+      respondJson('successfully get sorting item data', name_sort, res, 200)
+    } else if (option === 'best') {
+      for (let i = 0; i < best_sort.length; i++) {
+        const temp = await signedUrl.getSignedUrl(best_sort[i].file_key)
+        best_sort[i].file_key = temp
+      } 
+      respondJson('successfully get sorting item data', best_sort, res, 200)
+    } else {
+      respondJson('잘못된 쿼리스트링!! 쿼리스트링은 name과 best만 존재합니다.', {}, res, 203)
+    } 
   } catch (e) {
     console.log(e)
     respondOnError(e.message, res, 500)

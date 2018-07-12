@@ -31,6 +31,7 @@ exports.getcart = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT 
+c.market_id, b.item_id,
       CONCAT('[',c.market_name,'] ',b.item_name) AS carttitle ,d.file_key,
       CONCAT(b.item_price,'원(',b.item_unit,')') AS packging,b.item_price, b.item_unit, c.delivery 
     FROM 

@@ -3,12 +3,65 @@ const dbconnection = require('lib/dbConnection')
 const chatting_room = require('models/roomModel')
 const Joi = require('joi')
 const { respondJson, respondOnError } = require('../lib/response')
-
-const room = async (req, res) => {
-
+// hearders: token
+// body: market_id
+const post_room = async (req, res) => {
+  
+  const connection = await dbconnection() 
   const { user_id } = req.user
+  const { market_id } = req.body
   console.log(user_id)
-  const connection = await dbconnection()  
+   
+  const validation_data = {
+    user_id,
+    market_id,
+  }
+
+  const sheme = {
+    user_id: Joi.number().required(),
+    market_id: Joi.number().required(),
+  }
+ 
+  try {
+
+    const input_validation = Joi.validate(validation_data, sheme)
+
+    if (input_validation.error) {
+      throw new Error(403)
+    }
+
+    const post_room_result = await chatting_room.post_room(connection, user_id, market_id)
+    console.log(post_room_result)
+
+    const data = {
+      post_room_result,
+    }
+
+    respondJson('성공적인 채팅방 생성!!', data, res, 200)
+
+  
+  } catch (e) {
+
+    if (e.message === '403') {
+      respondOnError('형식이 맞지 않습니다.', res, 403)
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
+    }
+
+  } finally {
+
+    connection.release()
+
+  }
+  
+  
+}
+// headers : token
+const get_room = async (req, res) => {
+
+  const connection = await dbconnection() 
+  const { user_id } = req.user
+  console.log(user_id) 
   const array_data = []
 
   try {
@@ -23,6 +76,7 @@ const room = async (req, res) => {
     console.log(get_roomList_result)
 
 
+    // 한 사용자의 채팅방들의 메세지 리스트들을 2차원배열로 생성
     for (let i = 0; i < get_roomList_result.length; i += 1) {
     
       const get_message_result = await chatting_room.get_message_list(connection, get_roomList_result[i].chatting_room_id)
@@ -31,9 +85,10 @@ const room = async (req, res) => {
     }
     console.log(array_data)
 
+
     const message_data = []
     const date_data = []
-
+    // 각 방의 마지막
     for (let i = 0; i < get_roomList_result.length; i += 1) {
     
       message_data.push(array_data[i].slice(-1)[0].content)
@@ -73,6 +128,7 @@ const room = async (req, res) => {
     
       get_roomList_result[i].recent_message = message_data[i]
       get_roomList_result[i].interval_time = interval_time_array[i]
+      
     }
    
 
@@ -103,5 +159,6 @@ const room = async (req, res) => {
 
 
 module.exports = {
-  room,
+  post_room,
+  get_room,
 }

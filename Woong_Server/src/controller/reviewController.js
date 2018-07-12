@@ -13,15 +13,16 @@ aws.config.loadFromPath('./config/credentials.json')
 
 // 1. 후기 (리뷰) 쓰기
 exports.postReview = async (req, res) => {
-  console.log(req.files)
   
   const connection = await dbConnection()
   let postReviewResult
+  let postReviewImageResult
 
   const { market_id } = req.params
+  const { user_id } = req.user // 토큰
 
   const {
-    user_id, content, rate_speed, rate_fresh, rate_taste, rate_kindness, 
+    content, rate_speed, rate_fresh, rate_taste, rate_kindness, 
   } = req.body
 
 
@@ -36,14 +37,17 @@ exports.postReview = async (req, res) => {
     rate_kindness,
   }
 
-  for(var i in req.files){
-    console.log(req.files[i].transforms[2])
-  }
-
   try {
 
     // 별점 남기는 부분
     postReviewResult = await reviewData.postReview(connection, data)
+
+    for (const i in req.files) {
+      const imageData = req.files[i].transforms[0]
+      console.log(imageData)
+      postReviewImageResult = await reviewData.saveImage(connection, postReviewResult.insertId, imageData.key, imageData.size, req.files[i].originalname, data.user_id, imageData.location)
+    }
+
     res.status(200).send({
       message: 'success',
       result: postReviewResult,
@@ -64,6 +68,7 @@ exports.getReview = async (req, res) => {
   let reviewImagesResult // 후기 이미지파일
   let reviewContentResult // 사용자별 후기내용
   const { market_id } = req.params
+
   let data = {}
   data = {
     market_id,

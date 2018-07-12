@@ -8,12 +8,14 @@ exports.postReview = (connection, data) => {
     const Query = `INSERT INTO 
                   WP_MARKET_REVIEW (user_id,market_id,content,date,rate_speed,rate_fresh,rate_taste,rate_kindness,cr_dt,cr_user)
                   VALUES (?,?,?,?,?,?,?,?,?,?)`
-    connection.query(Query, [Number(data.user_id), Number(data.market_id), data.content, moment().format('YYYY-MM-DD'), Number(data.rate_speed), Number(data.rate_fresh), Number(data.rate_taste), Number(data.rate_kindness), moment().format('YYYY-MM-DD'), Number(data.user_id)], (err, result) => {
+    connection.query(Query, [data.user_id, Number(data.market_id), data.content, moment().format('YYYY-MM-DD'), Number(data.rate_speed), Number(data.rate_fresh), Number(data.rate_taste), Number(data.rate_kindness), moment().format('YYYY-MM-DD'), data.user_id], (err, result) => {
       err && reject(err)
       resolve(result)
     })
   })
 }
+
+
 // 2. 리뷰 이미지 테이블에 이미지 저장
 exports.saveImage = (connection, review_id, file_key, file_size, file_name_origin, cr_user, file_url) => {
   return new Promise((resolve, reject) => {
@@ -58,7 +60,12 @@ exports.getReviewImages = (connection, data) => {
 // 3. 리뷰 페이지 하단의 사용자들의 후기 가져오기 (사용자 이름, 후기 글만 가져옴)
 exports.getReviewContent = (connection, data) => {
   return new Promise((resolve, reject) => {
-    const Query = 'select user_id,content from WP_MARKET_REVIEW where market_id=?'
+    const Query = `SELECT 
+                   a.user_name, b.content 
+                   FROM 
+                   WP_MARKET_REVIEW b , WP_USER a
+                   WHERE
+                    b.market_id=? AND b.user_id=a.user_id`
     connection.query(Query, [data.market_id], (err, result) => {
       err && reject(err)
       resolve(result)
