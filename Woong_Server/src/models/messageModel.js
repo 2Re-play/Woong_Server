@@ -16,6 +16,23 @@ const check_existing_room = (connection, user_id, market_id) => {
   })
 }
 
+const get_message = (connection, chatting_room_id) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT
+      send_user_id, content, weekdays, date
+    FROM
+      woong_potato.WP_CHATTING_MESSAGE
+    WHERE
+    chatting_room_id = ?
+    `
+    connection.query(Query, [chatting_room_id], (err, data) => {
+      err && reject(err)
+      resolve(data)
+    })
+  })
+}
+
 
 const post_chat_message = (connection, chatting_room_id, user_id, content, weekdays, date) => {
   return new Promise((resolve, reject) => {
@@ -93,6 +110,7 @@ const get_market_id = (connection, user_id) => {
 module.exports = {
   get_market_id,
   check_existing_room,
+  get_message,
   post_chat_message,
   count_up_unread_count,
   set_zero_unread_count,

@@ -37,7 +37,7 @@ const get_message = async (req, res) => {
 
     // 메세지함 입장시 unread_count
     const set_zero_result = await messageModel.set_zero_unread_count(connection, chatting_room_id)
-    // console.log(set_zero_result)
+    console.log(set_zero_result)
 
     const get_message_result = await messageModel.get_message(connection, chatting_room_id)
     console.log(get_message_result)
@@ -63,7 +63,6 @@ const get_message = async (req, res) => {
         send_user_id: get_message_result[i].send_user_id,
         content: get_message_result[i].content,
         date: date[i],
-
       })     
     }
 
@@ -85,8 +84,6 @@ const get_message = async (req, res) => {
     }
 
     respondJson('성공적으로 채팅 리스트 반환!!', data, res, 200)
-
-
   } catch (e) {
 
     if (e.message === '403') { 
@@ -164,7 +161,7 @@ const post_message = async (req, res) => {
       console.log(chatting_room_id)
     }
 
-    console.log(post_room_result)
+    // console.log(post_room_result)
     // console.log(post_room_result)
 
     // chatting_room_id = post_room_result.insertId
@@ -173,10 +170,10 @@ const post_message = async (req, res) => {
      
     // user_id로 유저가 판매자인지 소비자인지 체크
     const [get_market_id] = await messageModel.get_market_id(connection, user_id)
-    // console.log(get_market_id.market_id)
+    console.log(get_market_id)
 
-    // market_id가 0이라면 소비자, 이외의 값이라면 판매자로 구분하여 user_id 또는 market_id를 input으로 넣어서 메세지 등록
-    if (get_market_id.market_id !== 0) {
+    // market_id가 존재하면  market_id를 input으로 넣어서 메세지 등록, undefined 라면 user_id로 메세지 등록
+    if (get_market_id) {
       const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, get_market_id.market_id, content, weekdays, date)
       console.log(post_message_result)     
     } else {

@@ -10,7 +10,6 @@ const account = express.Router()
 
 /* GET home page. */
 account.post('/signin/app', signinController.signin_app)
-account.post('/signin/sns', signinController.signin_sns)
 account.post('/signup', signupController.signup)
 account.put('/signout', needAuth, signoutController.signout)
 account.get('/health', needAuth, healthController.getHealthCheck)

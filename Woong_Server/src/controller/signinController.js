@@ -81,13 +81,8 @@ const signin_app = async (req, res) => {
 
 }
 
-const signin_sns = (req, res) => {
-  console.log('Access sns login')
-  res.send('ok')
-}
-
 
 module.exports = {
   signin_app,
-  signin_sns,
+  
 }
