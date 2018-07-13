@@ -21,7 +21,7 @@ const get_room_list = (connection, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      m.farmer_image_key, m.market_name, r.chatting_room_id, r.unread_count
+      m.farmer_image_key, m.market_name, m.market_id, r.chatting_room_id, r.unread_count
     FROM
       woong_potato.WP_MARKET m,
       woong_potato.WP_CHATTING_ROOM r
@@ -52,7 +52,6 @@ const get_message_list = (connection, chatting_room_id) => {
     })
   })
 }
-
 
 module.exports = {
   post_room,

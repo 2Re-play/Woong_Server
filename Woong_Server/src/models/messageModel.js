@@ -1,3 +1,21 @@
+const check_existing_room = (connection, user_id, market_id) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT
+      chatting_room_id
+    FROM
+      woong_potato.WP_CHATTING_ROOM
+    WHERE
+      user_id = ? 
+      AND market_id = ?
+    `
+    connection.query(Query, [user_id, market_id], (err, data) => {
+      err && reject(err)
+      resolve(data)
+    })
+  })
+}
+
 const get_message = (connection, chatting_room_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
@@ -6,7 +24,7 @@ const get_message = (connection, chatting_room_id) => {
     FROM
       woong_potato.WP_CHATTING_MESSAGE
     WHERE
-      chatting_room_id = ?
+    chatting_room_id = ?
     `
     connection.query(Query, [chatting_room_id], (err, data) => {
       err && reject(err)
@@ -75,11 +93,12 @@ const get_market_id = (connection, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      market_id
+      m.market_id
     FROM
-      woong_potato.WP_USER
+      woong_potato.WP_USER u,
+      woong_potato.WP_MARKET m
     WHERE
-      user_id = ?
+      u.user_id = m.cr_user AND u.user_id = ?
     `
     connection.query(Query, [user_id], (err, data) => {
       err && reject(err)
@@ -90,6 +109,7 @@ const get_market_id = (connection, user_id) => {
 
 module.exports = {
   get_market_id,
+  check_existing_room,
   get_message,
   post_chat_message,
   count_up_unread_count,
