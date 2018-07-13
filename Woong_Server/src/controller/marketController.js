@@ -63,9 +63,6 @@ exports.IntroMarket = async (req, res) => {
     ulomo = await marketmodel.ulomlo(connection, data)
     const title_image_url = await signedUrl.getSignedUrl(market_introduce[0].title_image_key)
     const farmer_image_url = await signedUrl.getSignedUrl(market_introduce[0].farmer_image_key)
-
-    console.log(`이미지 유알엘: ${title_image_url}#######`)
-
     const temp = await dista.getdistance(ulomo[0].user_latitude, ulomo[0].user_longitude, ulomo[0].market_latitude, ulomo[0].market_longitude)
     market_introduce[0].title_image_key = title_image_url
     market_introduce[0].farmer_image_key = farmer_image_url
@@ -78,6 +75,38 @@ exports.IntroMarket = async (req, res) => {
     connection.release()
   }
 }
+// 북마크 플래그
+exports.bookmarkfalg = async (req, res) => {
+  const { user } = req
+  const { market_id } = req.params
+  let data = {}
+  let user_id
+  let flag
+  data = {
+    user_id,
+    market_id,
+  }
+  data.user_id = user.user_id 
+  const market_id_validation = Joi.validate(market_id, Joi.number().required())
+  if (market_id_validation.error) {
+    respondOnError(market_id_validation.error, res, 422)
+  }
+  const connection = await dbConnection()
+  try {
+    [flag] = await marketmodel.bookmarkflag(connection, data)
+    console.log(flag)
+    if (!flag) {
+      respondJson('0', {}, res, 200)
+    } else {
+      respondJson('1', flag, res, 200)
+    }
+  } catch (e) {
+    console.log(e)
+    respondOnError(e.message, res, 500)
+  } finally {
+    connection.release()
+  }
+}  
 // 판매자 특정상품 정보 보기
 exports.ItemDetail = async (req, res) => {
   const { market_id, item_id } = req.params
@@ -120,12 +149,13 @@ exports.Itemsorting = async (req, res) => {
     option,
     market_id,
   }
-  const query_validation = Joi.validate(option, Joi.string().required())
-  const market_id_validation = Joi.validate(market_id, Joi.number().required())
-  if (market_id_validation.error) {
-    respondOnError(market_id_validation.error, res, 422) 
-  } if (query_validation.error) {
-    respondOnError(query_validation.error, res, 422) 
+  const sheme = {
+    option: Joi.string().required(),
+    market_id: Joi.number().required(),
+  }
+  const validation = Joi.validate(data, sheme)
+  if (validation.error) {
+    throw new Error(validation.error)
   }
   const connection = await dbConnection()
   try {

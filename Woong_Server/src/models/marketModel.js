@@ -18,7 +18,6 @@ exports.introduce = (connection, data) => {
     GROUP_CONCAT(c.tag_name SEPARATOR ',') AS tag_name,
     a.delivery,
     a.quick,
-    (SELECT COUNT(*) FROM WP_MARKET_BOOKMARK AS b WHERE b.market_id = a.market_id) AS bookmark_count,
     a.title_image_key,
     a.farmer_image_key,
     a.market_info,
@@ -29,7 +28,19 @@ INNER JOIN
     WP_MARKET_TAG c ON a.market_id = c.market_id
 WHERE
     a.market_id = ${data.market_id}
-GROUP BY a.market_id
+GROUP BY a.market_id;
+    `
+    connection.query(Query, (err, info) => {
+      err && reject(err)
+      resolve(info)
+    })
+  })
+}
+
+exports.bookmarkflag = (connection, data) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT user_id FROM WP_MARKET_BOOKMARK WHERE user_id=${data.user_id} AND market_id = ${data.market_id}
     `
     connection.query(Query, (err, info) => {
       err && reject(err)
