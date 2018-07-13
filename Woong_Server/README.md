@@ -1,4 +1,4 @@
-![Alt text](./image/woong.PNG)
+![Alt text](./image/woong.png)
 
 ### 기본 환경에 대한 설명
 * 환경설정
