@@ -894,10 +894,16 @@ paths:
             type: object
             required:
               - history_name
+              - latitude
+              - longitude
             properties:
               history_name:
                 type: string
                 example: 서울시 마포구 서교동 123-123
+              latitude:
+                type: integer
+              longitude:
+                type: integer
       responses:
         200:
           description: status code 200
