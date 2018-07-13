@@ -76,11 +76,12 @@ const get_market_id = (connection, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      market_id
+      m.market_id
     FROM
-      woong_potato.WP_USER
+      woong_potato.WP_USER u,
+      woong_potato.WP_MARKET m
     WHERE
-      user_id = ?
+      u.user_id = m.cr_user AND u.user_id = ?
     `
     connection.query(Query, [user_id], (err, data) => {
       err && reject(err)
