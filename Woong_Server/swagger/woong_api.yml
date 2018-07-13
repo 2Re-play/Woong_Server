@@ -816,6 +816,68 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"  
+  /account/location/history:
+    get:
+      summary: get history(alex)
+      description: get location
+      consumes:
+        - application/json
+      tags:
+        - account
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: "#/definitions/200_account_location_history_get"
+        403:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/403_error"
+        500:
+          description: status code 500
+          schema:
+            $ref: "#/definitions/500_error"
+    post:
+      summary: post history(alex)
+      description: post history
+      consumes:
+        - application/json
+      tags:
+        - account
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+
+        - in: body
+          name : data
+          schema:
+            type: object
+            required:
+              - history_name
+            properties:
+              history_name:
+                type: string
+                example: 서울시 마포구 서교동 123-123
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: "#/definitions/200_account_location_history_post"
+        403:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/403_error"
+        500:
+          description: status code 500
+          schema:
+            $ref: "#/definitions/500_error"
   #메세지 방 리스트 출력
   /chat/room:
     get:
@@ -1530,6 +1592,18 @@ definitions:
       message:
         type: string
         example: Sucessfully Change Location!!
+  200_account_location_history_post:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Sucessfully post Location history!!
+  200_account_location_history_get:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Sucessfully get Location history!!
   #메세지방리스트 출력
   200_chat_room:
     type: object
