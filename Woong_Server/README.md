@@ -1,4 +1,6 @@
-# 기본 환경에 대한 설명
+![Alt text](/image/woong.png)
+
+### 기본 환경에 대한 설명
 * 환경설정
 * node_moudels
 * PM2 configuration
@@ -24,3 +26,7 @@
 - 409 : 데이터 중복
 - 422 : Validation Error
 - 500 : Internal Server Error
+
+### SWAGGER API
+
+<http://13.125.190.134:3000/api-docs/#//>
