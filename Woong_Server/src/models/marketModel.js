@@ -154,7 +154,7 @@ FROM
     WP_USER,
     WP_MARKET
 WHERE
-    WP_USER.user_id = ${data.user_id} and WP_MARKET.market_id = ${data.market_id};
+    user_id = ${data.user_id} and WP_MARKET.market_id = ${data.market_id};
     `
     connection.query(Query, (err, info) => {
       err && reject(err)
