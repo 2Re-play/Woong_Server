@@ -646,39 +646,6 @@ paths:
           description: status code 500
           schema:
             $ref: "#/definitions/500_error"
-  #SNS 로그인
-  /account/signin/sns:
-    post:
-      summary: sns_signin(alex)
-      description: sns_signin
-      consumes:
-        - application/json
-      tags:
-        - account
-      parameters:
-        - in: body
-          name : data
-          schema:
-            type: object
-            required:
-              - sns_token
-            properties:
-              sns_token:
-                example : "asdas!@#$.asdjhqiuddkwq^%&%#$,!@#"
-                type: string
-      responses:
-        200:
-          description: status code 200
-          schema:
-            $ref: "#/definitions/200_account_signin_sns"
-        403:
-          description: status code 403
-          schema:
-            $ref: "#/definitions/403_error"
-        500:
-          description: status code 500
-          schema:
-            $ref: "#/definitions/500_error"
   #회원가입
   /account/signup:
     post:
@@ -1529,19 +1496,6 @@ definitions:
           token:
             type: string
             example : "asdsd@#as.d@#$kfoke;w/.!@#asd#"
-  #SNS로그인 
-  200_account_signin_sns:
-    type: object
-    properties:
-      message:
-        type: string
-        example: "Sucessfully SNS Signin!!" 
-      data:
-        type: object
-        properties:
-          token: 
-            type: string
-            example: "askdnwqld,m/,cmpewjfwpq"
   #회원가입
   200_account_signup:
     type: object
