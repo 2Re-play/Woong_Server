@@ -110,8 +110,12 @@ const post_message = async (req, res) => {
   const { user_id } = req.user
   // const { chatting_room_id } = req.body
   const { content } = req.body
-  const { market_id } = req.body
+  const { market_user_id } = req.body
+  const { room_user_id } = req.body
+
   let chatting_room_id 
+  let check_existing_room
+  // let check_existing_room
 
   moment.locale('ko', {
     weekdays: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
@@ -129,10 +133,9 @@ const post_message = async (req, res) => {
     content,
   }
   console.log(user_id)
-  console.log(market_id)
+  console.log(market_user_id)
   console.log(content)
 
- 
   try {
     // 유효성 체크
     const input_validation = Joi.validate(validation_data, sheme)
@@ -146,21 +149,44 @@ const post_message = async (req, res) => {
     console.log(weekdays)
     console.log(date)
 
-    // 이미 방이 만들어져 있는지 디비 통신
-    const [check_existing_room] = await messageModel.check_existing_room(connection, user_id, market_id)
-    console.log(check_existing_room)
+    const [check_login_type] = await messageModel.check_login_type(connection, user_id)
+    console.log(check_login_type.login_type)
+    const [get_user_id_result] = await messageModel.get_user_id(connection, market_user_id)
+    console.log(get_user_id_result.cr_user)
 
     
-    // user_id와 market_id에 값에 일치하는 메세지가 존재하는지 확인 -> 없다면 방 생성 
-    let post_room_result
-    if (!check_existing_room) {
-      post_room_result = await chatting_room.post_room(connection, user_id, market_id)
-      chatting_room_id = post_room_result.insertId
+    // 이미 방이 만들어져 있는지 디비 통신  
+    if (check_login_type.login_type === 0) { 
+      [check_existing_room] = await messageModel.check_existing_room(connection, user_id, get_user_id_result.cr_user)
+      console.log('소비자' +check_existing_room)
     } else {
-      chatting_room_id = check_existing_room.chatting_room_id
-      console.log(chatting_room_id)
+      [check_existing_room] = await messageModel.check_existing_room(connection, room_user_id, get_user_id_result.cr_user)
+      console.log(check_existing_room)
     }
 
+    
+    if (check_login_type.login_type === 0) {
+
+      let post_room_result
+      if (!check_existing_room) {
+        console.log("방없다면")
+        post_room_result = await chatting_room.post_room(connection, user_id, get_user_id_result.cr_user)
+        chatting_room_id = post_room_result.insertId
+        console.log(post_room_result)
+      } else {
+        chatting_room_id = check_existing_room.chatting_room_id
+      }
+    } else {
+      console.log(check_existing_room)
+      chatting_room_id = check_existing_room.chatting_room_id
+    }
+    // 소비자의 경우에만 방의 존재 유무 판단. because, 판매자는 이미 만들어진 방에 대해서만 접근을 할수 있기 떄문에
+    
+    
+    // user_id와 market_id에 값에 일치하는 메세지가 존재하는지 확인 -> 없다면 방 생성 
+    
+    
+    console.log(chatting_room_id)
     // console.log(post_room_result)
     // console.log(post_room_result)
 
@@ -168,17 +194,17 @@ const post_message = async (req, res) => {
     // console.log(chatting_room_id)
 
      
-    // user_id로 유저가 판매자인지 소비자인지 체크
-    const [get_market_id] = await messageModel.get_market_id(connection, user_id)
-    console.log(get_market_id)
+    // // user_id로 유저가 판매자인지 소비자인지 체크
+    // const [get_market_id] = await messageModel.get_market_id(connection, user_id)
+    // console.log(get_market_id)
 
     // market_id가 존재하면  market_id를 input으로 넣어서 메세지 등록, undefined 라면 user_id로 메세지 등록
-    if (get_market_id) {
-      const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, get_market_id.market_id, content, weekdays, date)
-      console.log(post_message_result)     
-    } else {
+    if (check_login_type.login_type === 0) {
       const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, user_id, content, weekdays, date)
-      console.log(post_message_result)
+      console.log(post_message_result)   
+    } else {
+      const post_message_result = await messageModel.post_chat_message(connection, chatting_room_id, get_user_id_result.cr_user, content, weekdays, date)
+      console.log(post_message_result) 
     }
 
     // unread count를 업한다.

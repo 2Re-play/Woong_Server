@@ -998,7 +998,10 @@ paths:
               - market_id
               - content
             properties:
-              market_id:
+              room_user_id:
+                type: integer
+                example: 1
+              market_user_id:
                 type: integer
                 example: 1
               content:
@@ -1669,6 +1672,9 @@ definitions:
                   type: string
                   example: "현주마켓"
                 market_id:
+                  type: integer
+                  example: 1
+                room_user_id:
                   type: integer
                   example: 1
                 chatting_room_id:

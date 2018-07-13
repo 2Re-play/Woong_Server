@@ -4,7 +4,7 @@ const post_room = (connection, user_id, market_id) => {
     INSERT INTO
       woong_potato.WP_CHATTING_ROOM(
         user_id, 
-        market_id, 
+        market_user_id, 
         unread_count 
       )
     VALUES
@@ -21,12 +21,12 @@ const get_room_list = (connection, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      m.farmer_image_key, m.market_name, m.market_id, r.chatting_room_id, r.unread_count
+      m.farmer_image_key, m.market_name, m.market_id, r.chatting_room_id, r.unread_count, r.user_id
     FROM
       woong_potato.WP_MARKET m,
       woong_potato.WP_CHATTING_ROOM r
     WHERE
-      r.market_id = m.market_id
+      r.market_user_id = m.market_id
       and r.user_id = ?
     `
     connection.query(Query, [user_id], (err, data) => {
