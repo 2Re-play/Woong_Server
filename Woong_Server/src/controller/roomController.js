@@ -61,15 +61,23 @@ const get_room = async (req, res) => {
      
       const message_time = moment(date_data[i])
       const current_time = moment()
+<<<<<<< HEAD
       console.log(current_time)
+=======
+
+      console.log()
+
+>>>>>>> a18b16e022e8e2cf549c46723c108b42bbef9339
       let interval_time = `${moment.duration(current_time.diff(message_time)).asHours()} `
      
       if (interval_time < 1) {
         interval_time = `${Math.round(moment.duration(current_time.diff(message_time)).asMinutes())}분 전`
-      } else if (interval_time > 1 && interval_time < 24) {
+      } else if (interval_time >= 1 && interval_time < 24) {
         interval_time = `${Math.round(interval_time)}시간 전`
-      } else {
-        `${interval_time /= 24}일 전`
+      } else if (interval_time >= 24 && interval_time < 744) {
+        interval_time = `${Math.round(moment.duration(current_time.diff(message_time)).asDays())}일 전`
+      } else if (interval_time >= 744) {
+        interval_time = `${Math.round(moment.duration(current_time.diff(message_time)).asMonths())}달 전`
       }
 
       interval_time_array.push(interval_time)
