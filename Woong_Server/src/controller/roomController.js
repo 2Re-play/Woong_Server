@@ -91,12 +91,14 @@ const get_room = async (req, res) => {
     const unread_count = []
     const chatting_room_id = []
     const market_id = []
+    const room_user_id = []
     for (let i = 0; i < get_roomList_result.length; i += 1) {
     
       market_name.push(get_roomList_result[i].market_name)
       unread_count.push(get_roomList_result[i].unread_count)
       chatting_room_id.push(get_roomList_result[i].chatting_room_id)
       market_id.push(get_roomList_result[i].market_id)
+      room_user_id.push(get_roomList_result[i].user_id)
     }
   
     for (let i = 0; i < get_roomList_result.length; i += 1) {
@@ -109,6 +111,7 @@ const get_room = async (req, res) => {
         unread_count: unread_count[i],
         recent_message: message_data[i],
         interval_time: interval_time_array[i],
+        room_user_id: room_user_id[i],
 
       })
       get_roomList_result[i].recent_message = message_data[i]
