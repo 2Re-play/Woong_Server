@@ -23,7 +23,7 @@ exports.getBookmark = async (req, res) => {
     respondJson('success', bookmarkResult, res, 200)
 
   } catch (e) {
-
+    console.log(e)
     respondOnError(e.message, res, 500)
 
   } finally {

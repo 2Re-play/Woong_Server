@@ -1,26 +1,26 @@
-const post_location_history = (connection, history_name, user_id) => {
+const post_location_history = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `
     INSERT INTO
-      woong_potato.WP_SEARCH_HISTORY(
-        history_name,
-        user_id
-      )
+      WP_SEARCH_HISTORY(
+        history_name,latitude,longitude,user_id)
     VALUES
-      (?,?)
+      (?,?,?,?)
     `
-    connection.query(Query, [history_name, user_id], (err, data) => {
+    console.log(data)
+    connection.query(Query, [data.history_name, data.latitude, data.longitude, data.user_id], (err) => {
       err && reject(err)
-      resolve(data)
+      resolve({})
     })
   })
 }
+
 
 const get_location_history = (connection, user_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     SELECT
-      history_name
+      history_name,latitude,longitude
     FROM
       woong_potato.WP_SEARCH_HISTORY
     WHERE

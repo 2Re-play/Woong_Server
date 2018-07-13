@@ -75,7 +75,7 @@ const signup = async (req, res) => {
     if (e.message === '409') {
       respondOnError('중복된 이메일 입니다.', res, 409)
     } else if (e.message === '403') {
-      respondOnError('형식이 맞지 않습니다.', res, 403)
+      respondOnError('식이 맞지 않습니다.', res, 403)
     } else {
       respondOnError('서버 내부 에러', res, 500)
     }

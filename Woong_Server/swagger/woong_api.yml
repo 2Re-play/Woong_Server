@@ -448,6 +448,39 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
+
+  /market/{market_id}/bookmarkflag:
+    get:
+      summary: 특정마켓 즐겨찾기 유무
+      #produces: application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - market
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 사용자 token
+        - in: path
+          name: market_id
+          type: integer
+          required: true
+          description: 마켓의 인덱스
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: '#/definitions/bookmarkflag'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
@@ -861,10 +894,16 @@ paths:
             type: object
             required:
               - history_name
+              - latitude
+              - longitude
             properties:
               history_name:
                 type: string
                 example: 서울시 마포구 서교동 123-123
+              latitude:
+                type: integer
+              longitude:
+                type: integer
       responses:
         200:
           description: status code 200
@@ -1195,10 +1234,10 @@ paths:
               rate_kindness:
                 type: integer
                 example: 4
-              review_content:
+              content:
                 type: string
                 example: "포슬포슬JMT"
-              review_image:
+              file:
                   type: array
                   items:
                     properties:
@@ -1377,11 +1416,7 @@ definitions:
               quick:
                 type: integer
                 example: 1
-                description: 1은 당일배송x 0은 당일배송
-              bookmark_count:
-                type: integer
-                example: 70
-                description: 즐겨찾기 카운트 수                      
+                description: 1은 당일배송x 0은 당일배송                  
               title_image_key:
                 type: string
                 example: s3주소/1529150684832.jpeg
@@ -1398,6 +1433,14 @@ definitions:
                 type: integer
                 example: 10
                 description: 마켓과 나와의 거리
+#북마크 flag
+  bookmarkflag:
+    type: object
+    properties:
+      message:
+        type: string
+        example: 1
+        description: 1이면 북마크 등록됨, 0이면 북마크 등록 안함
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object

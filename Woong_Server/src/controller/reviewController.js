@@ -3,7 +3,7 @@ const Joi = require('joi')
 const aws = require('aws-sdk')
 
 const dbConnection = require('lib/dbConnection')
-const { respondOnError } = require('lib/response')
+const { respondJson, respondOnError } = require('lib/response')
 const reviewData = require('../models/reviewModel')
 const signedurl = require('../lib/signedurl')
 
@@ -25,6 +25,11 @@ exports.postReview = async (req, res) => {
     content, rate_speed, rate_fresh, rate_taste, rate_kindness, 
   } = req.body
 
+  const postReviewValidation = Joi.validate(market_id, Joi.number().required())
+
+  if (postReviewValidation.error) {
+    respondOnError(postReviewValidation.error, res, 422)
+  }
 
   let data = {}
   data = {
@@ -48,14 +53,11 @@ exports.postReview = async (req, res) => {
       postReviewImageResult = await reviewData.saveImage(connection, postReviewResult.insertId, imageData.key, imageData.size, req.files[i].originalname, data.user_id, imageData.location)
     }
 
-    res.status(200).send({
-      message: 'success',
-      result: postReviewResult,
-    })
+    respondJson('success', postReviewResult, res, 200)
 
 
   } catch (e) {
-    console.log(`에러${e}`)
+    respondOnError(e.message, res, 500)
   } finally {
     connection.release()
   }
@@ -99,9 +101,8 @@ exports.getReview = async (req, res) => {
     })
   } catch (e) {
     console.log(e)
-    res.status(500).send({
-      message: 'Interner Server Error',
-    })
+    respondOnError(e.message, res, 500)
+
   } finally {
     connection.release()
   }

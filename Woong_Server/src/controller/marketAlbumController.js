@@ -1,6 +1,8 @@
 const dbConnection = require('lib/dbConnection')
 const marketData = require('../models/marketModel')
 const signedurl = require('../lib/signedurl')
+const Joi = require('joi')
+const { respondJson, respondOnError } = require('lib/response')
 
 // 1. 마켓 앨범 가져오기 
 exports.getMarketAlbum = async (req, res) => {
@@ -11,6 +13,13 @@ exports.getMarketAlbum = async (req, res) => {
   data = {
     market_id,
   }
+
+  const validation = Joi.validate(market_id, Joi.number().required())
+
+  if (validation.error) {
+    respondOnError(validation.error, res, 422)
+  }
+
   try {
     getMarketAlbumResult = await marketData.getAlbum(connection, data)
 
@@ -19,15 +28,11 @@ exports.getMarketAlbum = async (req, res) => {
       getMarketAlbumResult[i].file_key = await signedurl.getSignedUrl(getMarketAlbumResult[i].file_key)
     }
 
-    res.status(200).send({
-      message: 'success',
-      data: getMarketAlbumResult,
-    })
+    respondJson('success', getMarketAlbumResult, res, 200)
+
   } catch (e) {
     console.log(e)
-    res.status(500).send({
-      message: 'Internal Server Error',
-    })
+    respondOnError(e.message, res, 500)
   } finally {
     connection.release()
   }
