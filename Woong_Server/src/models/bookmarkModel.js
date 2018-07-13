@@ -1,5 +1,6 @@
 const moment = require('moment')
 
+
 // 1. 북마크 리스트
 exports.getBookmark = (connection, user_id) => {
   return new Promise((resolve, reject) => {
