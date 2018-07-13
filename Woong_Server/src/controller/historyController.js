@@ -21,11 +21,7 @@ const post_location_history = async (req, res) => {
   try {
     console.log(2)
     const result = await historyModel.post_location_history(connection, data)
-    console.log(result)
-    const info = {
-      result,
-    }
-    respondJson('성공적인 위치 히스토리 저장!!', info, res, 200)
+    respondJson('성공적인 위치 히스토리 저장!!', {}, res, 200)
 
   } catch (e) {
     console.log(e)

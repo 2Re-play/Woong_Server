@@ -5,11 +5,12 @@ const post_location_history = (connection, data) => {
       WP_SEARCH_HISTORY(
         history_name,latitude,longitude,user_id)
     VALUES
-      (${data.history_name},${data.latitude},${data.longitude},${data.user_id})
+      (?,?,?,?)
     `
-    connection.query(Query, (err, info) => {
+    console.log(data)
+    connection.query(Query, [data.history_name, data.latitude, data.longitude, data.user_id], (err) => {
       err && reject(err)
-      resolve(info)
+      resolve({})
     })
   })
 }
