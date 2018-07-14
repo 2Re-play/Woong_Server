@@ -1,16 +1,17 @@
-const post_room = (connection, user_id, market_id) => {
+const post_room = (connection, user_id, market_user_id, market_id) => {
   return new Promise((resolve, reject) => {
     const Query = `
     INSERT INTO
       woong_potato.WP_CHATTING_ROOM(
         user_id, 
         market_user_id, 
-        unread_count 
+        unread_count,
+        market_id 
       )
     VALUES
-      (?, ?, 0)
+      (?, ?, 0, ?)
     `
-    connection.query(Query, [user_id, market_id], (err, data) => {
+    connection.query(Query, [user_id, market_user_id, market_id], (err, data) => {
       err && reject(err)
       resolve(data)
     })
@@ -26,7 +27,7 @@ const get_room_list = (connection, user_id) => {
       woong_potato.WP_MARKET m,
       woong_potato.WP_CHATTING_ROOM r
     WHERE
-      r.market_user_id = m.market_id
+      r.market_id = m.market_id
       and r.user_id = ?
     `
     connection.query(Query, [user_id], (err, data) => {
