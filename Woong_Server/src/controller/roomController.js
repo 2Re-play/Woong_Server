@@ -1,6 +1,7 @@
 const moment = require('moment')
 const dbconnection = require('lib/dbConnection')
 const chatting_room = require('models/roomModel')
+const messageModel = require('models/messageModel')
 const Joi = require('joi')
 const signedurl = require('lib/signedurl')
 const { respondJson, respondOnError } = require('../lib/response')
@@ -135,7 +136,55 @@ const get_room = async (req, res) => {
   } 
 }
 
+// headers : token
+const get_chatting_room_id = async (req, res) => {
+
+  const connection = await dbconnection() 
+  const { user_id } = req.user
+  const { market_id } = req.params
+  console.log(user_id) 
+  console.log(market_id)
+
+
+  try {
+
+    const user_id_validation = Joi.validate(user_id, Joi.number().required())
+
+    if (user_id_validation.error) {
+      throw new Error(403)
+    }
+
+    const [get_user_id_result] = await messageModel.get_user_id(connection, market_id)
+    console.log(get_user_id_result)
+
+    
+    const get_chatting_room_result = await messageModel.check_existing_room(connection, user_id, get_user_id_result.cr_user)
+    console.log(get_chatting_room_result)
+
+    const data = {
+      get_chatting_room_result,
+    }
+
+
+    respondJson('성공적인 출력!!', data, res, 200)
+
+  } catch (e) {
+
+    if (e.message === '403') {
+      respondOnError('형식이 맞지 않습니다.', res, 403)
+    } else {
+      respondOnError('서버 내부 에러', res, 500)
+    }
+
+  } finally {
+
+    connection.release()
+
+  } 
+}
+
 
 module.exports = {
   get_room,
+  get_chatting_room_id,
 }

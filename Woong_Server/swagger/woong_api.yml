@@ -10,36 +10,6 @@ schemes:
   - http
   - https
 paths:
-# 헬스체크
-  /account/health:
-    get:
-      summary: 유저 토큰 헬스체크
-      description: 유저 토큰의 유효성검사 및 가용성검사
-      consumes:
-        - application/x-www-form-urlencoded
-      tags:
-        - account
-      parameters:
-        - in: header
-          name: usertoken
-          type: string
-          required: true
-          description: jwt userToken
-      responses:
-        200:
-          description: status cod 200
-          message:
-                type: string
-                example: success
-                description: 성공 메시지
-        403:
-          description: status code 403
-          schema:
-            $ref: '#/definitions/403_error'
-        500:
-          description: status code 500
-          schema:
-            $ref: '#/definitions/500_error'
 # 카테고리별 식품 리스트
   /category/main/{main_id}:
     get:
@@ -478,39 +448,6 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-
-  /market/{market_id}/bookmarkflag:
-    get:
-      summary: 특정마켓 즐겨찾기 유무
-      #produces: application/json
-      consumes:
-        - application/x-www-form-urlencoded
-      tags:
-        - market
-      parameters:
-        - in: header
-          name: usertoken
-          type: string
-          required: true
-          description: 사용자 token
-        - in: path
-          name: market_id
-          type: integer
-          required: true
-          description: 마켓의 인덱스
-      responses:
-        200:
-          description: status code 200
-          schema:
-            $ref: '#/definitions/bookmarkflag'
-        500:
-          description: status code 500
-          schema:
-            $ref: '#/definitions/500_error'
-        403:
-          description: status code 403
-          schema:
-            $ref: '#/definitions/403_error'
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
@@ -924,16 +861,10 @@ paths:
             type: object
             required:
               - history_name
-              - latitude
-              - longitude
             properties:
               history_name:
                 type: string
                 example: 서울시 마포구 서교동 123-123
-              latitude:
-                type: integer
-              longitude:
-                type: integer
       responses:
         200:
           description: status code 200
@@ -948,6 +879,36 @@ paths:
           schema:
             $ref: "#/definitions/500_error"
   #메세지 방 리스트 출력
+  /chat/room/{market_id}:
+    get:
+      summary: get chatting_room_id(alex)
+      description: x
+      consumes:
+        - application/json
+      tags:
+        - chat
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+        - in: path
+          name: market_id
+          type: integer
+          required: true
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: "#/definitions/200_chat_room_id"
+        403:
+          description: status code 403
+          schema:
+            $ref: "#/definitions/403_error"
+        500:
+          description: status code 500
+          schema:
+            $ref: "#/definitions/500_error"
   /chat/room:
     get:
       summary: chatting room list(alex)
@@ -973,7 +934,7 @@ paths:
         500:
           description: status code 500
           schema:
-            $ref: "#/definitions/500_error"  
+            $ref: "#/definitions/500_error"    
   #메세지 출력
   /chat/message/{chatting_room_id}:
     get:
@@ -1264,10 +1225,10 @@ paths:
               rate_kindness:
                 type: integer
                 example: 4
-              content:
+              review_content:
                 type: string
                 example: "포슬포슬JMT"
-              file:
+              review_image:
                   type: array
                   items:
                     properties:
@@ -1446,7 +1407,11 @@ definitions:
               quick:
                 type: integer
                 example: 1
-                description: 1은 당일배송x 0은 당일배송                  
+                description: 1은 당일배송x 0은 당일배송
+              bookmark_count:
+                type: integer
+                example: 70
+                description: 즐겨찾기 카운트 수                      
               title_image_key:
                 type: string
                 example: s3주소/1529150684832.jpeg
@@ -1463,14 +1428,6 @@ definitions:
                 type: integer
                 example: 10
                 description: 마켓과 나와의 거리
-#북마크 flag
-  bookmarkflag:
-    type: object
-    properties:
-      message:
-        type: string
-        example: 1
-        description: 1이면 북마크 등록됨, 0이면 북마크 등록 안함
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object
@@ -1701,7 +1658,7 @@ definitions:
                 market_name:
                   type: string
                   example: "현주마켓"
-                market_id:
+                market_user_id:
                   type: integer
                   example: 1
                 room_user_id:
@@ -1719,6 +1676,18 @@ definitions:
                 interval_time:
                   type: string
                   example: 2분 전
+  200_chat_room_id:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Sucessfully Get Chatting Room List!!
+      data:
+        type : object
+        properties:
+          chatting_room_id:
+            type: integer
+            example: 1           
   #메세지 출력
   200_chat_message_get:
     type: object

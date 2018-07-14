@@ -108,7 +108,6 @@ const post_message = async (req, res) => {
   const connection = await dbconnection() 
 
   const { user_id } = req.user
-  // const { chatting_room_id } = req.body
   const { content } = req.body
   const { market_user_id } = req.body
   const { room_user_id } = req.body
@@ -132,6 +131,7 @@ const post_message = async (req, res) => {
     // chatting_room_id,
     content,
   }
+
   console.log(user_id)
   console.log(market_user_id)
   console.log(content)
@@ -169,8 +169,7 @@ const post_message = async (req, res) => {
 
       let post_room_result
       if (!check_existing_room) {
-        console.log("방없다면")
-        post_room_result = await chatting_room.post_room(connection, user_id, get_user_id_result.cr_user)
+        post_room_result = await chatting_room.post_room(connection, user_id, get_user_id_result.cr_user, market_user_id)
         chatting_room_id = post_room_result.insertId
         console.log(post_room_result)
       } else {
@@ -180,10 +179,6 @@ const post_message = async (req, res) => {
       console.log(check_existing_room)
       chatting_room_id = check_existing_room.chatting_room_id
     }
-    // 소비자의 경우에만 방의 존재 유무 판단. because, 판매자는 이미 만들어진 방에 대해서만 접근을 할수 있기 떄문에
-    
-    
-    // user_id와 market_id에 값에 일치하는 메세지가 존재하는지 확인 -> 없다면 방 생성 
     
     
     console.log(chatting_room_id)
