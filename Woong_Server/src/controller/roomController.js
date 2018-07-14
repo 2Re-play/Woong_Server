@@ -62,8 +62,6 @@ const get_room = async (req, res) => {
       const message_time = moment(date_data[i])
       const current_time = moment()
 
-      console.log()
-
       let interval_time = `${moment.duration(current_time.diff(message_time)).asHours()} `
      
       if (interval_time < 1) {

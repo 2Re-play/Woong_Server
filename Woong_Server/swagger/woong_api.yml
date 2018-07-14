@@ -10,6 +10,36 @@ schemes:
   - http
   - https
 paths:
+# 헬스체크
+  /account/health:
+    get:
+      summary: 유저 토큰 헬스체크
+      description: 유저 토큰의 유효성검사 및 가용성검사
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - account
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: jwt userToken
+      responses:
+        200:
+          description: status cod 200
+          message:
+                type: string
+                example: success
+                description: 성공 메시지
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
 # 카테고리별 식품 리스트
   /category/main/{main_id}:
     get:
