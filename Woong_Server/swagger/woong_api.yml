@@ -511,6 +511,39 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
+#찜하기 flag
+  /market/{item_id}/favoriteflag:
+    get:
+      summary: 특정상품 찜하기 유무
+      #produces: application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - market
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 사용자 token
+        - in: path
+          name: item_id
+          type: integer
+          required: true
+          description: 상품의 인덱스
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: '#/definitions/favoriteflag'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
@@ -1471,6 +1504,14 @@ definitions:
         type: string
         example: 1
         description: 1이면 북마크 등록됨, 0이면 북마크 등록 안함
+#찜하기 flag
+  favoriteflag:
+    type: object
+    properties:
+      message:
+        type: string
+        example: 1
+        description: 1이면 찜하기 등록됨, 0이면 찜하기 등록 안함
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object

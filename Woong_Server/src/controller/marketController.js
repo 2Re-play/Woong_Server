@@ -107,6 +107,39 @@ exports.bookmarkfalg = async (req, res) => {
     connection.release()
   }
 }  
+// 찜하기 플래그
+exports.favoriteflag = async (req, res) => {
+  const { user } = req
+  const { item_id } = req.params
+  let data = {}
+  let user_id
+  let flag
+  data = {
+    user_id,
+    item_id,
+  }
+  data.user_id = user.user_id 
+  const item_id_validation = Joi.validate(item_id, Joi.number().required())
+  if (item_id_validation.error) {
+    respondOnError(item_id_validation.error, res, 422)
+  }
+  const connection = await dbConnection()
+  try {
+    [flag] = await marketmodel.favoriteflag(connection, data)
+    console.log(flag)
+    if (!flag) {
+      respondJson('0', {}, res, 200)
+    } else {
+      respondJson('1', flag, res, 200)
+    }
+  } catch (e) {
+    console.log(e)
+    respondOnError(e.message, res, 500)
+  } finally {
+    connection.release()
+  }
+}  
+
 // 판매자 특정상품 정보 보기
 exports.ItemDetail = async (req, res) => {
   const { market_id, item_id } = req.params
