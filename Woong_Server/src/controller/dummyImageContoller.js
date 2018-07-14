@@ -13,8 +13,7 @@ exports.postDummyImage = async (req, res) => {
   try {
     for (const i in req.files) {
       const imageData = req.files[i].transforms[0]
-      console.log(imageData)
-      postDummyImageResult = await dummyImageData.postImage(connection, 'album_'+req.files[i].originalname, imageData.key)
+      postDummyImageResult = await dummyImageData.postImage(connection, `album_${req.files[i].originalname}`, imageData.key)
     }
   
     res.status(200).send({

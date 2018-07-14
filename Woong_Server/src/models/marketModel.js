@@ -49,6 +49,18 @@ exports.bookmarkflag = (connection, data) => {
   })
 }
 
+exports.favoriteflag = (connection, data) => {
+  return new Promise((resolve, reject) => {
+    const Query = `
+    SELECT user_id FROM WP_ITEM_FAVORITE WHERE user_id=${data.user_id} AND item_id = ${data.item_id};
+    `
+    connection.query(Query, (err, info) => {
+      err && reject(err)
+      resolve(info)
+    })
+  })
+}
+
 exports.itemdetail = (connection, data) => {
   return new Promise((resolve, reject) => {
     const Query = `

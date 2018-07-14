@@ -448,6 +448,75 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
+<<<<<<< HEAD
+=======
+
+  /market/{market_id}/bookmarkflag:
+    get:
+      summary: 특정마켓 즐겨찾기 유무
+      #produces: application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - market
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 사용자 token
+        - in: path
+          name: market_id
+          type: integer
+          required: true
+          description: 마켓의 인덱스
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: '#/definitions/bookmarkflag'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+#찜하기 flag
+  /market/{item_id}/favoriteflag:
+    get:
+      summary: 특정상품 찜하기 유무
+      #produces: application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      tags:
+        - market
+      parameters:
+        - in: header
+          name: usertoken
+          type: string
+          required: true
+          description: 사용자 token
+        - in: path
+          name: item_id
+          type: integer
+          required: true
+          description: 상품의 인덱스
+      responses:
+        200:
+          description: status code 200
+          schema:
+            $ref: '#/definitions/favoriteflag'
+        500:
+          description: status code 500
+          schema:
+            $ref: '#/definitions/500_error'
+        403:
+          description: status code 403
+          schema:
+            $ref: '#/definitions/403_error'
+>>>>>>> 1e476b993a8a70070604cad512c7147423b5272b
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
@@ -1428,6 +1497,25 @@ definitions:
                 type: integer
                 example: 10
                 description: 마켓과 나와의 거리
+<<<<<<< HEAD
+=======
+#북마크 flag
+  bookmarkflag:
+    type: object
+    properties:
+      message:
+        type: string
+        example: 1
+        description: 1이면 북마크 등록됨, 0이면 북마크 등록 안함
+#찜하기 flag
+  favoriteflag:
+    type: object
+    properties:
+      message:
+        type: string
+        example: 1
+        description: 1이면 찜하기 등록됨, 0이면 찜하기 등록 안함
+>>>>>>> 1e476b993a8a70070604cad512c7147423b5272b
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object
