@@ -7,8 +7,8 @@ const dbConnection = require('lib/dbConnection')
 const signedUrl = require('../lib/signedurl')
 
 const getSubCategoryListController = async (req, res) => {
-  const { main_id } = req.params
   
+  const { main_id } = req.params 
   const validation = Joi.validate(main_id, Joi.number().required())
   
   if (validation.error) {
