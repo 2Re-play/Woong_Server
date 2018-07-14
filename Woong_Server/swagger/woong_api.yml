@@ -448,8 +448,6 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
-<<<<<<< HEAD
-=======
 
   /market/{market_id}/bookmarkflag:
     get:
@@ -516,7 +514,6 @@ paths:
           description: status code 403
           schema:
             $ref: '#/definitions/403_error'
->>>>>>> 1e476b993a8a70070604cad512c7147423b5272b
 #판매자 마켓 물품 리스트<이름순,인기순>
   /market/{market_id}:
     get:
@@ -1497,8 +1494,6 @@ definitions:
                 type: integer
                 example: 10
                 description: 마켓과 나와의 거리
-<<<<<<< HEAD
-=======
 #북마크 flag
   bookmarkflag:
     type: object
@@ -1515,7 +1510,6 @@ definitions:
         type: string
         example: 1
         description: 1이면 찜하기 등록됨, 0이면 찜하기 등록 안함
->>>>>>> 1e476b993a8a70070604cad512c7147423b5272b
 #판매자 마켓 물품 리스트<이름순,인기순>
   Item_Sort:
     type: object
